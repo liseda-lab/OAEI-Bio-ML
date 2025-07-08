@@ -6,10 +6,11 @@ This repository provides dataset pointer and evaluation scripts for the Bio-ML T
 
 ## Links
 
-- **OAEI Page**: <https://krr-oxford.github.io/OAEI-Bio-ML/>
-- **Detailed Documentation**: <https://krr-oxford.github.io/DeepOnto/bio-ml/> 
+- **OAEI Page**: <https://liseda-lab.github.io/OAEI-Bio-ML/>
+- **Detailed Documentation**: <https://krr-oxford.github.io/DeepOnto/bio-ml> 
 - **Resource Paper**: <https://arxiv.org/abs/2205.03447>
 - **Dataset Download**:
+    - **OAEI 2025**: <https://doi.org/10.5281/zenodo.13119437> 
     - **OAEI 2024**: <https://doi.org/10.5281/zenodo.13119437> 
     - **OAEI 2023**: <https://doi.org/10.5281/zenodo.8193375>
     - **OAEI 2022**: <https://doi.org/10.5281/zenodo.6946466>
