@@ -1,26 +1,60 @@
-# OAEI Bio-ML
+# OAEI Bio-ML — Biomedical Ontology Matching
 
-This repository provides dataset pointer and evaluation scripts for the Bio-ML Track of the OAEI. 
+OAEI Bio-ML is an [OAEI](https://oaei.ontologymatching.org/) ontology-matching track over **whole biomedical ontologies** — a *larger LargeBio* [8]. It evaluates equivalence and subsumption matching across three pairs — **NCIT–DOID**, **SNOMED–FMA**, and **SNOMED–NCIT** (the NCI Thesaurus [11], the Human Disease Ontology [12], SNOMED CT [14], and the Foundational Model of Anatomy [13]) — with references grounded in curated biomedical knowledge (UMLS [9] / Mondo [10]) and repaired for logical coherence.
 
-> Example code of OM evaluation is available at `bertmap_scripts/bertmap_eval.ipynb`. 
+## Tracks
 
-## Links
+* **Track 1 — Equivalence**
+  * **Subtrack 1 — Global equivalence alignment.** Submit one full alignment per pair (full OWL IRIs). Semi-supervised: a public `refs_equiv/train.tsv` is provided per pair; the test reference is hidden and scored organiser-side. Headline metric: repaired, coherence-aware P/R/F1, with a reasoner-checked Global Coherence score.
+  * **Subtrack 2 — Local equivalence ranking.** Rank a fixed, gold-stripped candidate pool per source entity. Metrics: MRR and Hits@{1,5,10}.
 
-- **OAEI Page**: <https://liseda-lab.github.io/OAEI-Bio-ML/>
-- **Detailed Documentation**: <https://krr-oxford.github.io/DeepOnto/bio-ml> 
-- **Resource Paper**: <https://arxiv.org/abs/2205.03447>
-- **Dataset Download**:
-    - **OAEI 2025**: <https://doi.org/10.5281/zenodo.13119437> 
-    - **OAEI 2024**: <https://doi.org/10.5281/zenodo.13119437> 
-    - **OAEI 2023**: <https://doi.org/10.5281/zenodo.8193375>
-    - **OAEI 2022**: <https://doi.org/10.5281/zenodo.6946466>
+Full definitions are on the [evaluation metrics](./evaluation-metrics.md) page. All headline metrics are macro-averaged over the three pairs.
 
-> Results will be published on the OAEI webpage.
+## How the references were built
 
+For each pair, the reference alignment is grounded in the UMLS Metathesaurus [9] and Mondo [10]. Because a reference assembled from these sources can be logically **incoherent**, it is **repaired** before use: the set of correspondences to remove (or weaken) is computed as a **union over three repair tools** — ALCOMO [6], LogMap [5], and AML [4] — following the LargeBio [8] repair tradition, and verified coherent with the ELK reasoner [7]. Under the track's annotation scheme, surviving correspondences keep their (possibly weakened) equivalence/subsumption relation; only fully-removed correspondences are marked uncertain (`?`) and ignored at scoring time.
 
-## Relevant Publications
+The track therefore ships **two references** per pair: the **standard** (complete, possibly-incoherent) reference and the **repaired** (coherence-aware) reference. The **repaired reference is the headline** and is what this site reports; the standard reference is retained for the CodaBench leaderboard's standard scoring. The two are **not directly comparable** — see [evaluation metrics](./evaluation-metrics.md).
 
-- [1] *Yuan He‚ Jiaoyan Chen‚ Hang Dong, Ernesto Jiménez-Ruiz, Ali Hadian and Ian Horrocks.* **Machine Learning-Friendly Biomedical Datasets for Equivalence and Subsumption Ontology Matching**. The 21st International Semantic Web Conference (ISWC-2022, **Best Resource Paper Candidate**). /[arxiv](https://arxiv.org/abs/2205.03447)/ /[iswc](https://link.springer.com/chapter/10.1007/978-3-031-19433-7_33)/  <a name="bioml_paper"></a>
-- [2] *Yuan He, Jiaoyan Chen, Hang Dong, and Ian Horrocks.* **Exploring Large Language Models for Ontology Alignment**. The 22nd International Semantic Web Conference (ISWC-2023 Posters & Demos). /[arxiv](https://arxiv.org/abs/2309.07172)/ /[iswc](https://hozo.jp/ISWC2023_PD-Industry-proc/ISWC2023_paper_427.pdf)/ <a name="llmap_paper"></a>
-- [3] *Yuan He, Jiaoyan Chen, Hang Dong, Ian Horrocks, Carlo Allocca, Taehun Kim, and Brahmananda Sapkota.* **DeepOnto: A Python Package for Ontology Engineering with Deep Learning.** Semantic Web (2024). /[arxiv](https://arxiv.org/abs/2307.03067)/ /[swj](https://content.iospress.com/articles/semantic-web/sw243568)/
+## Serialisation
 
+By design, **Track 1 uses full OWL IRIs**. Public local-ranking candidate files (`*.test.cands.tsv`) are **gold-stripped**: they contain the source entity and its candidate list only.
+
+## Data
+
+The 2026 datasets are **publicly available** on the Hugging Face Hub as [`OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml) (edition tag `2026`) — the task data is entity IRIs/CURIEs and downloads without gating. The Hugging Face dataset is **data only**; the self-contained `scoring_kit/` (validators + self-scorers) ships separately with the [track repository](https://github.com/liseda-lab/OAEI-Bio-ML). The licence-restricted **source ontologies** (SNOMED CT [14], UMLS [9]) are **not re-hosted** — see [ontologies](./ontologies/ontologies.md) for where to obtain each and under which licence. The [quickstart](./quickstart.md) walks through cloning the scoring kit, downloading the data, and validating and self-scoring a submission.
+
+## Baselines & results
+
+Organiser-run baseline systems (a naive lexical baseline, SapBERT [3], and the BERTMap [2] family) are published before the competition on the [baselines](./BASELINES.md) page, rendered directly from the machine-readable `leaderboard.json`. Participant standings appear on the CodaBench leaderboards, surfaced on the [results](https://liseda-lab.github.io/OAEI-Bio-ML/results/) page once the evaluation window opens.
+
+## Participate
+
+Two CodaBench competitions — [Track 1 Global Alignment](https://www.codabench.org/competitions/17424/) and [Track 1 Local Ranking](https://www.codabench.org/competitions/17423/) — open on **12 July 2026**. See the [quickstart](./quickstart.md).
+
+## Organisers & contact
+
+OAEI Bio-ML 2026 is organised by [Jon Dilworth](https://dilworth.io/), [Pedro Cotovio](https://pedrocotovio.github.io/), [Ernesto Jiménez-Ruiz](https://ernestojimenezruiz.github.io/), and [Catia Pesquita](https://www.di.fc.ul.pt/~catiapesquita/). The benchmark design follows the original machine-learning-friendly Bio-ML datasets (He et al. [1]).
+
+Questions or corrections: open an issue on the [track repository](https://github.com/liseda-lab/OAEI-Bio-ML) or email <contact@oaei-ml.org>.
+
+## References
+
+1. He, Y., Chen, J., Dong, H., Jiménez-Ruiz, E., Hadian, A., & Horrocks, I. (2022). Machine Learning-Friendly Biomedical Datasets for Equivalence and Subsumption Ontology Matching. In: The Semantic Web — ISWC 2022. LNCS 13489, pp. 575–591. Springer. <https://doi.org/10.1007/978-3-031-19433-7_33>
+2. He, Y., Chen, J., Antonyrajah, D., & Horrocks, I. (2022). BERTMap: A BERT-based Ontology Alignment System. In: Proceedings of the AAAI Conference on Artificial Intelligence, 36(5), 5684–5691. <https://doi.org/10.1609/aaai.v36i5.20510>
+3. Liu, F., Shareghi, E., Meng, Z., Basaldella, M., & Collier, N. (2021). Self-Alignment Pretraining for Biomedical Entity Representations. In: NAACL-HLT 2021, pp. 4228–4238. <https://doi.org/10.18653/v1/2021.naacl-main.334>
+4. Faria, D., Pesquita, C., Santos, E., Palmonari, M., Cruz, I. F., & Couto, F. M. (2013). The AgreementMakerLight Ontology Matching System. In: OTM 2013. LNCS 8185, pp. 527–541. Springer. <https://doi.org/10.1007/978-3-642-41030-7_38>
+5. Jiménez-Ruiz, E., & Cuenca Grau, B. (2011). LogMap: Logic-based and Scalable Ontology Matching. In: The Semantic Web — ISWC 2011. LNCS 7031, pp. 273–288. Springer. <https://doi.org/10.1007/978-3-642-25073-6_18>
+6. Meilicke, C. (2011). Alignment Incoherence in Ontology Matching. PhD thesis, University of Mannheim. <https://madoc.bib.uni-mannheim.de/29351/>
+7. Kazakov, Y., Krötzsch, M., & Simančík, F. (2014). The Incredible ELK: From Polynomial Procedures to Efficient Reasoning with ℰℒ Ontologies. Journal of Automated Reasoning, 53(1), 1–61. <https://doi.org/10.1007/s10817-013-9296-3>
+8. Ontology Alignment Evaluation Initiative — Large BioMed (LargeBio) track. <https://www.cs.ox.ac.uk/isg/projects/SEALS/oaei/>
+9. Bodenreider, O. (2004). The Unified Medical Language System (UMLS): Integrating Biomedical Terminology. Nucleic Acids Research, 32(Database issue), D267–D270. <https://doi.org/10.1093/nar/gkh061>
+10. Vasilevsky, N. A., et al. (2022). Mondo: Unifying Diseases for the World, by the World. medRxiv 2022.04.13.22273750. <https://doi.org/10.1101/2022.04.13.22273750>
+11. Sioutos, N., de Coronado, S., Haber, M. W., Hartel, F. W., Shaia, W.-L., & Wright, L. W. (2007). NCI Thesaurus: A Semantic Model Integrating Cancer-related Clinical and Molecular Information. Journal of Biomedical Informatics, 40(1), 30–43. <https://doi.org/10.1016/j.jbi.2006.02.013>
+12. Schriml, L. M., et al. (2022). The Human Disease Ontology 2022 Update. Nucleic Acids Research, 50(D1), D1255–D1261. <https://doi.org/10.1093/nar/gkab1063>
+13. Rosse, C., & Mejino, J. L. V. (2003). A Reference Ontology for Biomedical Informatics: the Foundational Model of Anatomy. Journal of Biomedical Informatics, 36(6), 478–500. <https://doi.org/10.1016/j.jbi.2003.11.007>
+14. Donnelly, K. (2006). SNOMED-CT: The Advanced Terminology and Coding System for eHealth. Studies in Health Technology and Informatics, 121, 279–290.
+
+---
+
+*OAEI Bio-ML 2026 (first edition). Track repository: <https://github.com/liseda-lab/OAEI-Bio-ML>.*

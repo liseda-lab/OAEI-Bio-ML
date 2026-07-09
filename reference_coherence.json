@@ -1,0 +1,39 @@
+{
+  "note": "Logical coherence of each pair's Task-1 reference alignment before and after the repair procedure (the union-of-removed of ALCOMO, LogMap and AML). 'Unsat' is the number of unsatisfiable named classes in the merged ontology O_src ∪ O_tgt ∪ R; 'incoherence degree' is that count divided by the merged named-class signature. Measured under the ELK reasoner.",
+  "footnotes": {
+    "elk_lower_bound": "ELK lower bound (a sound under-approximation; exact HermiT figure pending).",
+    "snomed_fma_before": "The all-equivalence standard SNOMED–FMA merge does not classify under ELK even at a 600 GB heap, so its before-repair figure is unavailable."
+  },
+  "pairs": [
+    {
+      "pair": "NCIT–DOID",
+      "unsat_before": 17850,
+      "unsat_before_lower_bound": true,
+      "degree_before_pct": 7.7,
+      "unsat_after": 0,
+      "degree_after_pct": 0.0,
+      "merged_signature_before": 231503,
+      "merged_signature_after": 228337
+    },
+    {
+      "pair": "SNOMED–FMA",
+      "unsat_before": null,
+      "unsat_before_note": "unavailable (does not classify under ELK)",
+      "degree_before_pct": null,
+      "unsat_after": 0,
+      "degree_after_pct": 0.0,
+      "merged_signature_before": null,
+      "merged_signature_after": 490694
+    },
+    {
+      "pair": "SNOMED–NCIT",
+      "unsat_before": 466306,
+      "unsat_before_lower_bound": true,
+      "degree_before_pct": 78.0,
+      "unsat_after": 0,
+      "degree_after_pct": 0.0,
+      "merged_signature_before": 597949,
+      "merged_signature_after": 597931
+    }
+  ]
+}
