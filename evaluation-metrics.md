@@ -19,6 +19,8 @@ $$
 
 **Global Coherence.** Alongside P/R/F1 we report a reasoner-checked coherence measure — the degree of logical incoherence induced by the submitted alignment on the merged ontologies (0 = coherent). Because it needs a description-logic reasoner, coherence is computed **organiser-side**, not in the participant scoring kit.
 
+<small>Note: as coherence-aware precision, recall, and F1 are headline measures, we **only** report those here; both the standard (i.e., unrepaired) and the repaired reference are scored via CodaBench.</small>
+
 ## Subtrack 2 — Local equivalence ranking
 
 For each source entity, the system ranks a fixed candidate pool best-first. Writing $\mathrm{rank}(q)$ for the 1-based position of the correct target in query $q$'s ranking, over the query set $Q$:

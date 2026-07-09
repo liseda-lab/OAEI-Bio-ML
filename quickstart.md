@@ -16,7 +16,7 @@ pip install -U huggingface_hub
 hf download OAEI-ML/bio-ml --repo-type dataset --revision 2026 --local-dir ./bio-ml
 ```
 
-The 2026 task data is **publicly available** under the OAEI-ML organisation — [`huggingface.co/datasets/OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml), edition tag `2026` — and downloads freely, without gating (entity IRIs/CURIEs only). Under `bio-ml/`, each pair (`NCIT-DOID`, `SNOMED-FMA`, `SNOMED-NCIT`) contains:
+The 2026 task data is **publicly available** under the OAEI-ML organisation — [`huggingface.co/datasets/OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml), edition tag `2026` — and downloads freely, without gating (entity IRIs only). Under `bio-ml/`, each pair (`NCIT-DOID`, `SNOMED-FMA`, `SNOMED-NCIT`) contains:
 
 * `refs_equiv/train.tsv` — the public equivalence training reference for global alignment (`SrcEntity`, `TgtEntity`, `Score`; full IRIs; semi-supervised setting),
 * `local.train.cands.tsv` / `local.valid.cands.tsv` — the local-ranking pools that **carry the gold** `TgtEntity` (use them to self-score), and `local.test.cands.tsv` — the **gold-stripped** test pool (source entity + candidate list only),

@@ -2,7 +2,7 @@
   "note": "Logical coherence of each pair's Task-1 reference alignment before and after the repair procedure (the union-of-removed of ALCOMO, LogMap and AML). 'Unsat' is the number of unsatisfiable named classes in the merged ontology O_src ∪ O_tgt ∪ R; 'incoherence degree' is that count divided by the merged named-class signature. Measured under the ELK reasoner.",
   "footnotes": {
     "elk_lower_bound": "ELK lower bound (a sound under-approximation; exact HermiT figure pending).",
-    "snomed_fma_before": "The all-equivalence standard SNOMED–FMA merge does not classify under ELK even at a 600 GB heap, so its before-repair figure is unavailable."
+    "snomed_fma_before": "The all-equivalence standard SNOMED–FMA merge does not classify under ELK even at a 128 GB heap, so its before-repair figure is unavailable."
   },
   "pairs": [
     {

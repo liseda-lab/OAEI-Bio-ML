@@ -5,7 +5,7 @@ import { withBase } from '../config';
 
 <Base
   title="Reference & repair"
-  description="How the OAEI Bio-ML global reference is built: a UMLS/Mondo gold reference can be logically incoherent, so it is repaired with a union-of-removed of ALCOMO, LogMap and AML under Option-Two annotation. The headline global reference is the repaired, coherence-aware one."
+  description="How the OAEI Bio-ML global reference is built: a UMLS/Mondo gold reference can be logically incoherent, so it is repaired with a union-of-removed of ALCOMO, LogMap and AML, then annotated rather than deleted. The headline global reference is the repaired, coherence-aware one."
 >
   <div class="page-head">
     <div class="container">
@@ -51,10 +51,10 @@ import { withBase } from '../config';
           conservative: it errs toward flagging a mapping rather than silently keeping an incoherent one.
         </p>
 
-        <h2>Option-Two annotation: keep, weaken, or set aside</h2>
+        <h2>Annotation: keep, weaken, or set aside</h2>
         <p>
           We do not simply delete flagged mappings — that would throw away information. Instead, each reference
-          mapping is annotated (“Option-Two”):
+          mapping is annotated:
         </p>
       </div>
 
