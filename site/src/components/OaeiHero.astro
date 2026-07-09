@@ -158,11 +158,17 @@ import '@fontsource/source-serif-4/600.css';
 .omh-hyp-fore .h-hit{outline:none}
 .omh-hyp-fore .h-hit:focus-visible{stroke:oklch(0.8 0.13 190);stroke-width:2;fill:oklch(0.8 0.13 190 / 0.12)}
 /* box-embedding training: from a scattered init (--dx/--dy per box) each box
-   descends to its converged position, overshooting ~5% before settling — the
-   slight ring past the minimum is what sells "loss being minimised". */
+   descends in discrete optimiser strides — big step, settle, smaller step —
+   with a slight perpendicular drift per stride (the --dy-into-x mixing) and a
+   ~2.5% overshoot before the minimum. The holds between strides are what make
+   it read as iteration rather than a glide; geoTelemetry() mirrors these
+   breakpoints, so keep the two in sync. */
 @keyframes omhConverge{
   0%{transform:translate(var(--dx),var(--dy))}
-  72%{transform:translate(calc(var(--dx) * -0.055),calc(var(--dy) * -0.055))}
+  22%,30%{transform:translate(calc(var(--dx) * 0.44 + var(--dy) * 0.12),calc(var(--dy) * 0.44 - var(--dx) * 0.12))}
+  48%,56%{transform:translate(calc(var(--dx) * 0.19 - var(--dy) * 0.07),calc(var(--dy) * 0.19 + var(--dx) * 0.07))}
+  72%,79%{transform:translate(calc(var(--dx) * 0.08 + var(--dy) * 0.03),calc(var(--dy) * 0.08 - var(--dx) * 0.03))}
+  90%{transform:translate(calc(var(--dx) * -0.025),calc(var(--dy) * -0.025))}
   100%{transform:none}
 }
 @keyframes omhSlideL{from{opacity:0;transform:translateX(-46px)}to{opacity:1;transform:none}}
@@ -262,32 +268,40 @@ import '@fontsource/source-serif-4/600.css';
     function renderGeo() {
       const cell = (cx, cy, kind, delay) => {
         const g = `animation:omhFadeIn .5s ${delay}s both`;
-        // each box trains from its --dx/--dy init to the converged position;
-        // labels name the relation only after the geometry has settled
-        const mv = (dx, dy) => `style="--dx:${dx}px;--dy:${dy}px;animation:omhConverge 1.3s ${delay + 0.1}s cubic-bezier(.3,.7,.3,1) both"`;
-        const late = `animation:omhFadeIn .5s ${delay + 1.05}s both`;
-        let cfg, col, glyph, word, formula;
+        // relation labels appear only once the geometry has settled — the
+        // type reads as the OUTCOME of training, not a given
+        const late = `animation:omhFadeIn .5s ${delay + 1.35}s both`;
+        // one concept-box: a ghost outline marks its --dx/--dy initialisation,
+        // a dotted trail records the path taken, the box itself trains in
+        const box = (r, dx, dy, dashed) => {
+          const attrs = `x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="${r.rx}"`;
+          return `<rect ${attrs} transform="translate(${dx} ${dy})" fill="none" stroke="${r.s}" stroke-width="1" stroke-dasharray="2 3" opacity="0.16"/>`
+            + `<line x1="${r.x + r.w / 2 + dx}" y1="${r.y + r.h / 2 + dy}" x2="${r.x + r.w / 2}" y2="${r.y + r.h / 2}" stroke="${r.s}" stroke-width="1" stroke-dasharray="1 4" opacity="0.22" style="animation:omhFadeIn .5s ${delay + 0.9}s both"/>`
+            + `<rect ${attrs} style="--dx:${dx}px;--dy:${dy}px;animation:omhConverge 1.6s ${delay + 0.1}s cubic-bezier(.3,.7,.3,1) both" fill="${r.f}" stroke="${r.s}" stroke-width="1.2"${dashed ? ' stroke-dasharray="4 3"' : ''}/>`;
+        };
+        let cfg, col, glyph, word, formula, v0, v1;
         if (kind === 'eq') {
-          col = EQ; glyph = '≡'; word = 'equivalence'; formula = 'Box(A) = Box(B)';
-          cfg = `<rect ${mv(-46, -24)} x="${cx - 52}" y="${cy - 40}" width="96" height="58" rx="7" fill="oklch(0.8 0.13 190 / 0.10)" stroke="${EQ}" stroke-width="1.2"/>`
-              + `<rect ${mv(48, 28)} x="${cx - 45}" y="${cy - 33}" width="96" height="58" rx="7" fill="none" stroke="${EQ}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+          col = EQ; glyph = '≡'; word = 'equivalence'; formula = 'Box(A) = Box(B)'; v0 = 0.12; v1 = 1.00;
+          cfg = box({ x: cx - 52, y: cy - 40, w: 96, h: 58, rx: 7, f: 'oklch(0.8 0.13 190 / 0.10)', s: EQ }, -46, -24)
+              + box({ x: cx - 45, y: cy - 33, w: 96, h: 58, rx: 7, f: 'none', s: EQ }, 48, 28, true);
         } else if (kind === 'sub') {
-          col = SUB; glyph = '⊑'; word = 'subsumption'; formula = 'Box(A) ⊆ Box(B)';
-          cfg = `<rect ${mv(-40, -16)} x="${cx - 56}" y="${cy - 42}" width="112" height="66" rx="8" fill="oklch(0.82 0.13 85 / 0.06)" stroke="${SUB}" stroke-width="1.2"/>`
-              + `<rect ${mv(54, 30)} x="${cx - 24}" y="${cy - 20}" width="46" height="30" rx="5" fill="oklch(0.82 0.13 85 / 0.16)" stroke="${SUB}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+          col = SUB; glyph = '⊑'; word = 'subsumption'; formula = 'Box(A) ⊆ Box(B)'; v0 = 0.21; v1 = 1.00;
+          cfg = box({ x: cx - 56, y: cy - 42, w: 112, h: 66, rx: 8, f: 'oklch(0.82 0.13 85 / 0.06)', s: SUB }, -40, -16)
+              + box({ x: cx - 24, y: cy - 20, w: 46, h: 30, rx: 5, f: 'oklch(0.82 0.13 85 / 0.16)', s: SUB }, 54, 30, true);
         } else if (kind === 'ovl') {
-          col = MUT; glyph = '∩'; word = 'overlaps'; formula = 'A ⊓ B ≠ ⊥';
+          col = MUT; glyph = '∩'; word = 'overlaps'; formula = 'A ⊓ B ≠ ⊥'; v0 = 0.04; v1 = 0.49;
           // the ⊓ highlight only exists once both boxes have converged
-          cfg = `<rect ${mv(-42, 22)} x="${cx - 56}" y="${cy - 38}" width="74" height="54" rx="7" fill="${MUTF}" stroke="${MUT}" stroke-width="1.2"/>`
-              + `<rect ${mv(44, -24)} x="${cx - 18}" y="${cy - 38}" width="74" height="54" rx="7" fill="none" stroke="${MUT}" stroke-width="1.2" stroke-dasharray="4 3"/>`
+          cfg = box({ x: cx - 56, y: cy - 38, w: 74, h: 54, rx: 7, f: MUTF, s: MUT }, -42, 22)
+              + box({ x: cx - 18, y: cy - 38, w: 74, h: 54, rx: 7, f: 'none', s: MUT }, 44, -24, true)
               + `<rect style="${late}" x="${cx - 18}" y="${cy - 38}" width="36" height="54" fill="${MUTF}"/>`;
         } else {
-          col = DIS; glyph = '⊥'; word = 'disjoint'; formula = 'A ⊓ B ⊑ ⊥';
+          col = DIS; glyph = '⊥'; word = 'disjoint'; formula = 'A ⊓ B ⊑ ⊥'; v0 = 0.93; v1 = 0.00;
           // disjointness trains by repulsion: both boxes init coincident, the loss pushes them apart
-          cfg = `<rect ${mv(34, -8)} x="${cx - 58}" y="${cy - 38}" width="48" height="54" rx="7" fill="${DISF}" stroke="${DIS}" stroke-width="1.2"/>`
-              + `<rect ${mv(-34, 8)} x="${cx + 10}" y="${cy - 38}" width="48" height="54" rx="7" fill="none" stroke="${DIS}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+          cfg = box({ x: cx - 58, y: cy - 38, w: 48, h: 54, rx: 7, f: DISF, s: DIS }, 34, -8)
+              + box({ x: cx + 10, y: cy - 38, w: 48, h: 54, rx: 7, f: 'none', s: DIS }, -34, 8, true);
         }
-        return `<g style="${g}">` + cfg
+        return `<g style="${g}" data-vol="${v0}|${v1}|${delay}">` + cfg
+          + `<text class="omh-vol omh-halo" x="${cx}" y="${cy + 72}" text-anchor="middle" style="font:400 9.5px ${MONO};fill:rgba(232,237,245,0.45)"></text>`
           + `<g style="${late}">`
           + svgText(cx, cy + 42, 'middle', `font:600 13px ${MONO};fill:${col}`, `${glyph}  ${word}`, true)
           + svgText(cx, cy + 58, 'middle', `font:400 10px ${MONO};fill:rgba(232,237,245,0.5)`, formula, true)
@@ -295,13 +309,66 @@ import '@fontsource/source-serif-4/600.css';
       };
       const frame =
         `<rect x="248" y="46" width="584" height="326" rx="12" fill="rgba(210,224,240,0.02)" stroke="rgba(210,224,240,0.16)"/>` +
-        svgText(540, 70, 'middle', `font:400 10.5px ${MONO};fill:rgba(210,224,240,0.5)`, 'both ontologies co-embedded in one ℝⁿ', true);
+        svgText(540, 70, 'middle', `font:400 10.5px ${MONO};fill:rgba(210,224,240,0.5)`, 'both ontologies aligned in a shared ℝⁿ', true) +
+        `<text id="omh-loss" x="816" y="70" text-anchor="end" class="omh-halo" style="font:500 10.5px ${MONO};fill:rgba(232,237,245,0.6)"></text>`;
       const cells =
         cell(378, 142, 'eq', 0.05) + cell(702, 142, 'sub', 0.17) +
         cell(378, 290, 'ovl', 0.29) + cell(702, 290, 'dis', 0.41);
       const foot = svgText(540, 398, 'middle', `font:400 10.5px ${MONO};fill:rgba(232,237,245,0.55)`,
         'the containment pattern types the correspondence · graded by Vol(A ⊓ B) / Vol(A)', true);
-      elGeo.innerHTML = frame + cells + foot;
+      // attribution: the method KEYS are cited explicitly (accent = citation
+      // token, matching the "References (Webpage Animation)" list on About);
+      // the connecting prose stays muted so the keys carry the eye
+      const ref =
+        `<text x="540" y="417" text-anchor="middle" class="omh-halo" style="font:400 9px ${MONO}">` +
+        `<tspan fill="rgba(232,237,245,0.34)">box-embedding scene after </tspan>` +
+        `<tspan fill="${EQ}" style="letter-spacing:.03em">ELEm · BoxEL · Box²EL</tspan>` +
+        `<tspan fill="rgba(232,237,245,0.34)"> — full citations on the About page</tspan></text>`;
+      elGeo.innerHTML = frame + cells + foot + ref;
+      geoTelemetry();
+    }
+
+    /* ---- geo telemetry: scripted optimiser readouts ----
+       Choreography, not measurement — the boxes are CSS keyframes, there is
+       no model. REMAIN mirrors omhConverge's stride/hold breakpoints, so ℒ
+       and each cell's Vol(A⊓B)/Vol(A) freeze during the holds and drop
+       exactly when the boxes jump. Under prefers-reduced-motion everything
+       renders converged in a single frame. */
+    const REMAIN = [[0, 1], [0.22, 0.44], [0.30, 0.44], [0.48, 0.19], [0.56, 0.19], [0.72, 0.08], [0.79, 0.08], [0.90, 0.025], [1, 0]];
+    const remain = (p) => {
+      if (p <= 0) return 1;
+      if (p >= 1) return 0;
+      let i = 1;
+      while (REMAIN[i][0] < p) i++;
+      const [p0, r0] = REMAIN[i - 1], [p1, r1] = REMAIN[i];
+      return r0 + (r1 - r0) * ((p - p0) / (p1 - p0));
+    };
+    let geoRaf = 0;
+    function geoTelemetry() {
+      cancelAnimationFrame(geoRaf);
+      const lossEl = elGeo.querySelector('#omh-loss');
+      const cells = [...elGeo.querySelectorAll('[data-vol]')].map((el) => {
+        const [v0, v1, d] = el.dataset.vol.split('|').map(Number);
+        return { v0, v1, d: d + 0.1, out: el.querySelector('.omh-vol') };
+      });
+      const DUR = 1.6, L0 = 0.847;
+      const t0 = performance.now();
+      const frame = () => {
+        const t = REDUCED ? Infinity : (performance.now() - t0) / 1000;
+        let rSum = 0;
+        for (const c of cells) {
+          const r = remain((t - c.d) / DUR);
+          rSum += r;
+          c.out.textContent = `Vol(A⊓B)/Vol(A) = ${(c.v1 + (c.v0 - c.v1) * r).toFixed(2)}`;
+        }
+        if (rSum > 0) {
+          lossEl.textContent = `step ${String(Math.min(Math.floor(t * 60), 999)).padStart(3, '0')} · ℒ ${(L0 * (rSum / cells.length)).toFixed(3)}`;
+          geoRaf = requestAnimationFrame(frame);
+        } else {
+          lossEl.textContent = 'ℒ minimised · converged';
+        }
+      };
+      frame();
     }
 
     /* ---- hyperbolic geometry helpers ---- */
@@ -338,7 +405,12 @@ import '@fontsource/source-serif-4/600.css';
         `<g style="${spin(115, true)}">${arcs([[30, 150], [100, 220], [170, 290], [300, 50]], 0.07)}</g></g>` +
         svgText(HC.x + HC.r - 14, 16, 'start', `font:400 10px ${MONO};fill:rgba(210,224,240,0.35)`, '𝔹ⁿ · Poincaré ball', true) +
         svgText(360, 20, 'start', `font:400 10px ${MONO};fill:rgba(210,224,240,0.45)`, '○ O₁ (NCIT)   ◇ O₂ (DOID) — hover or focus a concept', true) +
-        svgText(HC.x, 392, 'middle', `font:400 11px ${MONO};fill:rgba(232,237,245,0.55)`, 'C ⊑ D := C ≺ D · parents sit nearer the origin', true);
+        svgText(HC.x, 392, 'middle', `font:400 11px ${MONO};fill:rgba(232,237,245,0.55)`, 'C ⊑ D := C ≺ D · parents sit nearer the origin', true) +
+        // attribution keys as citation tokens (cyan), consistent with the geo scene
+        `<text x="${HC.x}" y="411" text-anchor="middle" class="omh-halo" style="font:400 9px ${MONO}">` +
+        `<tspan fill="rgba(210,224,240,0.34)">hyperbolic scene after </tspan>` +
+        `<tspan fill="${EQ}" style="letter-spacing:.03em">HiT · OnT</tspan>` +
+        `<tspan fill="rgba(210,224,240,0.34)"> — full citations on the About page</tspan></text>`;
     }
 
     /* ---- hyperbolic foreground: build ONCE, then toggle classes on hover/focus ---- */

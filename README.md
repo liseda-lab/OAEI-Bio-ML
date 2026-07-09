@@ -55,6 +55,16 @@ Questions or corrections: open an issue on the [track repository](https://github
 13. Rosse, C., & Mejino, J. L. V. (2003). A Reference Ontology for Biomedical Informatics: the Foundational Model of Anatomy. Journal of Biomedical Informatics, 36(6), 478–500. <https://doi.org/10.1016/j.jbi.2003.11.007>
 14. Donnelly, K. (2006). SNOMED-CT: The Advanced Terminology and Coding System for eHealth. Studies in Health Technology and Informatics, 121, 279–290.
 
+### References (Webpage Animation)
+
+The homepage hero is a *schematic* depiction of geometric model-based ontology embeddings — not a faithful reproduction of any single method. Its two scenes are drawn after the works cited below (the method keys — **ELEm**, **BoxEL**, **Box²EL**, **HiT**, **OnT** — are the labels shown in the animation itself): the Euclidean box scene after the ℰℒ⁺⁺ box-embedding line of work, and the hyperbolic scene directly after OnT, which builds on HiT's Poincaré-ball hierarchy encoding.
+
+* **ELEm** — Kulmanov, M., Liu-Wei, W., Yan, Y., & Hoehndorf, R. (2019). EL Embeddings: Geometric Construction of Models for the Description Logic ℰℒ⁺⁺. In: Proceedings of the Twenty-Eighth International Joint Conference on Artificial Intelligence (IJCAI 2019), pp. 6103–6109. <https://doi.org/10.24963/ijcai.2019/845>
+* **BoxEL** — Xiong, B., Potyka, N., Tran, T.-K., Nayyeri, M., & Staab, S. (2022). Faithful Embeddings for ℰℒ⁺⁺ Knowledge Bases. In: The Semantic Web — ISWC 2022. LNCS 13489, pp. 22–38. Springer. <https://doi.org/10.1007/978-3-031-19433-7_2>
+* **Box²EL** — Jackermeier, M., Chen, J., & Horrocks, I. (2024). Dual Box Embeddings for the Description Logic ℰℒ⁺⁺. In: Proceedings of the ACM Web Conference 2024 (WWW '24), pp. 2250–2258. <https://doi.org/10.1145/3589334.3645648>
+* **HiT** — He, Y., Yuan, Z., Chen, J., & Horrocks, I. (2024). Language Models as Hierarchy Encoders. In: Advances in Neural Information Processing Systems 37 (NeurIPS 2024). <https://arxiv.org/abs/2401.11374>
+* **OnT** — Yang, H., Chen, J., He, Y., Gao, Y., & Horrocks, I. (2025). Language Models as Ontology Encoders. arXiv:2507.14334. <https://arxiv.org/abs/2507.14334>
+
 ---
 
 *OAEI Bio-ML 2026 (first edition). Track repository: <https://github.com/liseda-lab/OAEI-Bio-ML>.*
