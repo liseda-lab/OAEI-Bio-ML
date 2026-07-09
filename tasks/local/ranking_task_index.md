@@ -1,6 +1,4 @@
-# Subtrack 2 — Local Equivalence Ranking
-
-_The candidate-ranking setting of Bio-ML 2026 (Track 1 — Equivalence)._
+# Local Equivalence Ranking
 
 For each **query** — one source entity — you are given a fixed **pool of 100 candidate target entities** (full OWL IRIs) drawn from the target ontology. Your system re-orders that pool so that the true equivalent target appears as early as possible. Participants do **not** generate candidates; they rank the ones we provide.
 
@@ -16,11 +14,11 @@ The score is **macro-averaged** across the three pairs (each pair weighted equal
 
 ## The candidate pools
 
-Each pair's pools live in `local.test.cands.tsv` inside the [`OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml) dataset. Every query pins **100 candidates** — the (hidden) gold target plus hard negatives sampled from the target ontology's signature. The public file is **gold-stripped**: it carries only the source entity and its candidate pool, never the answer. Candidates are **full OWL IRIs** (e.g. `http://purl.obolibrary.org/obo/DOID_1612`), consistent with the rest of Track 1.
+Each pair's pools live in `local.test.cands.tsv` inside the [`OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml) dataset. Every query pins **100 candidates** — the (hidden) gold target plus hard negatives sampled from the target ontology's signature. The public file is **gold-stripped**: it carries only the source entity and its candidate pool, never the answer. Candidates are **full OWL IRIs** (e.g. `http://purl.obolibrary.org/obo/DOID_1612`), consistent with the rest of the Track.
 
 ## A semi-supervised setting
 
-The public equivalence correspondences (`refs_equiv/train.tsv`) and the gold-bearing local pools (`local.train.cands.tsv`, `local.valid.cands.tsv`) may be used as (distant) supervision for building or tuning a ranker. The **test pools are gold-stripped and scored organiser-side**: you validate your ranking's format, submit it, and the organisers score it against the hidden gold. Because a per-pair gold target exists for every query, there is **no NIL / abstention candidate** in Bio-ML 2026 — every query has exactly one correct target somewhere in its pool.
+The public equivalence correspondences (`refs_equiv/train.tsv`) and the gold-bearing local pools (`local.train.cands.tsv`, `local.valid.cands.tsv`) may be used as supervision for building or tuning a ranker. The **test pools are gold-stripped and scored organiser-side**: you validate your ranking's format, submit it, and the organisers score it against the hidden gold. Every query has exactly one correct target somewhere in its pool.
 
 ## Metrics
 

@@ -1,6 +1,6 @@
 # OAEI Bio-ML — Biomedical Ontology Matching
 
-OAEI Bio-ML is an [OAEI](https://oaei.ontologymatching.org/) ontology-matching track over **whole biomedical ontologies** — a *larger LargeBio* [8]. It evaluates equivalence and subsumption matching across three pairs — **NCIT–DOID**, **SNOMED–FMA**, and **SNOMED–NCIT** (the NCI Thesaurus [11], the Human Disease Ontology [12], SNOMED CT [14], and the Foundational Model of Anatomy [13]) — with references grounded in curated biomedical knowledge (UMLS [9] / Mondo [10]) and repaired for logical coherence.
+OAEI Bio-ML is an [OAEI](https://oaei.ontologymatching.org/) ontology-matching track over **whole biomedical ontologies** — *(with roots in/based on LargeBio)* [8]. It evaluates equivalence ~~and subsumption~~ matching across three pairs — **NCIT–DOID**, **SNOMED–FMA**, and **SNOMED–NCIT** (the NCI Thesaurus [11], the Human Disease Ontology [12], SNOMED CT [14], and the Foundational Model of Anatomy [13]) — with references grounded in curated biomedical knowledge (UMLS [9] / Mondo [10]) and repaired for logical coherence.
 
 ## Tracks
 
@@ -22,7 +22,7 @@ By design, **Track 1 uses full OWL IRIs**. Public local-ranking candidate files 
 
 ## Data
 
-The 2026 datasets are **publicly available** on the Hugging Face Hub as [`OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml) (edition tag `2026`) — the task data is entity IRIs/CURIEs and downloads without gating. The Hugging Face dataset is **data only**; the self-contained `scoring_kit/` (validators + self-scorers) ships separately with the [track repository](https://github.com/liseda-lab/OAEI-Bio-ML). The licence-restricted **source ontologies** (SNOMED CT [14], UMLS [9]) are **not re-hosted** — see [ontologies](./ontologies/ontologies.md) for where to obtain each and under which licence. The [quickstart](./quickstart.md) walks through cloning the scoring kit, downloading the data, and validating and self-scoring a submission.
+The 2026 datasets are **publicly available** on the Hugging Face Hub as [`OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml) (edition tag `2026`) — the task data is entity IRIs and downloads without gating. The Hugging Face dataset is **data only**; the self-contained `scoring_kit/` (validators + self-scorers) ships separately with the [track repository](https://github.com/liseda-lab/OAEI-Bio-ML). The licence-restricted **source ontologies** (SNOMED CT [14], UMLS [9]) are **not re-hosted** — see [ontologies](./ontologies/ontologies.md) for where to obtain each and under which licence. The [quickstart](./quickstart.md) walks through cloning the scoring kit, downloading the data, and validating and self-scoring a submission.
 
 ## Baselines & results
 

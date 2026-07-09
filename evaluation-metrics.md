@@ -2,7 +2,7 @@
 
 This page summarises how OAEI Bio-ML submissions are scored, per track. A full description appears in the supplementary material (available at track launch).
 
-## Track 1 · Subtrack 1 — Global equivalence alignment
+## Subtrack 1 — Global equivalence alignment
 
 Each submission is a full alignment per pair (full OWL IRIs). It is scored with **precision, recall and F1** against **two references**:
 
@@ -19,7 +19,7 @@ $$
 
 **Global Coherence.** Alongside P/R/F1 we report a reasoner-checked coherence measure — the degree of logical incoherence induced by the submitted alignment on the merged ontologies (0 = coherent). Because it needs a description-logic reasoner, coherence is computed **organiser-side**, not in the participant scoring kit.
 
-## Track 1 · Subtrack 2 — Local equivalence ranking
+## Subtrack 2 — Local equivalence ranking
 
 For each source entity, the system ranks a fixed candidate pool best-first. Writing $\mathrm{rank}(q)$ for the 1-based position of the correct target in query $q$'s ranking, over the query set $Q$:
 

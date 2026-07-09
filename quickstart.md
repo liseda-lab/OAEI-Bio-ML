@@ -32,7 +32,7 @@ Run the self-check against your downloaded data before you do anything else — 
 python3 scoring_kit/self_check.py --data ./bio-ml
 ```
 
-## 3. Track 1 · Subtrack 1 — Global equivalence alignment
+## 3. Subtrack 1 — Global equivalence alignment
 
 For each pair, produce one alignment file using **full OWL IRIs**. The setting is **semi-supervised**: `refs_equiv/train.tsv` is public for tuning, but the test reference is hidden and scored organiser-side (there is no public global scorer). Validate the structure locally before submitting:
 
@@ -40,9 +40,9 @@ For each pair, produce one alignment file using **full OWL IRIs**. The setting i
 python3 scoring_kit/validate_global.py my-ncit-doid.rdf
 ```
 
-Submissions are scored against both references: the **repaired, coherence-aware** reference (headline) and the standard reference, plus reasoner-checked Global Coherence. The two references are not directly comparable — see [evaluation metrics](./evaluation-metrics.md).
+Submissions are scored against the **repaired, coherence-aware** reference, plus reasoner-checked Global Coherence - see [evaluation metrics](./evaluation-metrics.md).
 
-## 4. Track 1 · Subtrack 2 — Local equivalence ranking
+## 4. Subtrack 2 — Local equivalence ranking
 
 For each pair, read the gold-stripped candidate pools in `bio-ml/<PAIR>/local.test.cands.tsv` and emit a ranking of each query's candidates, best-first. Validate the format against the pool, then self-score on the gold-bearing validation pool (`local.valid.cands.tsv`, whose `TgtEntity` column is the gold — usable directly):
 
@@ -57,7 +57,7 @@ Local ranking is scored with **MRR** and **Hits@{1,5,10}**, macro-averaged over 
 
 The evaluation window runs from 12 July to 1 September 2026 (00:00 Anywhere on Earth). Each scored subtrack has its own CodaBench competition:
 
-* Track 1 · Subtrack 1 — Global equivalence alignment — **[open on CodaBench](https://www.codabench.org/competitions/17424/)**,
-* Track 1 · Subtrack 2 — Local equivalence ranking — **[open on CodaBench](https://www.codabench.org/competitions/17423/)**.
+* Subtrack 1 — Global equivalence alignment — **[open on CodaBench](https://www.codabench.org/competitions/17424/)**,
+* Subtrack 2 — Local equivalence ranking — **[open on CodaBench](https://www.codabench.org/competitions/17423/)**.
 
 Register on the relevant competition, then upload your submission as described on its Overview page. Results are published as *provisional* to the leaderboard; organisers verify, reproduce where possible, and mark accepted results alongside the organiser-run [baselines](./BASELINES.md).

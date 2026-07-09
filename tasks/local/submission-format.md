@@ -1,8 +1,8 @@
 # Subtrack 2 — Local Ranking: Submission Format
 
-For each query in a pair's `local.test.cands.tsv`, your system submits one **ranking of that query's 100 candidates**, best-first. See the [Subtrack 2 task description](./ranking_task_index.md) for the setting and metrics.
+For each query in a pair's `local.test.cands.tsv`, your system submits one **ranking of that query's 100 candidates**, best-first. See the [task description](./ranking_task_index.md) for the setting and metrics.
 
-Candidates are **full OWL IRIs** (Track 1 serialisation). The scorer aligns submissions to pools by the source entity, and every candidate in a query's pool must appear exactly once in your ranking (the validator rejects a ranking that is not a permutation of the pool).
+The scorer aligns submissions to pools by the source entity, and every candidate in a query's pool must appear exactly once in your ranking (the validator rejects a ranking that is not a permutation of the pool).
 
 ## Two accepted TSV encodings
 

@@ -4,11 +4,11 @@ These are the organiser-run baseline systems, published before the competition; 
 
 All baseline scores are **macro-averaged over the three pairs** (NCIT–DOID, SNOMED–FMA, SNOMED–NCIT).
 
-## Track 1 · Subtrack 1 — Global equivalence alignment
+## Subtrack 1 — Global equivalence alignment
 
 Scored with **repaired, coherence-aware P/R/F1** (headline). Baseline systems include a naive lexical matcher, LogMap and LogMapLt, AML, and the BERTMap family. See the [baselines page](https://liseda-lab.github.io/OAEI-Bio-ML/baselines/) for the full table and the [evaluation metrics](./evaluation-metrics.md) for the standard-vs-repaired distinction (the two references are **not directly comparable**).
 
-## Track 1 · Subtrack 2 — Local equivalence ranking
+## Subtrack 2 — Local equivalence ranking
 
 Scored with **MRR** and **Hits@{1,5,10}**. Baseline systems include a naive lexical baseline, SapBERT, and the BERTMap family (BERTMap, BERTMapLt, BERTMap-ss). Because the references are lexically clean, the naive string baseline is a strong reference point.
 
