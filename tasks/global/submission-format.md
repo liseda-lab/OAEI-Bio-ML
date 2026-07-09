@@ -1,6 +1,6 @@
-# Subtrack 1 — Global Alignment: Submission Format
+# Global Alignment: Submission Format
 
-Subtrack 1 of Track 1 is a whole-ontology equivalence alignment over the three Bio-ML 2026 pairs:
+Subtrack 1 is a whole-ontology equivalence alignment over the three Bio-ML 2026 pairs:
 
 * `NCIT-DOID`
 * `SNOMED-FMA`
@@ -10,14 +10,14 @@ For each pair you submit **one complete alignment** in the [OAEI Alignment RDF f
 
 ## File format
 
-Root is `rdf:RDF`. The default namespace (`xmlns=`) is the OAEI Alignment namespace **without a trailing `#`**: `http://knowledgeweb.semanticweb.org/heterogeneity/alignment`. Exactly one `<Alignment>` with a header (`<xml>yes</xml>`, `<level>0</level>`, `<type>??</type>`, and `<onto1>` / `<onto2>` URIs). Each correspondence is a `<map>` wrapping one `<Cell>`:
+Root is `rdf:RDF`. The default namespace (`xmlns=`) is the OAEI Alignment namespace: `http://knowledgeweb.semanticweb.org/heterogeneity/alignment`. Exactly one `<Alignment>` with a header (`<xml>yes</xml>`, `<level>0</level>`, `<type>??</type>`, and `<onto1>` / `<onto2>` URIs). Each correspondence is a `<map>` wrapping one `<Cell>`:
 
   - `<entity1 rdf:resource="IRI"/>` — the source ontology entity's **full OWL IRI**,
   - `<entity2 rdf:resource="IRI"/>` — the target ontology entity's **full OWL IRI**,
-  - `<relation>=</relation>` — equivalence (Subtrack 1 evaluates equivalence),
+  - `<relation>=</relation>` — equivalence,
   - `<measure rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.0</measure>` — confidence in `[0, 1]`.
 
-Submit one file per pair. Entity IRIs MUST be absolute — this track uses full OWL IRIs. Orientation matters: `<entity1>` must come from `onto1` (source) and `<entity2>` from `onto2` (target); a reversed cell can never match the reference. The order of `<map>` elements is irrelevant. Submit a full alignment over the two ontologies; the organisers score the portion that lands on the hidden test entities.
+Submit one file per pair. Entity IRIs MUST be absolute. The order of `<map>` elements is irrelevant. Submit a full alignment over the two ontologies; the organisers score the portion that lands on the hidden test entities.
 
 ## Worked example (illustrative)
 
