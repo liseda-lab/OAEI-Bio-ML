@@ -18,8 +18,9 @@
  *     IRI/CURIE. Neural half embeds the label text; symbolic half is the
  *     ontology structure shown in the geometric + hyperbolic scenes.
  *   - Interaction: auto-cycles correspondences (click to advance) →
- *     "neurosymbolic" pill → Euclidean box/ball scenes → hidden Poincaré icon →
- *     hyperbolic mode. Concept exploration works by hover AND keyboard focus;
+ *     "neurosymbolic" pill → Euclidean box/ball scenes (each box motion-trains
+ *     from a scattered init into its converged position on every reveal) →
+ *     hidden Poincaré icon → hyperbolic mode. Concept exploration works by hover AND keyboard focus;
  *     the correspondences also have a visually-hidden text alternative.
  *   - Styles are `is:global` (the script injects SVG via innerHTML, which
  *     scoped styles can't reach); everything is prefixed `omh`. The hover/focus
@@ -156,6 +157,14 @@ import '@fontsource/source-serif-4/600.css';
 .omh-hyp-fore.has-hov .h-nd.is-dim .h-lbl{fill:rgba(232,237,245,.45)}
 .omh-hyp-fore .h-hit{outline:none}
 .omh-hyp-fore .h-hit:focus-visible{stroke:oklch(0.8 0.13 190);stroke-width:2;fill:oklch(0.8 0.13 190 / 0.12)}
+/* box-embedding training: from a scattered init (--dx/--dy per box) each box
+   descends to its converged position, overshooting ~5% before settling — the
+   slight ring past the minimum is what sells "loss being minimised". */
+@keyframes omhConverge{
+  0%{transform:translate(var(--dx),var(--dy))}
+  72%{transform:translate(calc(var(--dx) * -0.055),calc(var(--dy) * -0.055))}
+  100%{transform:none}
+}
 @keyframes omhSlideL{from{opacity:0;transform:translateX(-46px)}to{opacity:1;transform:none}}
 @keyframes omhSlideR{from{opacity:0;transform:translateX(46px)}to{opacity:1;transform:none}}
 @keyframes omhPopIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
@@ -253,29 +262,36 @@ import '@fontsource/source-serif-4/600.css';
     function renderGeo() {
       const cell = (cx, cy, kind, delay) => {
         const g = `animation:omhFadeIn .5s ${delay}s both`;
+        // each box trains from its --dx/--dy init to the converged position;
+        // labels name the relation only after the geometry has settled
+        const mv = (dx, dy) => `style="--dx:${dx}px;--dy:${dy}px;animation:omhConverge 1.3s ${delay + 0.1}s cubic-bezier(.3,.7,.3,1) both"`;
+        const late = `animation:omhFadeIn .5s ${delay + 1.05}s both`;
         let cfg, col, glyph, word, formula;
         if (kind === 'eq') {
           col = EQ; glyph = '≡'; word = 'equivalence'; formula = 'Box(A) = Box(B)';
-          cfg = `<rect x="${cx - 52}" y="${cy - 40}" width="96" height="58" rx="7" fill="oklch(0.8 0.13 190 / 0.10)" stroke="${EQ}" stroke-width="1.2"/>`
-              + `<rect x="${cx - 45}" y="${cy - 33}" width="96" height="58" rx="7" fill="none" stroke="${EQ}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+          cfg = `<rect ${mv(-46, -24)} x="${cx - 52}" y="${cy - 40}" width="96" height="58" rx="7" fill="oklch(0.8 0.13 190 / 0.10)" stroke="${EQ}" stroke-width="1.2"/>`
+              + `<rect ${mv(48, 28)} x="${cx - 45}" y="${cy - 33}" width="96" height="58" rx="7" fill="none" stroke="${EQ}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
         } else if (kind === 'sub') {
           col = SUB; glyph = '⊑'; word = 'subsumption'; formula = 'Box(A) ⊆ Box(B)';
-          cfg = `<rect x="${cx - 56}" y="${cy - 42}" width="112" height="66" rx="8" fill="oklch(0.82 0.13 85 / 0.06)" stroke="${SUB}" stroke-width="1.2"/>`
-              + `<rect x="${cx - 24}" y="${cy - 20}" width="46" height="30" rx="5" fill="oklch(0.82 0.13 85 / 0.16)" stroke="${SUB}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+          cfg = `<rect ${mv(-40, -16)} x="${cx - 56}" y="${cy - 42}" width="112" height="66" rx="8" fill="oklch(0.82 0.13 85 / 0.06)" stroke="${SUB}" stroke-width="1.2"/>`
+              + `<rect ${mv(54, 30)} x="${cx - 24}" y="${cy - 20}" width="46" height="30" rx="5" fill="oklch(0.82 0.13 85 / 0.16)" stroke="${SUB}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
         } else if (kind === 'ovl') {
           col = MUT; glyph = '∩'; word = 'overlaps'; formula = 'A ⊓ B ≠ ⊥';
-          cfg = `<rect x="${cx - 56}" y="${cy - 38}" width="74" height="54" rx="7" fill="${MUTF}" stroke="${MUT}" stroke-width="1.2"/>`
-              + `<rect x="${cx - 18}" y="${cy - 38}" width="74" height="54" rx="7" fill="none" stroke="${MUT}" stroke-width="1.2" stroke-dasharray="4 3"/>`
-              + `<rect x="${cx - 18}" y="${cy - 38}" width="36" height="54" fill="${MUTF}"/>`;
+          // the ⊓ highlight only exists once both boxes have converged
+          cfg = `<rect ${mv(-42, 22)} x="${cx - 56}" y="${cy - 38}" width="74" height="54" rx="7" fill="${MUTF}" stroke="${MUT}" stroke-width="1.2"/>`
+              + `<rect ${mv(44, -24)} x="${cx - 18}" y="${cy - 38}" width="74" height="54" rx="7" fill="none" stroke="${MUT}" stroke-width="1.2" stroke-dasharray="4 3"/>`
+              + `<rect style="${late}" x="${cx - 18}" y="${cy - 38}" width="36" height="54" fill="${MUTF}"/>`;
         } else {
           col = DIS; glyph = '⊥'; word = 'disjoint'; formula = 'A ⊓ B ⊑ ⊥';
-          cfg = `<rect x="${cx - 58}" y="${cy - 38}" width="48" height="54" rx="7" fill="${DISF}" stroke="${DIS}" stroke-width="1.2"/>`
-              + `<rect x="${cx + 10}" y="${cy - 38}" width="48" height="54" rx="7" fill="none" stroke="${DIS}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+          // disjointness trains by repulsion: both boxes init coincident, the loss pushes them apart
+          cfg = `<rect ${mv(34, -8)} x="${cx - 58}" y="${cy - 38}" width="48" height="54" rx="7" fill="${DISF}" stroke="${DIS}" stroke-width="1.2"/>`
+              + `<rect ${mv(-34, 8)} x="${cx + 10}" y="${cy - 38}" width="48" height="54" rx="7" fill="none" stroke="${DIS}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
         }
         return `<g style="${g}">` + cfg
+          + `<g style="${late}">`
           + svgText(cx, cy + 42, 'middle', `font:600 13px ${MONO};fill:${col}`, `${glyph}  ${word}`, true)
           + svgText(cx, cy + 58, 'middle', `font:400 10px ${MONO};fill:rgba(232,237,245,0.5)`, formula, true)
-          + `</g>`;
+          + `</g></g>`;
       };
       const frame =
         `<rect x="248" y="46" width="584" height="326" rx="12" fill="rgba(210,224,240,0.02)" stroke="rgba(210,224,240,0.16)"/>` +
@@ -415,14 +431,19 @@ import '@fontsource/source-serif-4/600.css';
       S.pair = (S.pair + 1) % PAIRS.length;
       renderPair();
     });
+    // re-rendering the geo scene restarts its CSS animations, so the boxes
+    // re-train from init every time the scene is revealed (it is rendered
+    // hidden at load, where the animations would otherwise play unseen)
     elPill.addEventListener('click', (e) => {
       e.stopPropagation();
       S.neuro = !S.neuro; S.hyper = false; setHov(null);
+      if (S.neuro) renderGeo();
       renderChrome();
     });
     elHypBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       S.hyper = !S.hyper; setHov(null);
+      if (!S.hyper) renderGeo();
       renderChrome();
     });
     elHypF.addEventListener('mouseover', (e) => { const t = e.target.closest('[data-hid]'); if (t) setHov(t.getAttribute('data-hid')); });
