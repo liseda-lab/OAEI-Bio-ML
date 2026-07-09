@@ -1,0 +1,11 @@
+---
+import DocPage from '../../../layouts/DocPage.astro';
+---
+
+<DocPage
+  id="tasks/typed/submission-format"
+  title="Track 2 — Submission Format"
+  description="The TSV submission format for Track 2 typed ranking: score all 300 (source, candidate, relation) hypotheses per query with CURIEs, validated by validate_typed.py and scored by score_typed.py."
+  lead="Score every typed hypothesis: 300 rows per query (100 candidates × 3 relations), CURIEs, one Score column — validated with validate_typed.py, scored with score_typed.py."
+  crumbs={[{ href: '/tasks/', label: 'Tasks' }, { href: '/tasks/typed/', label: 'Typed Ranking' }, { label: 'Submission Format' }]}
+/>

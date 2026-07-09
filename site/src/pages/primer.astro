@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import { withBase } from '../config';
+
+// The interactive primer (three hands-on biomedical demos) is being reworked and
+// is temporarily presented as a "coming soon" page. The full previous version is
+// preserved outside the site tree; drop it back in here when it is ready.
+---
+
+<Base
+  title="New to ontology matching? — Primer (coming soon)"
+  description="An interactive primer on biomedical ontology matching and the three OAEI Bio-ML tasks is coming soon."
+>
+  <div class="page-head">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href={withBase('/')}>Home</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Primer</span>
+      </nav>
+      <h1>A primer on biomedical ontology matching</h1>
+      <p class="lead">
+        A gentle, interactive introduction to what OAEI Bio-ML asks systems to do — with hands-on toy
+        examples for all three tasks — is on the way.
+      </p>
+    </div>
+  </div>
+
+  <section class="section" style="border-top:none;" aria-labelledby="soon-h">
+    <div class="container">
+      <div class="prose">
+        <p class="kicker">Coming soon</p>
+        <h2 id="soon-h" style="border-top:none; padding-top:0; margin-top:0;">This primer is being prepared</h2>
+        <p>
+          We're building an interactive walkthrough that lets you try each OAEI Bio-ML task by hand on
+          toy biomedical examples — proposing a small equivalence alignment and ranking a candidate
+          pool. It will land here shortly.
+        </p>
+        <p>In the meantime, you can dive straight into the details:</p>
+        <ul>
+          <li><a href={withBase('/tasks/')}>The tasks</a> — what each competition asks you to submit.</li>
+          <li><a href={withBase('/quickstart/')}>Quickstart</a> — download the data, run the scoring kit, and submit.</li>
+          <li><a href={withBase('/evaluation/')}>Evaluation metrics</a> — how submissions are scored.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>

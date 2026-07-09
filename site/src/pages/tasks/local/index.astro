@@ -1,0 +1,11 @@
+---
+import DocPage from '../../../layouts/DocPage.astro';
+---
+
+<DocPage
+  id="tasks/local/ranking_task_index"
+  title="Subtrack 2 — Local Equivalence Ranking"
+  description="Rank each query's fixed 100-candidate pool best-first, using full OWL IRIs; scored organiser-side with MRR and Hits@{1,5,10}, macro-averaged over three pairs."
+  lead="Track 1's ranking setting: re-order each query's 100-candidate pool so the true equivalent target ranks first. Scored with MRR and Hits@{1,5,10}."
+  crumbs={[{ href: '/tasks/', label: 'Tasks' }, { label: 'Local Ranking' }]}
+/>

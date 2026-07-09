@@ -1,0 +1,11 @@
+---
+import DocPage from '../../../layouts/DocPage.astro';
+---
+
+<DocPage
+  id="tasks/typed/typed_task_index"
+  title="Track 2 — Typed Ranking"
+  description="Score all 300 typed hypotheses per query (100 candidates × 3 relations) using CURIEs; scored organiser-side with Preferred Typed-MRR and Hierarchy-aware Typed-nDCG@10."
+  lead="Mixed equivalence + subsumption: for each query, score 300 typed hypotheses (100 candidates × equivalent / source_subsumed_by_target / source_subsumes_target). Scored with Preferred Typed-MRR and Hierarchy-aware Typed-nDCG@10."
+  crumbs={[{ href: '/tasks/', label: 'Tasks' }, { label: 'Typed Ranking' }]}
+/>

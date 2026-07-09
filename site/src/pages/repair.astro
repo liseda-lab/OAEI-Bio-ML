@@ -1,0 +1,131 @@
+---
+import Base from '../layouts/Base.astro';
+import { withBase } from '../config';
+---
+
+<Base
+  title="Reference & repair"
+  description="How the OAEI Bio-ML global reference is built: a UMLS/Mondo gold reference can be logically incoherent, so it is repaired with a union-of-removed of ALCOMO, LogMap and AML under Option-Two annotation. The headline global reference is the repaired, coherence-aware one."
+>
+  <div class="page-head">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href={withBase('/')}>Home</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Reference &amp; repair</span>
+      </nav>
+      <h1>The reference &amp; how it is repaired</h1>
+      <p class="lead">
+        The global task (Track&nbsp;1 · Subtrack&nbsp;1) scores your alignment against a gold reference.
+        Because that reference is derived from UMLS and Mondo, it can be <em>logically incoherent</em> —
+        so we repair it. This page explains the idea; the
+        <a href={withBase('/evaluation/')}>evaluation metrics</a> page has the formal definitions.
+      </p>
+    </div>
+  </div>
+
+  <section class="section" style="border-top:none;" aria-labelledby="why-h">
+    <div class="container">
+      <div class="prose">
+        <h2 id="why-h" style="border-top:none; padding-top:0; margin-top:0;">Why a gold reference needs repairing</h2>
+        <p>
+          The reference equivalence mappings are assembled from the <strong>UMLS Metathesaurus</strong> and
+          <strong>Mondo</strong>. Each source is reasonable on its own, but merging them can create
+          <strong>logical incoherence</strong>: taken together with the two ontologies' own axioms, some
+          reference mappings imply that a class must be both something and its own disjoint opposite — an
+          <em>unsatisfiable</em> class. A system that reproduced such an "incoherent" reference exactly would
+          be rewarded for producing a logically broken alignment. So before scoring, the reference is
+          <strong>repaired</strong> into a coherent one.
+        </p>
+
+        <h2>The repair: a union of what three repair tools remove</h2>
+        <p>
+          Rather than trust any single repair tool, we take the <strong>union of the mappings removed</strong>
+          by three independent, well-established systems run over the reference:
+        </p>
+        <ul>
+          <li><strong>ALCOMO</strong> (under the ELK reasoner) — a dedicated alignment-debugging tool;</li>
+          <li><strong>LogMap</strong> (its repair/DEBUG mode) — which can also <em>weaken</em> a mapping's relation rather than delete it;</li>
+          <li><strong>AML</strong> (AgreementMakerLight) — a structural repair.</li>
+        </ul>
+        <p>
+          A mapping is treated as problematic if <em>any</em> of the three removed it. This union is deliberately
+          conservative: it errs toward flagging a mapping rather than silently keeping an incoherent one.
+        </p>
+
+        <h2>Option-Two annotation: keep, weaken, or set aside</h2>
+        <p>
+          We do not simply delete flagged mappings — that would throw away information. Instead, each reference
+          mapping is annotated (“Option-Two”):
+        </p>
+      </div>
+
+      <div class="repair-diagram" role="img"
+           aria-label="A possibly-incoherent reference is repaired into a usable one: surviving mappings keep their equivalence or subsumption relation; fully-removed mappings become unknown (question-mark) and are ignored during scoring.">
+        <div class="repair-box bad">
+          <h4>Standard reference</h4>
+          <p style="margin:0;color:var(--ink-2);font-size:0.92rem;">
+            Complete, but possibly <strong>incoherent</strong>. Every mapping is present as
+            <code>=</code>. Scored with traditional precision / recall / F1.
+          </p>
+          <div class="repair-legend" style="margin-top:0.8rem;">
+            <span><span class="k rel-eq" style="padding:.1rem .4rem;border-radius:4px;">=</span> equivalence</span>
+          </div>
+        </div>
+        <div class="repair-arrow" aria-hidden="true">→</div>
+        <div class="repair-box good">
+          <h4>Repaired reference <span class="badge badge-accent" style="vertical-align:middle;">headline</span></h4>
+          <p style="margin:0;color:var(--ink-2);font-size:0.92rem;">
+            Coherence-aware. Survivors keep their relation; fully-removed mappings become
+            <code>?</code> and are <strong>ignored</strong> from scoring.
+          </p>
+          <div class="repair-legend" style="margin-top:0.8rem;">
+            <span><span class="k rel-eq" style="padding:.1rem .4rem;border-radius:4px;">=</span> kept equivalence</span>
+            <span><span class="k rel-sub" style="padding:.1rem .4rem;border-radius:4px;">&lt; &gt;</span> weakened to subsumption</span>
+            <span><span class="k" style="padding:.1rem .4rem;border-radius:4px;background:var(--bg-sunken);">?</span> removed → ignored</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <ul>
+          <li><strong>Survivors keep their relation.</strong> A mapping no tool removed stays as
+            <code>=</code>; where LogMap <em>weakened</em> a mapping, the reference keeps that weaker
+            <code>&lt;</code> / <code>&gt;</code> (subsumption takes priority over deletion).</li>
+          <li><strong>Fully-removed mappings become <code>?</code></strong> (“unknown”). They are neither
+            correct nor incorrect — they are simply set aside during scoring.</li>
+          <li><strong><code>owl:deprecated</code> classes are dropped</strong> from both the reference and
+            predictions as out-of-task.</li>
+        </ul>
+
+        <h2>What this means for scoring</h2>
+        <p>
+          Systems are scored against <strong>both</strong> references:
+        </p>
+        <ul>
+          <li>Against the <strong>standard</strong> reference — traditional P/R/F1 (every mapping counts).</li>
+          <li>Against the <strong>repaired</strong> reference — <strong>coherence-aware</strong> and
+            <strong>relation-agnostic</strong>: <code>?</code> mappings are ignored from both the precision and
+            recall denominators, and a reference <code>&lt;</code>/<code>&gt;</code> is credited by a predicted
+            correspondence of <em>any</em> relation.</li>
+        </ul>
+        <p>
+          The <strong>repaired, coherence-aware F1 is the headline</strong> for the global leaderboard,
+          reported with a reasoner-checked <strong>Global Coherence</strong> score (does your <em>own</em>
+          alignment leave the merged ontology satisfiable?). See the
+          <a href={withBase('/evaluation/')}>evaluation metrics</a> and the
+          <a href={withBase('/baselines/')}>baselines</a> for the numbers — including the
+          <a href={withBase('/baselines/#reference-coherence')}>coherence of the reference before and after
+          repair</a>.
+        </p>
+
+        <div class="notice">
+          <span aria-hidden="true">ℹ</span>
+          <span>
+            The repaired references are built by a consensus of the three tools per pair. Global Coherence is
+            computed <strong>organiser-side</strong> (it needs an OWL reasoner, which does not run in the
+            lightweight submission container), so the coherence column is filled in after the offline pass.
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

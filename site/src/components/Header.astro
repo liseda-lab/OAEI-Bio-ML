@@ -1,0 +1,105 @@
+---
+import { withBase } from '../config';
+import BiomlLogo from './BiomlLogo.astro';
+
+interface Props {
+  pathname: string;
+}
+const { pathname } = Astro.props;
+
+const base = withBase('');
+const norm = (p: string) => (p.endsWith('/') ? p : p + '/');
+const rel = base && pathname.startsWith(base) ? pathname.slice(base.length) || '/' : pathname;
+const here = norm(rel);
+
+// Task-first top nav; the deeper docs live under a "Learn" menu.
+const primary = [
+  { href: '/tasks/', label: 'Tasks', pre: '/tasks/' },
+  { href: '/ontologies/', label: 'Ontologies' },
+  { href: '/baselines/', label: 'Baselines', pre: '/baselines/' },
+  { href: '/results/', label: 'Results' },
+];
+const learn = [
+  { href: '/quickstart/', label: 'Quickstart' },
+  { href: '/primer/', label: 'New to ontology matching?' },
+  { href: '/evaluation/', label: 'Evaluation metrics' },
+  { href: '/repair/', label: 'Reference & repair' },
+];
+const isCurrent = (item: { href: string; pre?: string }) =>
+  item.pre ? here.startsWith(item.pre) : here === item.href;
+const learnActive = learn.some((l) => here === l.href);
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a class="brand" href={withBase('/')} aria-label="OAEI Bio-ML — home">
+      <BiomlLogo variant="mark" class="logo" title="OAEI Bio-ML" />
+      OAEI Bio-ML
+      <span class="edition">2026</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        {primary.map((it) => (
+          <li>
+            <a href={withBase(it.href)} aria-current={isCurrent(it) ? 'page' : undefined}>{it.label}</a>
+          </li>
+        ))}
+        <li class="has-menu">
+          <button type="button" class="navtrigger" aria-expanded="false" aria-haspopup="true"
+                  aria-current={learnActive ? 'true' : undefined}>Docs</button>
+          <div class="menu" role="menu">
+            {learn.map((l) => (
+              <a href={withBase(l.href)} role="menuitem" aria-current={here === l.href ? 'page' : undefined}>{l.label}</a>
+            ))}
+          </div>
+        </li>
+        <li>
+          <a href={withBase('/about/')} aria-current={here === '/about/' ? 'page' : undefined}>About</a>
+        </li>
+      </ul>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Switch colour theme">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.4" />
+        <path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7" />
+      </svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M20.4 14.4A8.5 8.5 0 0 1 9.6 3.6a8.5 8.5 0 1 0 10.8 10.8Z" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<script>
+  // Theme toggle
+  const btn = document.querySelector<HTMLButtonElement>('.theme-toggle');
+  btn?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const system = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const active = root.dataset.theme ?? system;
+    const next = active === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch {}
+  });
+
+  // "Learn" dropdown: click-to-toggle (CSS handles hover/focus-within too)
+  document.querySelectorAll<HTMLElement>('.has-menu').forEach((menu) => {
+    const trigger = menu.querySelector<HTMLButtonElement>('.navtrigger');
+    trigger?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = menu.classList.toggle('open');
+      trigger.setAttribute('aria-expanded', String(open));
+    });
+    menu.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { menu.classList.remove('open'); trigger?.setAttribute('aria-expanded', 'false'); trigger?.focus(); }
+    });
+  });
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll<HTMLElement>('.has-menu.open').forEach((menu) => {
+      if (!menu.contains(e.target as HTMLElement)) {
+        menu.classList.remove('open');
+        menu.querySelector('.navtrigger')?.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+</script>

@@ -1,0 +1,209 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import { withBase } from '../../config';
+import Base from '../../layouts/Base.astro';
+
+// The page is generated from leaderboard.json (the machine-readable results
+// file at the repo root) at build time — tables can never drift from the data.
+// ROOT is derived from the working directory (always site/ under npm scripts):
+// import.meta.url would point at the compiled chunk during `astro build`, so a
+// source-relative path breaks for pages nested below src/pages/.
+const ROOT = path.resolve(process.cwd(), '..');
+const lb = JSON.parse(fs.readFileSync(path.join(ROOT, 'leaderboard.json'), 'utf8'));
+const refCoh = JSON.parse(fs.readFileSync(path.join(ROOT, 'reference_coherence.json'), 'utf8'));
+
+// Coherence-table cell formatters. `null` counts/degrees render as an em dash;
+// ELK lower bounds carry a dagger keyed to the footnote below the table.
+const unsatCell = (n: number | null, lb2: boolean) =>
+  n == null ? '—' : n.toLocaleString('en-GB') + (lb2 ? '†' : '');
+const degCell = (d: number | null) => (d == null ? '—' : d === 0 ? '0%' : `${d}%`);
+
+type Sys = { system: string } & Record<string, number>;
+type Board = { headline: string; systems: Sys[] };
+type Col = { k: string; l: string };
+type Section = { key: 'global' | 'local'; kicker: string; title: string; cols: Col[] };
+
+const f3 = (x: number) => (typeof x === 'number' ? x.toFixed(3) : '—');
+
+// Each section's first metric column is its headline (matches lb[key].headline).
+const sections: Section[] = [
+  {
+    key: 'global',
+    kicker: 'Track 1 · Subtrack 1 — global equivalence alignment',
+    title: 'Repaired coherence-aware P/R/F1',
+    cols: [
+      { k: 'f1_repaired', l: 'F1 (repaired)' },
+      { k: 'precision_repaired', l: 'P (repaired)' },
+      { k: 'recall_repaired', l: 'R (repaired)' },
+    ],
+  },
+  {
+    key: 'local',
+    kicker: 'Track 1 · Subtrack 2 — local equivalence ranking',
+    title: 'MRR and Hits@k',
+    cols: [
+      { k: 'mrr', l: 'MRR' },
+      { k: 'hits_at_1', l: 'Hits@1' },
+      { k: 'hits_at_5', l: 'Hits@5' },
+      { k: 'hits_at_10', l: 'Hits@10' },
+    ],
+  },
+];
+
+const boardOf = (s: Section) => {
+  const b: Board = lb[s.key];
+  const headline = b.headline ?? s.cols[0].k;
+  const systems = b.systems.slice().sort((a, b2) => (b2[headline] ?? -Infinity) - (a[headline] ?? -Infinity));
+  return { headline, systems };
+};
+---
+
+<Base
+  title="Baselines"
+  description="Organiser baseline results for OAEI Bio-ML 2026: repaired coherence-aware P/R/F1 for global alignment, and MRR / Hits@k for local ranking."
+>
+  <div class="page-head">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href={withBase('/')}>Home</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Baselines</span>
+      </nav>
+      <h1>Baselines</h1>
+      <p class="lead">
+        Organiser-run baseline systems for both competitions, published before the evaluation
+        window. These are <strong>organiser baselines</strong> — participant submissions are not added
+        to these tables. Participant results live on the CodaBench leaderboards and appear on the
+        <a href={withBase('/results/')}>results page</a> once the window opens (12 July 2026).
+      </p>
+    </div>
+  </div>
+
+  {sections.map((s, si) => {
+    const { headline, systems } = boardOf(s);
+    return (
+      <section class="section" style={si === 0 ? 'border-top:none;' : undefined} aria-labelledby={`${s.key}-h`}>
+        <div class="container">
+          <p class="kicker">{s.kicker}</p>
+          <h2 id={`${s.key}-h`}>{s.title}</h2>
+          <p class="section-lede">
+            Macro-averaged over the three pairs (NCIT–DOID, SNOMED–FMA, SNOMED–NCIT); sorted by the
+            headline column. See <a href={withBase('/evaluation/')}>evaluation metrics</a>.
+          </p>
+          <div class="table-wrap">
+            <table class="sortable">
+              <thead>
+                <tr>
+                  <th data-col="0">System</th>
+                  {s.cols.map((c, ci) => <th class="num" data-col={ci + 1}>{c.l}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {systems.map((row, i) => (
+                  <tr>
+                    <td>{row.system}</td>
+                    {s.cols.map((c, ci) => (
+                      <td class="num">
+                        {ci === 0 && i === 0 && c.k === headline
+                          ? <span class="best">{f3(row[c.k])}</span>
+                          : f3(row[c.k])}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    );
+  })}
+
+  <section class="section" aria-labelledby="note-h">
+    <div class="container">
+      <h2 id="note-h" style="font-size:1.05rem;">About these baselines</h2>
+      <p style="font-size:0.88rem; color:var(--ink-3); max-width:78ch;">
+        {lb.note ?? 'Organiser baselines, macro-averaged over the three pairs.'} The global-alignment
+        headline is the repaired coherence-aware F1; local ranking
+        is headlined by MRR. Full data:
+        <a class="mono" href={withBase('/leaderboard.json')}>leaderboard.json</a>.
+        Participant results appear on the <a href={withBase('/results/')}>results page</a>, fed by the
+        CodaBench leaderboards.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="refcoh-h" id="reference-coherence">
+    <div class="container">
+      <p class="kicker">Reference coherence</p>
+      <h2 id="refcoh-h">Reference coherence — before vs after repair</h2>
+      <p class="section-lede">
+        The Task-1 reference alignment is grounded in UMLS/Mondo and can be logically
+        <strong>incoherent</strong>; the <a href={withBase('/repair/')}>repair procedure</a> removes or
+        weakens the incoherence-inducing correspondences. This table reports the coherence of each pair's
+        reference <strong>before</strong> and <strong>after</strong> repair — the number of unsatisfiable
+        named classes in the merged ontology and the corresponding incoherence degree. All three repaired
+        references are <strong>coherent (0 unsatisfiable classes)</strong>.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Pair</th>
+              <th class="num">Unsat. (before)</th>
+              <th class="num">Incoherence degree (before)</th>
+              <th class="num">Unsat. (after)</th>
+              <th class="num">Incoherence degree (after)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {refCoh.pairs.map((p: any) => (
+              <tr>
+                <td>{p.pair}</td>
+                <td class="num">{unsatCell(p.unsat_before, p.unsat_before_lower_bound)}</td>
+                <td class="num">{degCell(p.degree_before_pct)}</td>
+                <td class="num">{unsatCell(p.unsat_after, false)}</td>
+                <td class="num">{degCell(p.degree_after_pct)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:0.82rem; color:var(--ink-3); max-width:80ch; margin-top:0.6rem;">
+        Unsatisfiable classes are counted in the merged ontology
+        (<span class="mono">O<sub>src</sub> ∪ O<sub>tgt</sub> ∪ R</span>) under the ELK reasoner; the
+        incoherence degree is that count over the merged named-class signature. † denotes an ELK lower
+        bound (a sound under-approximation; the exact figure is pending). The all-equivalence standard
+        SNOMED–FMA merge does not classify under ELK even at a 600 GB heap, so its before-repair figure is
+        unavailable (—). Machine-readable data:
+        <a class="mono" href={withBase('/reference_coherence.json')}>reference_coherence.json</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="editions-h">
+    <div class="container">
+      <p class="kicker">Editions</p>
+      <h2 id="editions-h">Baselines and results by edition</h2>
+      <p class="section-lede">
+        OAEI Bio-ML 2026 is the current edition. As the track matures, each edition's final baselines
+        and participant results will be archived here, and changes between editions are recorded in the
+        <a href={withBase('/changelog/')}>changelog</a>.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Edition</th><th>Status</th><th>Baselines</th><th>Machine-readable snapshot</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2026</td>
+              <td>current — evaluation &amp; leaderboard open 12 July 2026</td>
+              <td>this page</td>
+              <td><a class="mono" href={withBase('/leaderboard.json')}>leaderboard.json</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</Base>

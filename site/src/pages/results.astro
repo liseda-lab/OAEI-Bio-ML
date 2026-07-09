@@ -1,0 +1,250 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import Base from '../layouts/Base.astro';
+import HistTable from '../components/HistTable.astro';
+import { CODABENCH_GLOBAL_URL, CODABENCH_LOCAL_URL, LIVE_RESULTS_REL, withBase } from '../config';
+import y2022 from '../data/results/2022.json';
+import y2023 from '../data/results/2023.json';
+import y2024 from '../data/results/2024.json';
+import y2025 from '../data/results/2025.json';
+
+// Prior editions (2022–2025), rendered faithfully from committed JSON — each
+// keeps its own structure. 2026 is the current edition (live CodaBench snapshot).
+const histYears = [y2022, y2023, y2024, y2025] as any[];
+
+// --- 2026: participant results, from the CI-written CodaBench snapshot ---
+const ROOT = path.resolve(process.cwd(), '..');
+const LIVE = path.join(ROOT, LIVE_RESULTS_REL);
+type Row = { system: string; team?: string; date?: string; scores: Record<string, number> };
+type Live = { fetched_at?: string; global?: Row[]; local?: Row[] };
+const live: Live | null = fs.existsSync(LIVE) ? JSON.parse(fs.readFileSync(LIVE, 'utf8')) : null;
+
+const f3 = (x: number | undefined) => (typeof x === 'number' ? x.toFixed(3) : '—');
+const day = (d?: string) => (d ? d.slice(0, 10) : '—');
+
+const GLOBAL_COLS = [
+  { key: 'macro_f1_repaired', label: 'F1 (repaired)' },
+  { key: 'macro_precision_repaired', label: 'P (repaired)' },
+  { key: 'macro_recall_repaired', label: 'R (repaired)' },
+  { key: 'global_coherence', label: 'Global Coherence' },
+];
+const LOCAL_COLS = [
+  { key: 'macro_mrr', label: 'MRR' },
+  { key: 'macro_hits_at_1', label: 'Hits@1' },
+  { key: 'macro_hits_at_5', label: 'Hits@5' },
+  { key: 'macro_hits_at_10', label: 'Hits@10' },
+];
+type Col = { key: string; label: string };
+type Section = { id: string; kicker: string; cols: Col[]; headline: string; rows: Row[]; portal: string | null };
+const sortByHeadline = (rows: Row[], h: string): Row[] =>
+  rows.slice().sort((a, b) => (b.scores[h] ?? -Infinity) - (a.scores[h] ?? -Infinity));
+const sections: Section[] = [
+  { id: 'global', kicker: 'Track 1 · Subtrack 1 — global equivalence alignment', cols: GLOBAL_COLS, headline: 'macro_f1_repaired', rows: sortByHeadline(live?.global ?? [], 'macro_f1_repaired'), portal: CODABENCH_GLOBAL_URL },
+  { id: 'local', kicker: 'Track 1 · Subtrack 2 — local equivalence ranking', cols: LOCAL_COLS, headline: 'macro_mrr', rows: sortByHeadline(live?.local ?? [], 'macro_mrr'), portal: CODABENCH_LOCAL_URL },
+];
+const comps = [
+  { name: 'Track 1 · Subtrack 1 — Global equivalence alignment', url: CODABENCH_GLOBAL_URL },
+  { name: 'Track 1 · Subtrack 2 — Local equivalence ranking', url: CODABENCH_LOCAL_URL },
+];
+
+const tabYears = [...histYears.map((y) => y.year), 2026];
+---
+
+<Base
+  title="Results"
+  description="OAEI Bio-ML results by edition: the current 2026 competitions (live CodaBench leaderboards) and the prior editions 2022–2025, each shown in its original structure."
+>
+  <div class="page-head">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href={withBase('/')}>Home</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Results</span>
+      </nav>
+      <h1>Results</h1>
+      <p class="lead">
+        The current 2026 edition and every prior OAEI Bio-ML campaign. Use the year tabs to switch editions.
+        Prior editions kept a different pair set and evaluation setup, so each is shown in its own structure;
+        the 2026 organiser baselines live on the <a href={withBase('/baselines/')}>baselines page</a>.
+      </p>
+    </div>
+  </div>
+
+  <section class="section" style="border-top:none; padding-top:1rem;">
+    <div class="container">
+      <div class="year-tabs" role="tablist" aria-label="Results by year">
+        {tabYears.map((yr) => (
+          <button
+            class="year-tab"
+            id={`ytab-${yr}`}
+            role="tab"
+            data-year={yr}
+            aria-controls={`year-${yr}`}
+            aria-selected={yr === 2026 ? 'true' : 'false'}
+            tabindex={yr === 2026 ? '0' : '-1'}
+          >{yr}{yr === 2026 && <span class="cur">current</span>}</button>
+        ))}
+      </div>
+
+      {/* -------- Prior editions -------- */}
+      {histYears.map((y) => (
+        <div class="year-panel" id={`year-${y.year}`} role="tabpanel" aria-labelledby={`ytab-${y.year}`} tabindex="0" hidden>
+          <p class="year-meta">{y.settings} Source: <a href={y.sourceUrl}>{y.host}</a>.</p>
+          <div class="pair-tabs" role="tablist" aria-label={`${y.year} pairs`}>
+            {y.pairs.map((p: any, pi: number) => (
+              <button class="pair-tab" role="tab" id={`ptab-${y.year}-${p.pair}`}
+                      data-panel={`pp-${y.year}-${p.pair}`} aria-controls={`pp-${y.year}-${p.pair}`}
+                      aria-selected={pi === 0 ? 'true' : 'false'} tabindex={pi === 0 ? '0' : '-1'}>{p.label}</button>
+            ))}
+          </div>
+          {y.pairs.map((p: any, pi: number) => (
+            <div class="pair-panel" id={`pp-${y.year}-${p.pair}`} role="tabpanel" aria-labelledby={`ptab-${y.year}-${p.pair}`} hidden={pi !== 0}>
+              {p.tables.equiv && (
+                <>
+                  <h3 class="match-h">Equivalence matching<span class="rel rel-eq"><code>=</code></span></h3>
+                  <HistTable table={p.tables.equiv} />
+                </>
+              )}
+              {p.tables.subs && (
+                <>
+                  <h3 class="match-h">Subsumption matching<span class="rel rel-sub"><code>&lt; &gt;</code></span></h3>
+                  <HistTable table={p.tables.subs} />
+                </>
+              )}
+            </div>
+          ))}
+          <p class="hist-note">
+            Published OAEI Bio-ML {y.year} results, transcribed from the campaign result pages. Footnote marks
+            (∗ † ‡) and the “Use Train(ing) Maps” flag are those of the original tables. Blank cells were not
+            reported. Authoritative copy: <a href={y.sourceUrl}>{y.host}</a>.
+          </p>
+        </div>
+      ))}
+
+      {/* -------- 2026 (current edition) -------- */}
+      <div class="year-panel" id="year-2026" role="tabpanel" aria-labelledby="ytab-2026" tabindex="0">
+        {!live && (
+          <>
+            <h2 style="margin-top:0.4rem;">No participant submissions yet</h2>
+            <p class="section-lede">
+              The 2026 competition and leaderboards open on <strong>12 July 2026</strong>; evaluation closes on
+              1 September 2026 and the competition ends on 6 September 2026. Submitted systems and their scores
+              appear here — updated automatically from the live CodaBench leaderboards — once the window opens.
+              Meanwhile, see the organiser <a href={withBase('/baselines/')}>baselines</a>.
+            </p>
+            <div class="notice">
+              <span aria-hidden="true">ℹ</span>
+              <span>
+                Submit via CodaBench:
+                {comps.map((c, i) => (
+                  <>{i > 0 && ' · '}{c.url ? <a href={c.url}>{c.name}</a> : <span>{c.name} (to be announced)</span>}</>
+                ))}. To prepare, work through the <a href={withBase('/quickstart/')}>quickstart</a> and validate
+                your files with the scoring-kit scripts.
+              </span>
+            </div>
+          </>
+        )}
+
+        {live && sections.map((s) => (
+          <section aria-labelledby={`${s.id}-h`} style="margin-top:1.6rem;">
+            <p class="kicker">{s.kicker}</p>
+            <h2 id={`${s.id}-h`}>Submitted systems</h2>
+            <div class="table-wrap">
+              <table class="sortable">
+                <thead>
+                  <tr>
+                    <th>#</th><th>System</th><th>Team</th>
+                    {s.cols.map((c) => <th class="num">{c.label}</th>)}
+                    <th>Submitted</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {s.rows.map((r, i) => (
+                    <tr>
+                      <td class="num">{i + 1}</td>
+                      <td>{r.system}</td>
+                      <td>{r.team ?? '—'}</td>
+                      {s.cols.map((c, ci) => (
+                        <td class="num">{ci === 0 && i === 0 ? <span class="best">{f3(r.scores[c.key])}</span> : f3(r.scores[c.key])}</td>
+                      ))}
+                      <td>{day(r.date)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {s.rows.length === 0 && <p>No submissions to this competition yet.</p>}
+          </section>
+        ))}
+
+        {live && (
+          <p style="font-size:0.85rem; color:var(--ink-3); max-width:76ch; margin-top:1.4rem;">
+            Snapshot taken {live.fetched_at ? day(live.fetched_at) : 'recently'} from the three CodaBench
+            leaderboards; the site republishes on a schedule, so very recent submissions may not appear yet. All
+            columns are macro-averaged over the three pairs (NCIT–DOID, SNOMED–FMA, SNOMED–NCIT). Global
+            alignment sorts by repaired coherence-aware F1; local by MRR; typed by preferred Typed-MRR. See
+            <a href={withBase('/evaluation/')}> evaluation metrics</a>. Columns sort on click.
+          </p>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="how-h">
+    <div class="container">
+      <p class="kicker">Participate</p>
+      <h2 id="how-h">How to submit (2026)</h2>
+      <p class="section-lede">
+        Work through the <a href={withBase('/quickstart/')}>quickstart</a>: download the data from the Hugging
+        Face dataset, produce one alignment RDF per pair (global) and/or one ranking submission per pair (local
+        and typed), validate with the scoring-kit scripts, and submit via CodaBench.
+      </p>
+      <ul>
+        {comps.map((c) => (
+          <li>{c.url ? <a href={c.url}>{c.name}</a> : <span>{c.name} — <em>to be announced</em></span>}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Year tabs + nested pair tabs. Roving tabindex + arrow-key support.
+  function wireTablist(list: HTMLElement, onSelect: (tab: HTMLElement) => void) {
+    const tabs = Array.from(list.querySelectorAll<HTMLElement>('[role="tab"]'));
+    const select = (tab: HTMLElement, focus = true) => {
+      tabs.forEach((t) => { t.setAttribute('aria-selected', String(t === tab)); t.tabIndex = t === tab ? 0 : -1; });
+      if (focus) tab.focus();
+      onSelect(tab);
+    };
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab, false));
+      tab.addEventListener('keydown', (e) => {
+        let j = -1;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') j = (i + 1) % tabs.length;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') j = (i - 1 + tabs.length) % tabs.length;
+        else if (e.key === 'Home') j = 0;
+        else if (e.key === 'End') j = tabs.length - 1;
+        if (j >= 0) { e.preventDefault(); select(tabs[j]); }
+      });
+    });
+  }
+
+  // year-level
+  const yearList = document.querySelector<HTMLElement>('.year-tabs');
+  if (yearList) {
+    wireTablist(yearList, (tab) => {
+      const yr = tab.getAttribute('data-year');
+      document.querySelectorAll<HTMLElement>('.year-panel').forEach((p) => {
+        p.hidden = p.id !== `year-${yr}`;
+      });
+    });
+  }
+  // pair-level (one tablist per historical year)
+  document.querySelectorAll<HTMLElement>('.pair-tabs').forEach((list) => {
+    wireTablist(list, (tab) => {
+      const target = tab.getAttribute('data-panel');
+      const scope = list.closest('.year-panel');
+      scope?.querySelectorAll<HTMLElement>('.pair-panel').forEach((p) => { p.hidden = p.id !== target; });
+    });
+  });
+</script>

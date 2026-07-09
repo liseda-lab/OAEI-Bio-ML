@@ -1,0 +1,32 @@
+---
+// Renders one prior-year OAEI Bio-ML result table exactly as published: its own
+// group-header row (Unsupervised / Semi-supervised), column row, and body rows.
+// No normalisation into the 2026 schema.
+interface GroupCell { label: string; span: number; }
+interface Table { title: string; groupRow: GroupCell[] | null; colRow: string[]; rows: string[][]; }
+interface Props { table: Table; }
+const { table } = Astro.props;
+---
+<div class="table-wrap">
+  <table class="hist-table" aria-label={table.title}>
+    <thead>
+      {table.groupRow && (
+        <tr>
+          {table.groupRow.map((g) =>
+            g.label
+              ? <th colspan={g.span} scope="colgroup">{g.label}</th>
+              : <td></td>
+          )}
+        </tr>
+      )}
+      <tr>
+        {table.colRow.map((c) => <th scope="col">{c}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {table.rows.map((r) => (
+        <tr>{r.map((cell) => <td>{cell}</td>)}</tr>
+      ))}
+    </tbody>
+  </table>
+</div>

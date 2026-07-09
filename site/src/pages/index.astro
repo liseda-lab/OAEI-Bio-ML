@@ -1,0 +1,299 @@
+---
+import Base from '../layouts/Base.astro';
+import OaeiHero from '../components/OaeiHero.astro';
+import OaeiMark from '../components/OaeiMark.astro';
+import {
+  CODABENCH_GLOBAL_URL,
+  CODABENCH_LOCAL_URL,
+  HF_DATASET,
+  GITHUB_REPO,
+  withBase,
+} from '../config';
+
+// Two CodaBench competitions, one per scored subtrack. Each URL is null until
+// the competition is published (see the CodaBench setup guide); a null renders
+// as "to be announced" rather than a dead link.
+const competitions = [
+  { name: 'Track 1 · Subtrack 1 — Global equivalence alignment', url: CODABENCH_GLOBAL_URL },
+  { name: 'Track 1 · Subtrack 2 — Local equivalence ranking', url: CODABENCH_LOCAL_URL },
+];
+
+const timeline = [
+  { date: '6 July 2026', what: 'Provisional materials released', state: 'done' },
+  { date: '7 July 2026', what: 'Finalised datasets published', state: 'done' },
+  { date: '12 July 2026', what: 'Competition starts — evaluation & leaderboard open', state: 'live' },
+  { date: '1 September 2026', what: 'Evaluation closes', state: '' },
+  { date: '6 September 2026', what: 'Competition ends — results reported (grace period until 12 September)', state: '' },
+];
+
+// The vocabularies behind the benchmark. NCIT, DOID, SNOMED CT and FMA are the
+// four matched across the three pairs; MONDO and the UMLS Metathesaurus underlie
+// the reference construction. Colours read on the dark hero panel.
+const ontologies = [
+  { name: 'NCIT', dom: 'Cancer / clinical', c: '#5bc0de' },
+  { name: 'DOID', dom: 'Human disease', c: '#5bc0de' },
+  { name: 'SNOMED CT', dom: 'Clinical terminology', c: '#7c9cf5' },
+  { name: 'FMA', dom: 'Anatomy', c: '#7c9cf5' },
+  { name: 'MONDO', dom: 'Disease (reference)', c: '#9db3c9' },
+  { name: 'UMLS', dom: 'Metathesaurus (reference)', c: '#9db3c9' },
+];
+---
+
+<Base
+  title="OAEI Bio-ML"
+  description="OAEI Bio-ML is an OAEI ontology-matching track over whole biomedical ontologies — a larger LargeBio: global and local equivalence alignment across NCIT–DOID, SNOMED–FMA and SNOMED–NCIT."
+>
+  <OaeiHero />
+
+  <div class="stat-band" role="list" aria-label="Track at a glance">
+    <div class="stat" role="listitem"><span class="n">3</span><span class="l">ontology pairs</span></div>
+    <div class="stat" role="listitem"><span class="n">4</span><span class="l">ontologies matched</span></div>
+    <div class="stat" role="listitem"><span class="n">2</span><span class="l">subtracks</span></div>
+    <div class="stat" role="listitem"><span class="n">2</span><span class="l">CodaBench competitions</span></div>
+  </div>
+
+  <section class="section intro-row" style="border-top:none;" aria-label="Overview">
+    <div class="container">
+      <div class="hero-below">
+        <p class="lede">
+          OAEI Bio-ML is a <strong>ML-friendly biomedical track</strong> for equivalence and
+          subsumption matching over three whole biomedical ontologies —
+          <strong>NCIT–DOID</strong>, <strong>SNOMED–FMA</strong> and <strong>SNOMED–NCIT</strong>.
+          Systems are scored across <strong>two CodaBench competitions</strong>.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href={withBase('/quickstart/')}>Get started</a>
+          <a class="btn btn-ghost" href="#downloads">Download the data</a>
+          <a class="btn btn-ghost" href={withBase('/tasks/')}>The tasks</a>
+          <a class="btn btn-ghost" href={withBase('/primer/')}>New to ontology matching?</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="tasks-h">
+    <div class="container">
+      <p class="kicker">The tasks</p>
+      <h2 id="tasks-h">Two scored evaluations</h2>
+      <p class="section-lede">
+        Track 1 measures whole-ontology <em>equivalence</em> matching two ways — globally (a full
+        alignment) and locally (ranked candidates).
+      </p>
+      <div class="card-grid cols-2">
+        <article class="card rel-stripe">
+          <div class="meta">
+            <span class="badge badge-accent">Track 1 · Subtrack 1</span>
+            <span class="badge">3 pairs</span>
+            <span class="badge">semi-supervised</span>
+          </div>
+          <h3>Global equivalence alignment</h3>
+          <p>
+            Submit one full alignment per pair (full OWL IRIs). Public
+            <code>refs_equiv/train.tsv</code> per pair; the test reference is hidden and scored
+            organiser-side. Headline is the <strong>repaired, coherence-aware</strong> P/R/F1,
+            with a reasoner-checked Global Coherence score.
+          </p>
+          <a class="card-link" href={withBase('/tasks/global/')}>Task description →</a>
+        </article>
+        <article class="card rel-stripe">
+          <div class="meta">
+            <span class="badge badge-accent">Track 1 · Subtrack 2</span>
+            <span class="badge">3 pairs</span>
+            <span class="badge">ranking</span>
+          </div>
+          <h3>Local equivalence ranking</h3>
+          <p>
+            For each source entity, rank a fixed candidate pool best-first. The public
+            <code>*.test.cands.tsv</code> are <strong>gold-stripped</strong>. Scored with
+            <strong>MRR</strong> and <strong>Hits@{'{'}1,5,10{'}'}</strong>, macro-averaged over the
+            three pairs.
+          </p>
+          <a class="card-link" href={withBase('/tasks/local/')}>Task description →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="downloads-h" id="downloads">
+    <div class="container">
+      <p class="kicker">Data</p>
+      <h2 id="downloads-h">Get the data</h2>
+      <p class="section-lede">
+        The 2026 task data is distributed on the Hugging Face Hub as
+        <a href={HF_DATASET} class="mono">OAEI-ML/bio-ml</a> (edition tag
+        <span class="mono">2026</span>). It is <strong>publicly available</strong>
+        and downloads without gating (entity IRIs/CURIEs only); the self-contained
+        <code class="mono">scoring_kit/</code> ships separately with the track repository, and the
+        licence-restricted source vocabularies (SNOMED CT, UMLS) are obtained separately under your
+        own licence.
+      </p>
+      <div class="notice">
+        <span aria-hidden="true">⬇</span>
+        <span>
+          <code class="mono">git clone https://github.com/liseda-lab/OAEI-Bio-ML</code><br />
+          <code class="mono">hf download OAEI-ML/bio-ml --repo-type dataset --revision 2026 --local-dir ./bio-ml</code>
+        </span>
+      </div>
+      <p style="font-size:0.92rem; color:var(--ink-3); margin-top:1rem;">
+        The Hugging Face dataset holds the per-pair task files only; the self-contained
+        <code class="mono">scoring_kit/</code> (validators and self-scorers) comes from the track
+        repository, cloned above. The source ontologies are <strong>not re-hosted</strong> here —
+        see the <a href={withBase('/ontologies/')}>ontologies</a> page for where to obtain each,
+        and the <a href={withBase('/quickstart/')}>quickstart</a> for the full walk-through. Track
+        repository: <a href={GITHUB_REPO}>liseda-lab/OAEI-Bio-ML</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="submit-h">
+    <div class="container">
+      <p class="kicker">Submit</p>
+      <h2 id="submit-h">Two CodaBench competitions</h2>
+      <p class="section-lede">
+        Each scored subtrack has its own CodaBench competition. Validate and (where possible) self-score
+        locally with the scoring kit, then submit. Portals open on 12 July 2026.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Competition</th><th>Submission portal</th></tr>
+          </thead>
+          <tbody>
+            {competitions.map((c) => (
+              <tr>
+                <td>{c.name}</td>
+                <td>{c.url ? <a href={c.url}>Open on CodaBench</a> : <span class="badge badge-soon">to be announced</span>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:0.92rem; color:var(--ink-3); margin-top:1rem;">
+        Organiser-run baselines are published on the <a href={withBase('/baselines/')}>baselines</a> page;
+        participant standings appear on <a href={withBase('/results/')}>results</a> once the window opens.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="timeline-h">
+    <div class="container">
+      <p class="kicker">Timeline</p>
+      <h2 id="timeline-h">2026 edition</h2>
+      <div class="notice">
+        <span aria-hidden="true">ℹ</span>
+        <span>
+          The 2026 datasets are <strong>final</strong>. Evaluation and the live leaderboards open on
+          12 July 2026 via the two CodaBench competitions above. All dates are
+          00:00 <abbr title="Anywhere on Earth">AoE</abbr>.
+        </span>
+      </div>
+      <ol class="timeline">
+        {timeline.map((t) => (
+          <li class={t.state}>
+            <span class="dot" aria-hidden="true"></span>
+            <span class="date">{t.date}</span>
+            <span class="what">{t.what}</span>
+            {t.state === 'done' && <span class="badge badge-ok">delivered</span>}
+            {t.state === 'live' && <span class="badge badge-soon">next</span>}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="onto-h">
+    <div class="container">
+      <p class="kicker">The vocabularies</p>
+      <h2 id="onto-h">Built on established biomedical ontologies</h2>
+      <p class="section-lede">
+        NCIT, DOID, SNOMED CT and FMA are matched across the three pairs; MONDO and the UMLS
+        Metathesaurus underlie the reference construction. All are obtained from their original
+        publishers — see <a href={withBase('/ontologies/')}>ontologies</a> for sources and licences.
+      </p>
+      <div class="onto-grid">
+        {ontologies.map((o) => (
+          <a class="onto-chip" href={withBase('/ontologies/')}>
+            <span class="name"><span class="swatch" style={`background:${o.c}`} aria-hidden="true"></span>{o.name}</span>
+            <span class="dom">{o.dom}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="oaei-h">
+    <div class="container">
+      <p class="kicker">Part of the OAEI</p>
+      <h2 id="oaei-h">An OAEI 2026 evaluation track</h2>
+      <p class="section-lede">
+        OAEI Bio-ML runs under the <a href="https://oaei.ontologymatching.org/">Ontology Alignment
+        Evaluation Initiative</a> — the long-running campaign that benchmarks ontology-matching
+        systems. It continues the machine-learning-friendly Bio-ML datasets, which
+        <strong>superseded the LargeBio track in 2022</strong>.
+      </p>
+      <div class="oaei-attrib">
+        <OaeiMark />
+        <div class="txt">
+          <p>
+            Bio-ML is one of the OAEI's biomedical tracks; its results feed the annual OAEI campaign.
+            The earlier <a href="https://www.cs.ox.ac.uk/isg/projects/SEALS/oaei/">LargeBio</a> track
+            was retired when Bio-ML launched in 2022.
+          </p>
+          <p>
+            The OAEI-ML 2026 evaluation tracks are
+            <a href="https://liseda-lab.github.io/OAEI-Bio-ML/">OAEI Bio-ML</a> (this track) and
+            <a href="https://city-artificial-intelligence.github.io/diso-oaei/">DISO-OAEI</a>. A proud
+            member of the <a href="https://oaei.ontologymatching.org/">OAEI</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="cite-h">
+    <div class="container">
+      <p class="kicker">Citation</p>
+      <h2 id="cite-h">Citing OAEI Bio-ML</h2>
+      <p class="section-lede">
+        A citation for the 2026 edition is <span class="badge badge-soon">pending</span> and will be
+        published here once minted. The benchmark design follows the original
+        machine-learning-friendly Bio-ML datasets (He et al.). Until the edition DOI is available,
+        cite the dataset release:
+      </p>
+      <blockquote class="cite-box">
+        OAEI Bio-ML 2026 [Data set]. Hugging Face.
+        <a href={HF_DATASET}>huggingface.co/datasets/OAEI-ML/bio-ml</a> (edition tag 2026).
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="people-h">
+    <div class="container">
+      <p class="kicker">People</p>
+      <h2 id="people-h">Organisers &amp; contact</h2>
+      <div class="card-grid">
+        <div class="card">
+          <h3>Organisers</h3>
+          <p>
+            <a href="https://dilworth.io/">Jon Dilworth</a>,
+            <a href="https://pedrocotovio.github.io/">Pedro Cotovio</a>,
+            <a href="https://ernestojimenezruiz.github.io/">Ernesto Jiménez-Ruiz</a>, and
+            <a href="https://www.di.fc.ul.pt/~catiapesquita/">Catia Pesquita</a>.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Contact &amp; links</h3>
+          <p>
+            Questions or corrections: open an issue on the
+            <a href={GITHUB_REPO}>track repository</a> or email
+            <a href="mailto:contact@oaei-ml.org">contact@oaei-ml.org</a>.
+          </p>
+          <p>
+            Part of the <a href="https://oaei.ontologymatching.org/">Ontology Alignment Evaluation
+            Initiative</a>. Full acknowledgements appear in the resource paper (available at track launch).
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,447 @@
+---
+/**
+ * OaeiHero.astro — homepage hero for the ontology-matching campaign site.
+ *
+ * USAGE  import OaeiHero from '../components/OaeiHero.astro';  <OaeiHero />
+ *
+ * DESIGN NOTES
+ *   - One instance per page (uses element ids).
+ *   - Intrinsically fluid: NO `transform: scale()`. Height is a bounded
+ *     `clamp()`; the HTML overlay uses `clamp()` typography in container-query
+ *     units (`cqi`) so text renders at native resolution and neither balloons on
+ *     ultra-wide nor vanishes on mobile — no JS is needed for sizing. The
+ *     diagram SVGs keep one `viewBox` (crisp at any size) and are letterboxed
+ *     with `preserveAspectRatio`. The two-panel split is a full-bleed background
+ *     (no gutters / seams).
+ *   - Semantics: matching is lexical annotation ↔ lexical annotation
+ *     (rdfs:label ↔ rdfs:label) between two ontologies — never a label to an
+ *     IRI/CURIE. Neural half embeds the label text; symbolic half is the
+ *     ontology structure shown in the geometric + hyperbolic scenes.
+ *   - Interaction: auto-cycles correspondences (click to advance) →
+ *     "neurosymbolic" pill → Euclidean box/ball scenes → hidden Poincaré icon →
+ *     hyperbolic mode. Concept exploration works by hover AND keyboard focus;
+ *     the correspondences also have a visually-hidden text alternative.
+ *   - Styles are `is:global` (the script injects SVG via innerHTML, which
+ *     scoped styles can't reach); everything is prefixed `omh`. The hover/focus
+ *     state only toggles CSS classes on pre-built nodes (no per-event re-render).
+ *   - No hydration framework; plain client script. Static-build friendly.
+ */
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '@fontsource/source-serif-4/400.css';
+import '@fontsource/source-serif-4/600.css';
+---
+
+<div class="omh" id="omh">
+  <div class="omh-stage" role="group" aria-label="Ontology matching animation: rdfs:label to rdfs:label equivalence and subsumption correspondences between two biomedical ontologies">
+    <div class="omh-darkpanel"></div>
+    <div class="omh-layer omh-text-layer" id="omh-text"></div>
+    <div class="omh-layer omh-geo-layer"><svg id="omh-geo" viewBox="0 -44 1080 488" preserveAspectRatio="xMidYMid meet" width="100%" height="100%"></svg></div>
+    <div class="omh-layer omh-hyp-layer">
+      <svg id="omh-hyp-back" viewBox="0 -44 1080 488" preserveAspectRatio="xMidYMid meet" width="100%" height="100%"></svg>
+      <svg id="omh-hyp-fore" class="omh-hyp-fore" viewBox="0 -44 1080 488" preserveAspectRatio="xMidYMid meet" width="100%" height="100%"></svg>
+    </div>
+    <div class="omh-hdl">
+      <div class="omh-kick">OAEI · Bio-ML · 2026</div>
+      <h1 class="omh-headline">Machine Learning-friendly Biomedical Matching.</h1>
+    </div>
+    <div class="omh-hdr">
+      <div class="omh-f1" id="omh-f1">match(O₁, O₂) → A</div>
+      <div class="omh-f2" id="omh-f2">…of equivalence ≡ and subsumption ⊑</div>
+    </div>
+    <div class="omh-dots" id="omh-dots"></div>
+    <div class="omh-hint" id="omh-hint">same concept · different labels</div>
+    <div class="omh-ctls">
+      <button class="omh-hypbtn" id="omh-hypbtn" aria-label="hyperbolic mode">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="7" stroke-width="1"></circle>
+          <path d="M 2.3 4.5 Q 8 8 2.3 11.5" stroke-width="0.9"></path>
+          <path d="M 13.7 4.5 Q 8 8 13.7 11.5" stroke-width="0.9"></path>
+          <path d="M 4.5 1.8 Q 8 8 11.5 1.8" stroke-width="0.9"></path>
+          <path d="M 4.5 14.2 Q 8 8 11.5 14.2" stroke-width="0.9"></path>
+        </svg>
+      </button>
+      <button class="omh-pill" id="omh-pill">○ neurosymbolic</button>
+    </div>
+    <p class="omh-sr" id="omh-sr"></p>
+  </div>
+</div>
+
+<style is:global>
+.omh{--eq:oklch(0.8 0.13 190);--sub:oklch(0.82 0.13 85);--omh-h:clamp(300px,42vw,452px);width:100%;margin:0;position:relative;display:block;overflow:hidden;height:var(--omh-h);background:#f7f4ec;container-type:inline-size;container-name:omh}
+.omh-stage{position:absolute;inset:0;overflow:hidden;cursor:pointer;font-family:'IBM Plex Mono',monospace;-webkit-user-select:none;user-select:none}
+/* diagram SVGs: a DEFINITE height (not 100%, which doesn't resolve inside the size-container) so preserveAspectRatio bounds them to the hero and they never overflow into the stat-band */
+.omh-geo-layer>svg,.omh-hyp-layer>svg{position:absolute;top:0;left:0;width:100%;height:var(--omh-h);display:block}
+.omh-darkpanel{position:absolute;top:0;bottom:0;right:0;width:50%;background:#0e1118;transition:width .9s cubic-bezier(.65,0,.25,1)}
+.omh.is-neuro .omh-darkpanel{width:100%}
+.omh-layer{position:absolute;inset:0;opacity:0;transition:opacity .7s;pointer-events:none}
+.omh:not(.is-neuro) .omh-text-layer{opacity:1}
+.omh.is-neuro:not(.is-hyper) .omh-geo-layer{opacity:1}
+.omh.is-hyper .omh-hyp-layer{opacity:1}
+.omh-hyp-layer{visibility:hidden}
+.omh.is-hyper .omh-hyp-layer{visibility:visible}
+.omh.is-hyper .omh-hyp-layer [data-hid]{pointer-events:auto;cursor:pointer}
+.omh-hdl{position:absolute;left:clamp(16px,3.3cqi,36px);top:clamp(15px,2.6cqi,28px);pointer-events:none;max-width:52%}
+.omh-kick{font:500 clamp(9px,0.93cqi,10px) 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(38,34,27,.7);transition:color .9s}
+.omh-headline{margin:6px 0 0;font-family:'Source Serif 4',serif;font-weight:600;font-size:clamp(15px,1.85cqi,20px);line-height:1.3;color:#26221b;transition:color .9s;max-width:clamp(180px,28cqi,300px);letter-spacing:normal}
+.omh.is-neuro .omh-kick{color:rgba(232,237,245,.6)}
+.omh.is-neuro .omh-headline{color:#e8edf5}
+.omh-hdr{position:absolute;right:clamp(16px,3.3cqi,36px);top:clamp(15px,2.6cqi,28px);text-align:right;pointer-events:none;max-width:46%}
+.omh-f1{font:500 clamp(10px,1.11cqi,12px) 'IBM Plex Mono',monospace;color:oklch(0.8 0.13 190)}
+.omh-f2{margin-top:6px;font:400 clamp(9px,1.02cqi,11px) 'IBM Plex Mono',monospace;color:rgba(232,237,245,.6)}
+.omh-conv-l{position:absolute;right:50%;top:0;bottom:0;display:flex;align-items:center;justify-content:flex-end;padding-right:clamp(22px,7cqi,76px)}
+.omh-conv-r{position:absolute;left:50%;top:0;bottom:0;display:flex;align-items:center;padding-left:clamp(22px,7cqi,76px)}
+.omh-term-l{font-family:'Source Serif 4',serif;font-weight:600;font-size:clamp(21px,3.15cqi,34px);line-height:1.16;color:#26221b;max-width:clamp(150px,33cqi,352px);text-align:right;animation:omhSlideL .7s cubic-bezier(.2,.8,.2,1) both}
+.omh-term-r{font-family:'Source Serif 4',serif;font-weight:400;font-size:clamp(18px,2.59cqi,28px);line-height:1.2;color:#e8edf5;max-width:clamp(150px,36cqi,392px);animation:omhSlideR .7s cubic-bezier(.2,.8,.2,1) both}
+.omh-src{font:400 clamp(9.5px,1.02cqi,11px) 'IBM Plex Mono',monospace;margin-top:clamp(8px,1.1cqi,12px);letter-spacing:.01em}
+.omh-term-l .omh-src{color:rgba(38,34,27,.66)}
+.omh-term-r .omh-src{color:rgba(232,237,245,.58)}
+.omh-badge-w{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+.omh-badge-i{display:flex;flex-direction:column;align-items:center;gap:clamp(6px,0.8cqi,8px);animation:omhPopIn .45s .55s cubic-bezier(.3,1.4,.5,1) both}
+.omh-badge{width:clamp(48px,6.1cqi,66px);height:clamp(48px,6.1cqi,66px);border-radius:50%;background:#0e1118;border:1.5px solid var(--c);box-shadow:0 0 18px var(--cg);display:flex;align-items:center;justify-content:center;color:var(--c);font:500 clamp(19px,2.4cqi,26px) 'IBM Plex Mono',monospace}
+.omh-conf{font:500 clamp(9px,0.97cqi,10.5px) 'IBM Plex Mono',monospace;color:var(--c);background:#0e1118;border:1px solid var(--c);border-radius:4px;padding:3px 7px}
+.omh-dots{position:absolute;bottom:clamp(6px,0.8cqi,9px);left:50%;transform:translateX(-50%);display:flex;gap:2px;transition:opacity .4s}
+.omh.is-neuro .omh-dots{opacity:0;pointer-events:none}
+.omh-dot{width:24px;height:24px;border-radius:50%;background:transparent;border:none;padding:0;cursor:pointer;display:grid;place-items:center}
+.omh-dot::before{content:'';width:7px;height:7px;border-radius:50%;background:rgba(128,136,148,.45)}
+.omh-dot.on::before{background:oklch(0.8 0.13 190)}
+.omh-hint{position:absolute;bottom:clamp(12px,1.7cqi,18px);left:clamp(16px,3.3cqi,36px);font:400 clamp(9px,0.93cqi,10px) 'IBM Plex Mono',monospace;color:rgba(38,34,27,.7);transition:color .9s;max-width:clamp(180px,40cqi,420px)}
+.omh.is-neuro .omh-hint{color:rgba(232,237,245,.58)}
+.omh-ctls{position:absolute;bottom:clamp(10px,1.3cqi,14px);right:clamp(16px,3.3cqi,36px);display:flex;align-items:center;gap:8px}
+.omh-pill{font:500 clamp(9px,0.97cqi,10.5px) 'IBM Plex Mono',monospace;color:rgba(232,237,245,.55);border:1px solid rgba(232,237,245,.3);background:transparent;border-radius:99px;padding:5px 11px;cursor:pointer;transition:all .4s}
+.omh.is-neuro .omh-pill{color:#0b0e14;background:oklch(0.8 0.13 190);border-color:oklch(0.8 0.13 190)}
+.omh-hypbtn{width:26px;height:26px;border-radius:50%;border:1px solid rgba(232,237,245,.3);background:transparent;display:none;align-items:center;justify-content:center;cursor:pointer;transition:all .4s;padding:0}
+.omh.is-neuro .omh-hypbtn{display:flex}
+.omh.is-hyper .omh-hypbtn{border-color:oklch(0.8 0.13 190);background:oklch(0.8 0.13 190 / 0.15);box-shadow:0 0 10px oklch(0.8 0.13 190 / 0.4)}
+.omh-hypbtn svg *{stroke:rgba(232,237,245,.6)}
+.omh.is-hyper .omh-hypbtn svg *{stroke:oklch(0.8 0.13 190)}
+.omh-pill:focus-visible,.omh-hypbtn:focus-visible,.omh-dot:focus-visible{outline:2px solid oklch(0.8 0.13 190);outline-offset:2px}
+.omh-halo{paint-order:stroke;stroke:#0b0e14;stroke-width:3px;stroke-linejoin:round}
+.omh-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* --- hyperbolic foreground: state via classes (no per-event re-render) --- */
+.omh-hyp-fore path{fill:none}
+.omh-hyp-fore .h-te{opacity:.5;transition:opacity .25s}
+.omh-hyp-fore .h-te path{stroke:rgba(210,224,240,.5);stroke-width:1;transition:stroke .25s,stroke-width .25s}
+.omh-hyp-fore .h-telbl{opacity:0;fill:var(--sub);font:600 13px 'IBM Plex Mono',monospace;transition:opacity .2s}
+.omh-hyp-fore.has-hov .h-te{opacity:.12}
+.omh-hyp-fore.has-hov .h-te.is-chain{opacity:1}
+.omh-hyp-fore .h-te.is-chain path{stroke:var(--sub);stroke-width:1.8;filter:drop-shadow(0 0 4px var(--sub))}
+.omh-hyp-fore .h-te.is-chain .h-telbl{opacity:1}
+.omh-hyp-fore .h-xe{opacity:.3;transition:opacity .25s}
+.omh-hyp-fore .h-xe path{stroke-width:1.1;stroke-dasharray:2 4;transition:stroke-width .25s}
+.omh-hyp-fore .h-xe[data-rel="eq"] path{stroke:var(--eq)}
+.omh-hyp-fore .h-xe[data-rel="sub"] path{stroke:var(--sub)}
+.omh-hyp-fore .h-xelbl{opacity:0;font:600 12px 'IBM Plex Mono',monospace;transition:opacity .2s}
+.omh-hyp-fore .h-xe[data-rel="eq"] .h-xelbl{fill:var(--eq)}
+.omh-hyp-fore .h-xe[data-rel="sub"] .h-xelbl{fill:var(--sub)}
+.omh-hyp-fore.has-hov .h-xe{opacity:.08}
+.omh-hyp-fore.has-hov .h-xe.is-active{opacity:1}
+.omh-hyp-fore .h-xe.is-active path{stroke-width:1.8}
+.omh-hyp-fore .h-xe[data-rel="eq"].is-active path{filter:drop-shadow(0 0 5px var(--eq))}
+.omh-hyp-fore .h-xe[data-rel="sub"].is-active path{filter:drop-shadow(0 0 5px var(--sub))}
+.omh-hyp-fore .h-xe.is-active .h-xelbl{opacity:1}
+.omh-hyp-fore .h-nd{transition:opacity .25s}
+.omh-hyp-fore .h-dot{fill:#0b0e14;stroke:rgba(232,237,245,.85);stroke-width:1.4;transition:stroke .25s,filter .25s}
+.omh-hyp-fore .h-nd[data-o="2"] .h-dot{stroke:rgba(210,224,240,.65)}
+.omh-hyp-fore .h-dot[data-top]{fill:rgba(232,237,245,.9)}
+.omh-hyp-fore .h-lbl{fill:rgba(232,237,245,.7);font:400 10.5px 'IBM Plex Mono',monospace;transition:fill .25s}
+.omh-hyp-fore .h-nd.is-chain .h-dot{stroke:var(--sub);filter:drop-shadow(0 0 5px var(--sub))}
+.omh-hyp-fore .h-nd.is-chain .h-lbl{fill:#eef3f9}
+.omh-hyp-fore .h-nd.is-partner .h-dot{stroke:var(--eq);filter:drop-shadow(0 0 5px var(--eq))}
+.omh-hyp-fore .h-nd.is-partner .h-lbl{fill:#eef3f9}
+.omh-hyp-fore .h-nd.is-hov .h-dot{stroke:#f2f6fb;filter:drop-shadow(0 0 5px var(--sub))}
+.omh-hyp-fore .h-nd.is-hov .h-lbl{fill:#eef3f9}
+.omh-hyp-fore.has-hov .h-nd.is-dim{opacity:.25}
+.omh-hyp-fore.has-hov .h-nd.is-dim .h-lbl{fill:rgba(232,237,245,.45)}
+.omh-hyp-fore .h-hit{outline:none}
+.omh-hyp-fore .h-hit:focus-visible{stroke:oklch(0.8 0.13 190);stroke-width:2;fill:oklch(0.8 0.13 190 / 0.12)}
+@keyframes omhSlideL{from{opacity:0;transform:translateX(-46px)}to{opacity:1;transform:none}}
+@keyframes omhSlideR{from{opacity:0;transform:translateX(46px)}to{opacity:1;transform:none}}
+@keyframes omhPopIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+@keyframes omhFadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@keyframes omhBallL{from{transform:translateX(-240px)}to{transform:none}}
+@keyframes omhBallR{from{transform:translateX(240px)}to{transform:none}}
+@keyframes omhSpin{to{transform:rotate(360deg)}}
+@keyframes omhGeoFlow{to{stroke-dashoffset:-64px}}
+@keyframes omhRingZoom{0%{transform:scale(.12);opacity:0}18%{opacity:.38}100%{transform:scale(1);opacity:0}}
+@media (prefers-reduced-motion: reduce){
+  .omh *,.omh *::before{animation:none !important;transition:none !important}
+}
+</style>
+
+<script>
+  /* Client script — bundled by Astro; re-inits on astro:page-load (view transitions). */
+  const EQ = 'oklch(0.8 0.13 190)';
+  const SUB = 'oklch(0.82 0.13 85)';
+  const MUT = 'rgba(200,214,230,0.72)';   // ≬ overlap / related — muted, no accent
+  const MUTF = 'rgba(200,214,230,0.10)';
+  const DIS = '#e5484d';                   // ⊥ disjoint — the site's danger-line red
+  const DISF = 'rgba(229,72,77,0.10)';
+  const MONO = "'IBM Plex Mono',monospace";
+  const SERIF = "'Source Serif 4',serif";
+  /* Genuine rdfs:label ↔ rdfs:label correspondences between two biomedical
+     ontologies. l/r = full labels (text scene, may wrap); ls/rs = concise forms
+     for the SVG diagram annotations; lo/ro = the source ontologies. */
+  const PAIRS = [
+    { lo: 'NCIT', ro: 'DOID', l: 'Melanoma', r: 'melanoma', ls: 'Melanoma', rs: 'melanoma', rel: '≡', c: '0.96' },
+    { lo: 'SNOMED CT', ro: 'NCIT', l: 'Myocardial infarction (disorder)', r: 'Myocardial Infarction', ls: 'Myocardial infarction', rs: 'Myocardial Infarction', rel: '≡', c: '0.94' },
+    { lo: 'NCIT', ro: 'DOID', l: 'Basal Cell Carcinoma', r: 'carcinoma', ls: 'Basal Cell Carcinoma', rs: 'carcinoma', rel: '⊑', c: '0.87' },
+    { lo: 'SNOMED CT', ro: 'FMA', l: 'Bone structure of femur (body structure)', r: 'Femur', ls: 'Bone structure of femur', rs: 'Femur', rel: '≡', c: '0.97' },
+  ];
+  const RG = { x: 370, y: 50, w: 340, h: 290 };
+  const HC = { x: 540, y: 200, r: 178 };
+  /* Poincaré-disk concepts — genuine rdfs:labels (no CURIEs); the trailing value
+     is the point's norm ‖·‖ (depth: parents sit nearer the origin). ○ = O₁ (NCIT),
+     ◇ = O₂ (DOID); the ontology is shown by node shape + the legend, not a prefix. */
+  const HP = {
+    T:    { x: 540, y: 200, o: 0, l: 'owl:Thing · .00', lx: 540, ly: 226, anch: 'middle' },
+    Doc1: { x: 589, y: 166, o: 1, l: 'Malignant Neoplasm · .55', lx: 583, ly: 157, anch: 'end' },
+    Pap1: { x: 630, y: 137, o: 1, l: 'Melanoma · .78', lx: 641, ly: 133, anch: 'start' },
+    Per1: { x: 479, y: 235, o: 1, l: 'Lung Disorder · .50', lx: 479, ly: 258, anch: 'middle' },
+    Aut1: { x: 427, y: 265, o: 1, l: 'Pneumonia · .80', lx: 427, ly: 288, anch: 'middle' },
+    Doc2: { x: 615, y: 220, o: 2, l: 'cancer · .58', lx: 623, ly: 244, anch: 'start' },
+    CP2:  { x: 687, y: 239, o: 2, l: 'skin cancer · .90', lx: 697, ly: 243, anch: 'start' },
+    Per2: { x: 461, y: 190, o: 2, l: 'lung disease · .52', lx: 450, ly: 186, anch: 'end' },
+    PA2:  { x: 392, y: 226, o: 2, l: 'pneumonia · .84', lx: 381, ly: 222, anch: 'end' },
+  };
+  const HPARENT = { Doc1: 'T', Pap1: 'Doc1', Per1: 'T', Aut1: 'Per1', Doc2: 'T', CP2: 'Doc2', Per2: 'T', PA2: 'Per2' };
+  const HCROSS = [
+    { a: 'Doc1', b: 'Doc2', rel: '≡', c: '.91' }, // Malignant Neoplasm ≡ cancer
+    { a: 'Pap1', b: 'CP2', rel: '⊑', c: '.85' },  // Melanoma ⊑ skin cancer
+    { a: 'Per1', b: 'Per2', rel: '≡', c: '.93' }, // Lung Disorder ≡ lung disease
+    { a: 'Aut1', b: 'PA2', rel: '≡', c: '.94' },  // Pneumonia ≡ pneumonia
+  ];
+  const rad = (d) => (d * Math.PI) / 180;
+  const ONTO = { 0: 'OWL', 1: 'NCIT', 2: 'DOID' };
+  const bareLabel = (id) => HP[id].l.split(' · ')[0];
+
+  function initOmh() {
+    const root = document.getElementById('omh');
+    if (!root || root.dataset.omhInit) return;
+    root.dataset.omhInit = '1';
+
+    const S = { pair: 0, neuro: false, hyper: false, hovH: null };
+    const stage = root.querySelector('.omh-stage');
+    const q = (id) => root.querySelector('#' + id);
+    const elText = q('omh-text'), elGeo = q('omh-geo'), elHypB = q('omh-hyp-back'),
+      elHypF = q('omh-hyp-fore'), elDots = q('omh-dots'), elHint = q('omh-hint'),
+      elF1 = q('omh-f1'), elF2 = q('omh-f2'), elPill = q('omh-pill'), elHypBtn = q('omh-hypbtn'),
+      elSr = q('omh-sr');
+
+    const svgText = (x, y, anchor, style, txt, halo) =>
+      `<text x="${x}" y="${y}" text-anchor="${anchor}"${halo ? ' class="omh-halo"' : ''} style="${style}">${txt}</text>`;
+
+    /* ---- label ↔ label convergence ---- */
+    function renderText() {
+      const P = PAIRS[S.pair];
+      const c = P.rel === '⊑' ? SUB : EQ;
+      const cg = P.rel === '⊑' ? 'oklch(0.82 0.13 85 / 0.35)' : 'oklch(0.8 0.13 190 / 0.35)';
+      elText.innerHTML =
+        `<div class="omh-conv-l"><div class="omh-term-l">${P.l}<div class="omh-src">${P.lo} · rdfs:label@en</div></div></div>` +
+        `<div class="omh-conv-r"><div class="omh-term-r">${P.r}<div class="omh-src">${P.ro} · rdfs:label@en</div></div></div>` +
+        `<div class="omh-badge-w"><div class="omh-badge-i" style="--c:${c};--cg:${cg}">` +
+        `<div class="omh-badge">${P.rel}</div><div class="omh-conf">conf ${P.c}</div></div></div>`;
+    }
+
+    /* ---- Euclidean scenes (boxes / balls) ---- */
+    /* ---- Euclidean scene: the geometry TYPES the correspondence ----
+       Honest box semantics. Overlap alone only says "not disjoint"; the
+       containment PATTERN types the relation: coincident boxes -> equivalence,
+       one inside the other -> subsumption, a proper overlap -> a (weaker)
+       "overlaps" relation, an empty meet -> disjointness (a repair signal). */
+    function renderGeo() {
+      const cell = (cx, cy, kind, delay) => {
+        const g = `animation:omhFadeIn .5s ${delay}s both`;
+        let cfg, col, glyph, word, formula;
+        if (kind === 'eq') {
+          col = EQ; glyph = '≡'; word = 'equivalence'; formula = 'Box(A) = Box(B)';
+          cfg = `<rect x="${cx - 52}" y="${cy - 40}" width="96" height="58" rx="7" fill="oklch(0.8 0.13 190 / 0.10)" stroke="${EQ}" stroke-width="1.2"/>`
+              + `<rect x="${cx - 45}" y="${cy - 33}" width="96" height="58" rx="7" fill="none" stroke="${EQ}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+        } else if (kind === 'sub') {
+          col = SUB; glyph = '⊑'; word = 'subsumption'; formula = 'Box(A) ⊆ Box(B)';
+          cfg = `<rect x="${cx - 56}" y="${cy - 42}" width="112" height="66" rx="8" fill="oklch(0.82 0.13 85 / 0.06)" stroke="${SUB}" stroke-width="1.2"/>`
+              + `<rect x="${cx - 24}" y="${cy - 20}" width="46" height="30" rx="5" fill="oklch(0.82 0.13 85 / 0.16)" stroke="${SUB}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+        } else if (kind === 'ovl') {
+          col = MUT; glyph = '∩'; word = 'overlaps'; formula = 'A ⊓ B ≠ ⊥';
+          cfg = `<rect x="${cx - 56}" y="${cy - 38}" width="74" height="54" rx="7" fill="${MUTF}" stroke="${MUT}" stroke-width="1.2"/>`
+              + `<rect x="${cx - 18}" y="${cy - 38}" width="74" height="54" rx="7" fill="none" stroke="${MUT}" stroke-width="1.2" stroke-dasharray="4 3"/>`
+              + `<rect x="${cx - 18}" y="${cy - 38}" width="36" height="54" fill="${MUTF}"/>`;
+        } else {
+          col = DIS; glyph = '⊥'; word = 'disjoint'; formula = 'A ⊓ B ⊑ ⊥';
+          cfg = `<rect x="${cx - 58}" y="${cy - 38}" width="48" height="54" rx="7" fill="${DISF}" stroke="${DIS}" stroke-width="1.2"/>`
+              + `<rect x="${cx + 10}" y="${cy - 38}" width="48" height="54" rx="7" fill="none" stroke="${DIS}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+        }
+        return `<g style="${g}">` + cfg
+          + svgText(cx, cy + 42, 'middle', `font:600 13px ${MONO};fill:${col}`, `${glyph}  ${word}`, true)
+          + svgText(cx, cy + 58, 'middle', `font:400 10px ${MONO};fill:rgba(232,237,245,0.5)`, formula, true)
+          + `</g>`;
+      };
+      const frame =
+        `<rect x="248" y="46" width="584" height="326" rx="12" fill="rgba(210,224,240,0.02)" stroke="rgba(210,224,240,0.16)"/>` +
+        svgText(540, 70, 'middle', `font:400 10.5px ${MONO};fill:rgba(210,224,240,0.5)`, 'both ontologies co-embedded in one ℝⁿ', true);
+      const cells =
+        cell(378, 142, 'eq', 0.05) + cell(702, 142, 'sub', 0.17) +
+        cell(378, 290, 'ovl', 0.29) + cell(702, 290, 'dis', 0.41);
+      const foot = svgText(540, 398, 'middle', `font:400 10.5px ${MONO};fill:rgba(232,237,245,0.55)`,
+        'the containment pattern types the correspondence · graded by Vol(A ⊓ B) / Vol(A)', true);
+      elGeo.innerHTML = frame + cells + foot;
+    }
+
+    /* ---- hyperbolic geometry helpers ---- */
+    const geod = (a1, a2) => {
+      const p1 = [HC.x + HC.r * Math.cos(a1), HC.y + HC.r * Math.sin(a1)];
+      const p2 = [HC.x + HC.r * Math.cos(a2), HC.y + HC.r * Math.sin(a2)];
+      const mx = (p1[0] + p2[0]) / 2, my = (p1[1] + p2[1]) / 2;
+      const qx = mx + (HC.x - mx) * 0.6, qy = my + (HC.y - my) * 0.6;
+      return `M ${p1[0].toFixed(1)} ${p1[1].toFixed(1)} Q ${qx.toFixed(1)} ${qy.toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+    };
+    const qPt = (A, B) => {
+      const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
+      return [mx + (HC.x - mx) * 0.18, my + (HC.y - my) * 0.18];
+    };
+    const hypEdge = (A, B) => {
+      const p = qPt(A, B);
+      return `M ${A.x} ${A.y} Q ${p[0].toFixed(1)} ${p[1].toFixed(1)} ${B.x} ${B.y}`;
+    };
+    const qMid = (A, B) => {
+      const p = qPt(A, B);
+      return [0.25 * A.x + 0.5 * p[0] + 0.25 * B.x, 0.25 * A.y + 0.5 * p[1] + 0.25 * B.y];
+    };
+    function renderHypBack() {
+      const spin = (dur, rev) => `animation:omhSpin ${dur}s linear infinite${rev ? ' reverse' : ''};transform-origin:${HC.x}px ${HC.y}px;transform-box:view-box`;
+      const arcs = (list, op) => list.map(([a, b]) =>
+        `<path d="${geod(rad(a), rad(b))}" fill="none" stroke="rgba(210,224,240,${op})" stroke-width="1" stroke-dasharray="6 10" style="animation:omhGeoFlow 2.6s linear infinite"/>`).join('');
+      const rings = [0, 1, 2, 3].map((i) =>
+        `<g style="animation:omhRingZoom 8s linear ${-i * 2}s infinite;transform-origin:${HC.x}px ${HC.y}px;transform-box:view-box"><circle cx="${HC.x}" cy="${HC.y}" r="${HC.r}" fill="none" stroke="rgba(210,224,240,0.25)" stroke-width="1"/></g>`).join('');
+      elHypB.innerHTML =
+        `<defs><clipPath id="omh-hypclip"><circle cx="${HC.x}" cy="${HC.y}" r="${HC.r}"/></clipPath></defs>` +
+        `<circle cx="${HC.x}" cy="${HC.y}" r="${HC.r}" fill="rgba(210,224,240,0.015)" stroke="rgba(210,224,240,0.3)" stroke-width="1.2" style="filter:drop-shadow(0 0 14px rgba(120,200,210,0.15))"/>` +
+        `<g clip-path="url(#omh-hypclip)">${rings}` +
+        `<g style="${spin(70)}">${arcs([[10, 120], [60, 170], [200, 310], [250, 355], [140, 255]], 0.10)}</g>` +
+        `<g style="${spin(115, true)}">${arcs([[30, 150], [100, 220], [170, 290], [300, 50]], 0.07)}</g></g>` +
+        svgText(HC.x + HC.r - 14, 16, 'start', `font:400 10px ${MONO};fill:rgba(210,224,240,0.35)`, '𝔹ⁿ · Poincaré ball', true) +
+        svgText(360, 20, 'start', `font:400 10px ${MONO};fill:rgba(210,224,240,0.45)`, '○ O₁ (NCIT)   ◇ O₂ (DOID) — hover or focus a concept', true) +
+        svgText(HC.x, 392, 'middle', `font:400 11px ${MONO};fill:rgba(232,237,245,0.55)`, 'C ⊑ D := C ≺ D · parents sit nearer the origin', true);
+    }
+
+    /* ---- hyperbolic foreground: build ONCE, then toggle classes on hover/focus ---- */
+    const hypRefs = { te: {}, xe: [], nd: {} };
+    function buildHypFore() {
+      const tedge = (cid) => {
+        const A = HP[cid], B = HP[HPARENT[cid]], m = qMid(A, B);
+        return `<g class="h-te" data-te="${cid}"><path d="${hypEdge(A, B)}"${A.o === 2 ? ' stroke-dasharray="3 4"' : ''}/>` +
+          `<text class="h-telbl omh-halo" x="${m[0]}" y="${m[1] + 4}" text-anchor="middle">⊑</text></g>`;
+      };
+      const xedge = (cr, i) => {
+        const A = HP[cr.a], B = HP[cr.b], m = qMid(A, B);
+        return `<g class="h-xe" data-xe="${i}" data-rel="${cr.rel === '⊑' ? 'sub' : 'eq'}"><path d="${hypEdge(A, B)}"/>` +
+          `<text class="h-xelbl omh-halo" x="${m[0]}" y="${m[1] - 7}" text-anchor="middle">${cr.rel} ${cr.c}</text></g>`;
+      };
+      const node = (id) => {
+        const p = HP[id];
+        const shape = p.o === 2
+          ? `<rect class="h-dot" x="${p.x - 4}" y="${p.y - 4}" width="8" height="8" transform="rotate(45 ${p.x} ${p.y})"/>`
+          : `<circle class="h-dot" cx="${p.x}" cy="${p.y}" r="${id === 'T' ? 5.5 : 4.5}"${id === 'T' ? ' data-top="1"' : ''}/>`;
+        const aria = id === 'T' ? 'owl:Thing, the top concept'
+          : `${bareLabel(id)}, ${ONTO[p.o]} concept — reveal its subsumption chain and cross-ontology matches`;
+        return `<g class="h-nd" data-nd="${id}" data-o="${p.o}">${shape}` +
+          `<text class="h-lbl omh-halo" x="${p.lx}" y="${p.ly}" text-anchor="${p.anch}">${p.l}</text>` +
+          `<circle class="h-hit" cx="${p.x}" cy="${p.y}" r="16" fill="transparent" tabindex="-1" role="button" aria-label="${aria}" data-hid="${id}"/></g>`;
+      };
+      elHypF.innerHTML =
+        Object.keys(HPARENT).map(tedge).join('') +
+        HCROSS.map(xedge).join('') +
+        Object.keys(HP).map(node).join('');
+      elHypF.querySelectorAll('.h-te').forEach((g) => (hypRefs.te[g.dataset.te] = g));
+      elHypF.querySelectorAll('.h-xe').forEach((g) => (hypRefs.xe[+g.dataset.xe] = g));
+      elHypF.querySelectorAll('.h-nd').forEach((g) => (hypRefs.nd[g.dataset.nd] = g));
+      // SR text alternative for the correspondences conveyed visually
+      const xs = HCROSS.map((cr) => `${bareLabel(cr.a)} (NCIT) ${cr.rel === '⊑' ? 'is subsumed by' : 'is equivalent to'} ${bareLabel(cr.b)} (DOID)`).join('; ');
+      elSr.textContent = `Hyperbolic embedding view. Cross-ontology correspondences between NCIT and DOID: ${xs}. Concepts embed in a Poincaré ball where a parent concept sits nearer the origin than its subclasses.`;
+    }
+    function applyHyp(hov) {
+      const chain = {}, partner = {};
+      if (hov) {
+        let n = hov; chain[n] = 1;
+        while (HPARENT[n]) { n = HPARENT[n]; chain[n] = 1; }
+        for (const cr of HCROSS) { if (cr.a === hov) partner[cr.b] = 1; if (cr.b === hov) partner[cr.a] = 1; }
+      }
+      elHypF.classList.toggle('has-hov', !!hov);
+      for (const cid in hypRefs.te) hypRefs.te[cid].classList.toggle('is-chain', !!chain[cid]);
+      HCROSS.forEach((cr, i) => hypRefs.xe[i].classList.toggle('is-active', !!(hov && (cr.a === hov || cr.b === hov))));
+      for (const id in hypRefs.nd) {
+        const el = hypRefs.nd[id];
+        el.classList.toggle('is-chain', !!chain[id] && hov !== id);
+        el.classList.toggle('is-partner', !!partner[id]);
+        el.classList.toggle('is-hov', hov === id);
+        el.classList.toggle('is-dim', !!(hov && !chain[id] && !partner[id] && hov !== id));
+      }
+    }
+    const setHov = (h) => { if (S.hovH === h) return; S.hovH = h; applyHyp(h); };
+
+    /* ---- chrome ---- */
+    function renderDots() {
+      elDots.innerHTML = PAIRS.map((_, i) =>
+        `<button class="omh-dot${i === S.pair ? ' on' : ''}" data-dot="${i}" aria-label="pair ${i + 1}"></button>`).join('');
+    }
+    function renderChrome() {
+      root.classList.toggle('is-neuro', S.neuro);
+      root.classList.toggle('is-hyper', S.hyper);
+      elPill.textContent = S.neuro ? '◉ neurosymbolic · on' : '○ neurosymbolic';
+      // concept hit-targets are only tabbable while the hyperbolic view is shown
+      for (const id in hypRefs.nd) hypRefs.nd[id].querySelector('.h-hit').tabIndex = S.hyper ? 0 : -1;
+      if (S.hyper) {
+        elF1.textContent = 'C ⊑ D as C ≺ D in 𝔹ⁿ';
+        elF2.textContent = '';
+        elHint.textContent = 'hover or focus a concept — its ⊑ chain and cross-ontology matches light up';
+      } else if (S.neuro) {
+        elF1.textContent = 'match(η(O₁), η(O₂)) → A · η : label → ℝⁿ';
+        elF2.innerHTML = 'equivalence as coincidence<br>subsumption as containment';
+        elHint.textContent = 'concepts as regions in a shared ℝⁿ · containment types the relation';
+      } else {
+        elF1.textContent = 'match(O₁, O₂) → A';
+        elF2.textContent = '…of equivalence ≡ and subsumption ⊑';
+        elHint.textContent = 'same concept · different labels';
+      }
+    }
+    const renderPair = () => { renderText(); renderDots(); };
+
+    /* ---- events ---- */
+    stage.addEventListener('click', (e) => {
+      if (e.target.closest('.omh-ctls') || e.target.closest('[data-hid]')) return;
+      const dot = e.target.closest('[data-dot]');
+      if (dot) { S.pair = +dot.getAttribute('data-dot'); renderPair(); return; }
+      S.pair = (S.pair + 1) % PAIRS.length;
+      renderPair();
+    });
+    elPill.addEventListener('click', (e) => {
+      e.stopPropagation();
+      S.neuro = !S.neuro; S.hyper = false; setHov(null);
+      renderChrome();
+    });
+    elHypBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      S.hyper = !S.hyper; setHov(null);
+      renderChrome();
+    });
+    elHypF.addEventListener('mouseover', (e) => { const t = e.target.closest('[data-hid]'); if (t) setHov(t.getAttribute('data-hid')); });
+    elHypF.addEventListener('mouseout', (e) => { if (e.target.closest('[data-hid]')) setHov(null); });
+    elHypF.addEventListener('focusin', (e) => { const t = e.target.closest('[data-hid]'); if (t) setHov(t.getAttribute('data-hid')); });
+    elHypF.addEventListener('focusout', (e) => { if (e.target.closest('[data-hid]')) setHov(null); });
+
+    /* ---- auto-cycle ---- */
+    const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const timer = REDUCED ? 0 : setInterval(() => {
+      if (!root.isConnected) { clearInterval(timer); return; }
+      if (document.hidden || S.neuro) return;
+      S.pair = (S.pair + 1) % PAIRS.length;
+      renderPair();
+    }, 4200);
+
+    renderPair(); renderGeo(); renderHypBack(); buildHypFore(); applyHyp(null); renderChrome();
+  }
+
+  initOmh();
+  document.addEventListener('astro:page-load', initOmh);
+</script>
