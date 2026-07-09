@@ -31,8 +31,6 @@ const ROUTES = new Map([
   ['tasks/global/submission-format.md', '/tasks/global/submission-format/'],
   ['tasks/local/ranking_task_index.md', '/tasks/local/'],
   ['tasks/local/submission-format.md', '/tasks/local/submission-format/'],
-  ['tasks/typed/typed_task_index.md', '/tasks/typed/'],
-  ['tasks/typed/submission-format.md', '/tasks/typed/submission-format/'],
   // Back-compat: the ranking task was renamed to "local"; keep old markdown
   // links resolving to the redirect stubs (see astro.config.mjs redirects).
   ['tasks/ranking/ranking_task_index.md', '/tasks/ranking/'],

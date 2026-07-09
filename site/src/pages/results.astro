@@ -178,10 +178,10 @@ const tabYears = [...histYears.map((y) => y.year), 2026];
 
         {live && (
           <p style="font-size:0.85rem; color:var(--ink-3); max-width:76ch; margin-top:1.4rem;">
-            Snapshot taken {live.fetched_at ? day(live.fetched_at) : 'recently'} from the three CodaBench
+            Snapshot taken {live.fetched_at ? day(live.fetched_at) : 'recently'} from the two CodaBench
             leaderboards; the site republishes on a schedule, so very recent submissions may not appear yet. All
             columns are macro-averaged over the three pairs (NCIT–DOID, SNOMED–FMA, SNOMED–NCIT). Global
-            alignment sorts by repaired coherence-aware F1; local by MRR; typed by preferred Typed-MRR. See
+            alignment sorts by repaired coherence-aware F1; local by MRR. See
             <a href={withBase('/evaluation/')}> evaluation metrics</a>. Columns sort on click.
           </p>
         )}
@@ -195,8 +195,8 @@ const tabYears = [...histYears.map((y) => y.year), 2026];
       <h2 id="how-h">How to submit (2026)</h2>
       <p class="section-lede">
         Work through the <a href={withBase('/quickstart/')}>quickstart</a>: download the data from the Hugging
-        Face dataset, produce one alignment RDF per pair (global) and/or one ranking submission per pair (local
-        and typed), validate with the scoring-kit scripts, and submit via CodaBench.
+        Face dataset, produce one alignment RDF per pair (global) and/or one ranking submission per pair (local),
+        validate with the scoring-kit scripts, and submit via CodaBench.
       </p>
       <ul>
         {comps.map((c) => (
