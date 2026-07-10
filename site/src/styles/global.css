@@ -1129,3 +1129,34 @@ details .details-body { padding: 0.4rem 1.1rem 1rem; }
   --ink: #e7eaf1; --accent: #4fc3e8;
 }
 .footer-logo { height: 3.1rem; width: auto; display: block; }
+
+/* ---- homepage: track history (canonical resources + previous editions) ---- */
+.heritage-links { display: grid; gap: 0.75rem; margin-top: 1.7rem; }
+@media (min-width: 46rem) { .heritage-links { grid-template-columns: repeat(3, 1fr); } }
+.heritage-link {
+  display: flex; flex-direction: column; gap: 0.2rem;
+  border: 1px solid var(--line); border-radius: var(--radius-m);
+  background: var(--bg-raised); padding: 0.85rem 1rem;
+  text-decoration: none; color: var(--ink);
+  transition: border-color 0.14s ease;
+}
+.heritage-link:hover { border-color: var(--accent); color: var(--ink); }
+.heritage-link .name { font-family: var(--font-display); font-weight: 600; }
+.heritage-link .where { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-3); overflow-wrap: anywhere; }
+
+.edition-grid { display: grid; gap: 0.75rem; margin-top: 0.75rem; }
+@media (min-width: 40rem) { .edition-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 62rem) { .edition-grid { grid-template-columns: repeat(4, 1fr); } }
+.edition-card {
+  border: 1px solid var(--line); border-radius: var(--radius-m);
+  background: var(--bg-raised); padding: 0.9rem 1rem;
+  display: flex; flex-direction: column; gap: 0.15rem;
+}
+.edition-card .ed-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
+.edition-card .ed-year {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.2rem;
+  letter-spacing: -0.01em; font-variant-numeric: tabular-nums;
+}
+.edition-card .ed-page { font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+.edition-card .ed-cap { font-size: 0.75rem; color: var(--ink-3); margin-top: 0.35rem; }
+.edition-card .ed-doi { font-family: var(--font-mono); font-size: 0.8rem; overflow-wrap: anywhere; }

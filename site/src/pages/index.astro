@@ -26,6 +26,22 @@ const timeline = [
   { date: '6 September 2026', what: 'Competition ends — results reported (grace period until 12 September)', state: '' },
 ];
 
+// The track's historical record, carried over from the original README:
+// the canonical companion resources, and each pre-2026 edition's citable
+// Zenodo dataset paired with its archived campaign page (preserved at
+// /<year>/ by the site build). NB: 2024 and 2025 share one Zenodo record.
+const trackResources = [
+  { name: 'OAEI track page', where: 'liseda-lab.github.io/OAEI-Bio-ML', href: 'https://liseda-lab.github.io/OAEI-Bio-ML/' },
+  { name: 'Historic documentation', where: 'krr-oxford.github.io/DeepOnto/bio-ml', href: 'https://krr-oxford.github.io/DeepOnto/bio-ml' },
+  { name: 'Resource paper', where: 'arxiv.org/abs/2205.03447', href: 'https://arxiv.org/abs/2205.03447' },
+];
+const editions = [
+  { year: '2025', doi: '10.5281/zenodo.13119437' },
+  { year: '2024', doi: '10.5281/zenodo.13119437' },
+  { year: '2023', doi: '10.5281/zenodo.8193375' },
+  { year: '2022', doi: '10.5281/zenodo.6946466' },
+];
+
 // The vocabularies behind the benchmark. NCIT, DOID, SNOMED CT and FMA are the
 // four matched across the three pairs; MONDO and the UMLS Metathesaurus underlie
 // the reference construction. Colours read on the dark hero panel.
@@ -67,6 +83,38 @@ const ontologies = [
           <a class="btn btn-ghost" href={withBase('/tasks/')}>The tasks</a>
           <a class="btn btn-ghost" href={withBase('/primer/')}>New to ontology matching?</a>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="history-h">
+    <div class="container">
+      <p class="kicker">History</p>
+      <h2 id="history-h">Bio-ML since 2022</h2>
+      <p class="section-lede">
+        Bio-ML has run in every OAEI campaign since 2022, when it superseded LargeBio. The
+        track's canonical resources are below, and every earlier edition remains available —
+        its dataset citable on Zenodo, its campaign page preserved at the original address.
+      </p>
+      <div class="heritage-links">
+        {trackResources.map((r) => (
+          <a class="heritage-link" href={r.href}>
+            <span class="name">{r.name}</span>
+            <span class="where">{r.where}</span>
+          </a>
+        ))}
+      </div>
+      <div class="edition-grid" role="list" aria-label="Previous editions: dataset downloads and campaign pages">
+        {editions.map((e) => (
+          <div class="edition-card" role="listitem">
+            <div class="ed-head">
+              <span class="ed-year">OAEI {e.year}</span>
+              <a class="ed-page" href={withBase(`/${e.year}/`)} aria-label={`OAEI ${e.year} campaign page`}>campaign page →</a>
+            </div>
+            <span class="ed-cap">Dataset · Zenodo</span>
+            <a class="ed-doi" href={`https://doi.org/${e.doi}`} aria-label={`OAEI ${e.year} dataset, DOI ${e.doi}`}>{e.doi}</a>
+          </div>
+        ))}
       </div>
     </div>
   </section>
