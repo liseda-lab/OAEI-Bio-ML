@@ -16,6 +16,6 @@
  * the asset-copy step (which writes the CNAME file), and the a11y audit
  * server. Do not hard-code the origin or base path anywhere else.
  */
-export const SITE_ORIGIN = 'https://liseda-lab.github.io';
-export const BASE_PATH = '/OAEI-Bio-ML';
-export const CNAME = null;
+export const SITE_ORIGIN = 'https://bio-ml.oaei-ml.org';
+export const BASE_PATH = '';
+export const CNAME = 'bio-ml.oaei-ml.org';
