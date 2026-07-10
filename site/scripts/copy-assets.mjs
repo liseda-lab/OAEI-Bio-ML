@@ -7,9 +7,9 @@
  * are already published elsewhere, and the task splits live on the (gated)
  * Hugging Face dataset. So this step only publishes the small, redistributable
  * pieces that exist at the repo root — the organiser-baseline leaderboard, any
- * CI-written live results, the licence, and (if present) the participant
- * validator scripts. Every source is guarded: a missing one is skipped, never
- * fatal.
+ * CI-written live results, the licence, (if present) the participant validator
+ * scripts, and the archived docs/<year>/ campaign pages at their original
+ * URLs. Every source is guarded: a missing one is skipped, never fatal.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -39,6 +39,19 @@ const scriptsDir = path.join(ROOT, 'scripts');
 if (fs.existsSync(scriptsDir)) {
   for (const f of fs.readdirSync(scriptsDir)) {
     if (/\.(py|rng)$/.test(f)) jobs.push({ from: `scripts/${f}`, to: `scripts/${f}` });
+  }
+}
+
+// docs/: the previous GitHub Pages site was served from this folder, so its
+// campaign archives lived at /<year>/... — keep those URLs alive by publishing
+// each docs/<year>/ folder at the site root, along with the shared assets the
+// year pages reference relatively (../style.css, ../oaeismall.jpg). The legacy
+// docs/index.html is deliberately NOT copied: the Astro homepage owns / now,
+// which is also where the year pages' "../index.html" back-links land.
+const docsDir = path.join(ROOT, 'docs');
+if (fs.existsSync(docsDir)) {
+  for (const f of fs.readdirSync(docsDir)) {
+    if (/^\d{4}$/.test(f) || /\.(css|jpg|png)$/.test(f)) jobs.push({ from: `docs/${f}`, to: f });
   }
 }
 

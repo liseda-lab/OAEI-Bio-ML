@@ -11,3 +11,9 @@ public/scripts/
 public/leaderboard.json
 public/LICENSE
 public/CNAME
+
+# legacy campaign archives + their shared assets, copied from docs/ by scripts/copy-assets.mjs
+public/[0-9][0-9][0-9][0-9]/
+public/style.css
+public/oaeismall.jpg
+public/new.png

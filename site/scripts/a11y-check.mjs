@@ -41,7 +41,10 @@ const pages = [];
 const walk = (dir) => {
   for (const f of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, f.name);
-    if (f.isDirectory() && !['data', 'references', 'candidates', 'baselines', 'scripts', '_astro'].includes(f.name)) walk(full);
+    // \d{4} dirs are the legacy docs/<year>/ campaign archives, served
+    // verbatim for URL continuity — they predate (and don't carry) the new
+    // site's accessibility contract, so they are not audited.
+    if (f.isDirectory() && !['data', 'references', 'candidates', 'baselines', 'scripts', '_astro'].includes(f.name) && !/^\d{4}$/.test(f.name)) walk(full);
     else if (f.name === 'index.html' || f.name === '404.html') {
       pages.push('/' + path.relative(DIST, f.name === '404.html' ? full : path.dirname(full)).split(path.sep).join('/'));
     }
