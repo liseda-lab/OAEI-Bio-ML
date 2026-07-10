@@ -1130,7 +1130,7 @@ details .details-body { padding: 0.4rem 1.1rem 1rem; }
 }
 .footer-logo { height: 3.1rem; width: auto; display: block; }
 
-/* ---- homepage: track history (canonical resources + previous editions) ---- */
+/* ---- history page: canonical resources + editions timeline ---- */
 .heritage-links { display: grid; gap: 0.75rem; margin-top: 1.7rem; }
 @media (min-width: 46rem) { .heritage-links { grid-template-columns: repeat(3, 1fr); } }
 .heritage-link {
@@ -1144,19 +1144,45 @@ details .details-body { padding: 0.4rem 1.1rem 1rem; }
 .heritage-link .name { font-family: var(--font-display); font-weight: 600; }
 .heritage-link .where { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-3); overflow-wrap: anywhere; }
 
-.edition-grid { display: grid; gap: 0.75rem; margin-top: 0.75rem; }
-@media (min-width: 40rem) { .edition-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 62rem) { .edition-grid { grid-template-columns: repeat(4, 1fr); } }
-.edition-card {
+/* Chronological, spine-and-node timeline of the track's editions. */
+.edition-timeline { list-style: none; margin: 2rem 0 0; padding: 0; position: relative; }
+.edition-timeline::before {
+  content: ""; position: absolute; top: 0.7rem; bottom: 0.7rem; left: 0.52rem;
+  width: 2px; background: var(--line-strong);
+}
+.edition-timeline > li { position: relative; padding: 0 0 1.3rem 2rem; }
+.edition-timeline > li:last-child { padding-bottom: 0; }
+.edition-timeline > li::before {
+  content: ""; position: absolute; left: 0; top: 0.75rem;
+  width: 1.05rem; height: 1.05rem; border-radius: 50%;
+  background: var(--bg-raised); border: 2px solid var(--line-strong);
+  box-shadow: 0 0 0 4px var(--bg);
+}
+.edition-timeline > li.is-current::before {
+  border-color: var(--accent); background: var(--accent-soft);
+}
+.edition-entry {
   border: 1px solid var(--line); border-radius: var(--radius-m);
-  background: var(--bg-raised); padding: 0.9rem 1rem;
-  display: flex; flex-direction: column; gap: 0.15rem;
+  background: var(--bg-raised); padding: 1.05rem 1.2rem;
+  transition: border-color 0.14s ease;
 }
-.edition-card .ed-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
-.edition-card .ed-year {
-  font-family: var(--font-display); font-weight: 700; font-size: 1.2rem;
-  letter-spacing: -0.01em; font-variant-numeric: tabular-nums;
+.edition-entry:hover { border-color: var(--line-strong); }
+.edition-timeline > li.is-current .edition-entry {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 20%, transparent);
 }
-.edition-card .ed-page { font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
-.edition-card .ed-cap { font-size: 0.75rem; color: var(--ink-3); margin-top: 0.35rem; }
-.edition-card .ed-doi { font-family: var(--font-mono); font-size: 0.8rem; overflow-wrap: anywhere; }
+.edition-entry .eh { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.4rem 0.7rem; }
+.edition-entry .eyear {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.3rem;
+  letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--ink);
+}
+.edition-entry .ehost { font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-3); margin-left: auto; }
+.edition-entry .eblurb { color: var(--ink-2); margin: 0.55rem 0 0; font-size: 0.95rem; }
+.edition-entry .elinks { display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem; margin-top: 0.8rem; font-size: 0.88rem; }
+.edition-entry .elinks a { font-weight: 600; }
+.edition-entry .elinks .zdoi {
+  font-family: var(--font-mono); font-weight: 500; color: var(--ink-3);
+  overflow-wrap: anywhere;
+}
+.edition-entry .elinks a.zdoi { color: var(--ink-3); font-weight: 500; }
+.edition-entry .elinks a.zdoi:hover { color: var(--accent); }

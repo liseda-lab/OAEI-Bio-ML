@@ -1,0 +1,151 @@
+---
+import Base from '../layouts/Base.astro';
+import { withBase } from '../config';
+
+// The track's historical record, carried over from the home page and expanded.
+// The canonical companion resources, plus each edition's story — sourced from
+// the committed per-year results metadata (src/data/results/*.json) and rendered
+// oldest-first so the page reads as the track's evolution up to the current
+// edition. Each pre-2026 edition keeps its citable Zenodo dataset and its
+// archived campaign page (preserved at /<year>/ by the site build).
+// NB: 2024 and 2025 share one Zenodo record.
+const trackResources = [
+  { name: 'OAEI track page', where: 'liseda-lab.github.io/OAEI-Bio-ML', href: 'https://liseda-lab.github.io/OAEI-Bio-ML/' },
+  { name: 'Historic documentation', where: 'krr-oxford.github.io/DeepOnto/bio-ml', href: 'https://krr-oxford.github.io/DeepOnto/bio-ml' },
+  { name: 'Resource paper', where: 'arxiv.org/abs/2205.03447', href: 'https://arxiv.org/abs/2205.03447' },
+];
+
+const editions = [
+  {
+    year: '2022',
+    tag: 'First edition',
+    tagClass: 'badge-accent',
+    host: 'krr-oxford.github.io',
+    page: '/2022/',
+    doi: '10.5281/zenodo.6946466',
+    blurb:
+      'Bio-ML launched as the machine-learning-friendly successor to the LargeBio track. Five ontology pairs — NCIT–DOID and OMIM–ORDO (disease), SNOMED–FMA (body) and the two SNOMED–NCIT pairs (neoplas & pharm) — were matched under unsupervised (90% test maps) and semi-supervised (70% test maps) settings, covering both equivalence and subsumption.',
+  },
+  {
+    year: '2023',
+    tag: null,
+    host: 'krr-oxford.github.io',
+    page: '/2023/',
+    doi: '10.5281/zenodo.8193375',
+    blurb:
+      'The setup settled into two configurations kept ever since: an unsupervised one with no training maps, and a semi-supervised one with an optional 30% of training maps. Subsumption was evaluated by local ranking.',
+  },
+  {
+    year: '2024',
+    tag: null,
+    host: 'krr-oxford.github.io',
+    page: '/2024/',
+    doi: '10.5281/zenodo.13119437',
+    blurb:
+      'The 2024 campaign continued the 2023 design unchanged — the unsupervised and semi-supervised (optional 30% training maps) settings, with subsumption again by local ranking.',
+  },
+  {
+    year: '2025',
+    tag: null,
+    host: 'liseda-lab.github.io',
+    page: '/2025/',
+    doi: '10.5281/zenodo.13119437',
+    blurb:
+      'The edition narrowed to equivalence matching only, and hosting of the campaign moved to the LISEDA lab.',
+  },
+  {
+    year: '2026',
+    tag: 'Current edition',
+    tagClass: 'badge-ok',
+    host: 'oaei-ml.org',
+    page: '/',
+    doi: null,
+    current: true,
+    blurb:
+      'The current edition rebuilds Bio-ML around three whole-ontology pairs — NCIT–DOID, SNOMED–FMA and SNOMED–NCIT — with coherence-repaired references and two CodaBench competitions for global and local equivalence. The task data is distributed on the Hugging Face Hub.',
+  },
+];
+---
+
+<Base
+  title="History"
+  description="The history of the OAEI Bio-ML track: how it has run in every OAEI campaign since 2022 when it superseded LargeBio, edition by edition, with each year's citable dataset and archived campaign page."
+>
+  <div class="page-head">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href={withBase('/')}>Home</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">History</span>
+      </nav>
+      <h1>History</h1>
+      <p class="lead">
+        Bio-ML has run in every OAEI campaign since 2022, when it superseded LargeBio. This page
+        traces the track edition by edition — every earlier campaign remains available, its dataset
+        citable on Zenodo and its campaign page preserved at the original address.
+      </p>
+    </div>
+  </div>
+
+  <section class="section" style="border-top:none; padding-top:1.4rem;" aria-labelledby="resources-h">
+    <div class="container">
+      <p class="kicker">Canonical resources</p>
+      <h2 id="resources-h">Where the track lives</h2>
+      <p class="section-lede">
+        The track's long-standing companion resources — the OAEI track page, the original
+        documentation, and the resource paper describing the benchmark's design.
+      </p>
+      <div class="heritage-links">
+        {trackResources.map((r) => (
+          <a class="heritage-link" href={r.href}>
+            <span class="name">{r.name}</span>
+            <span class="where">{r.where}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="editions-h">
+    <div class="container">
+      <p class="kicker">Editions</p>
+      <h2 id="editions-h">Bio-ML, edition by edition</h2>
+      <p class="section-lede">
+        How the track has evolved across five OAEI campaigns, from its 2022 debut to the current
+        2026 edition. Each edition below links to its archived campaign page and citable dataset.
+      </p>
+      <ol class="edition-timeline">
+        {editions.map((e) => (
+          <li class={e.current ? 'is-current' : undefined}>
+            <div class="edition-entry">
+              <div class="eh">
+                <span class="eyear">OAEI {e.year}</span>
+                {e.tag && <span class={`badge ${e.tagClass}`}>{e.tag}</span>}
+                <span class="ehost">{e.host}</span>
+              </div>
+              <p class="eblurb">{e.blurb}</p>
+              <div class="elinks">
+                <a href={withBase(e.page)}>{e.current ? 'This edition →' : `${e.year} campaign page →`}</a>
+                {e.doi
+                  ? <a class="zdoi" href={`https://doi.org/${e.doi}`} aria-label={`OAEI ${e.year} dataset on Zenodo, DOI ${e.doi}`}>Dataset · Zenodo {e.doi}</a>
+                  : <span class="zdoi">Dataset · Hugging Face (edition tag 2026)</span>}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="results-h">
+    <div class="container">
+      <p class="kicker">Results</p>
+      <h2 id="results-h">Every edition's results</h2>
+      <p class="section-lede">
+        Published leaderboards for each campaign — the current 2026 competitions alongside the prior
+        editions, each shown in its original structure — are collected on the results page.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href={withBase('/results/')}>Browse results by edition</a>
+      </div>
+    </div>
+  </section>
+</Base>

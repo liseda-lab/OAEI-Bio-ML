@@ -54,6 +54,9 @@ const learnActive = learn.some((l) => here === l.href);
           </div>
         </li>
         <li>
+          <a href={withBase('/history/')} aria-current={here === '/history/' ? 'page' : undefined}>History</a>
+        </li>
+        <li>
           <a href={withBase('/about/')} aria-current={here === '/about/' ? 'page' : undefined}>About</a>
         </li>
       </ul>
