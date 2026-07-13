@@ -21,7 +21,7 @@ const competitions = [
 const timeline = [
   { date: '6 July 2026', what: 'Provisional materials released', state: 'done' },
   { date: '7 July 2026', what: 'Finalised datasets published', state: 'done' },
-  { date: '12 July 2026', what: 'Competition starts — evaluation & leaderboard open', state: 'live' },
+  { date: '12 July 2026', what: 'Competition started — evaluation & leaderboard open', state: 'live' },
   { date: '1 September 2026', what: 'Evaluation closes', state: '' },
   { date: '6 September 2026', what: 'Competition ends — results reported (grace period until 12 September)', state: '' },
 ];
@@ -151,7 +151,7 @@ const ontologies = [
       <h2 id="submit-h">Two CodaBench competitions</h2>
       <p class="section-lede">
         Each scored subtrack has its own CodaBench competition. Validate and (where possible) self-score
-        locally with the scoring kit, then submit. Portals open on 12 July 2026.
+        locally with the scoring kit, then submit. Both portals are open as of 12 July 2026.
       </p>
       <div class="table-wrap">
         <table>
@@ -170,7 +170,7 @@ const ontologies = [
       </div>
       <p style="font-size:0.92rem; color:var(--ink-3); margin-top:1rem;">
         Organiser-run baselines are published on the <a href={withBase('/baselines/')}>baselines</a> page;
-        participant standings appear on <a href={withBase('/results/')}>results</a> once the window opens.
+        participant standings appear on <a href={withBase('/results/')}>results</a> now that the window is open.
       </p>
     </div>
   </section>
@@ -182,8 +182,9 @@ const ontologies = [
       <div class="notice">
         <span aria-hidden="true">ℹ</span>
         <span>
-          The 2026 datasets are <strong>final</strong>. Evaluation and the live leaderboards open on
-          12 July 2026 via the two CodaBench competitions above. All dates are
+          The 2026 datasets are <strong>final</strong> and the competition is <strong>live</strong>:
+          evaluation and the leaderboards opened on 12 July 2026 via the two CodaBench competitions
+          above, and remain open until 1 September 2026. All dates are
           00:00 <abbr title="Anywhere on Earth">AoE</abbr>.
         </span>
       </div>
@@ -194,7 +195,7 @@ const ontologies = [
             <span class="date">{t.date}</span>
             <span class="what">{t.what}</span>
             {t.state === 'done' && <span class="badge badge-ok">delivered</span>}
-            {t.state === 'live' && <span class="badge badge-soon">next</span>}
+            {t.state === 'live' && <span class="badge badge-soon">live now</span>}
           </li>
         ))}
       </ol>
