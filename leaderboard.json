@@ -37,13 +37,6 @@
         "f1_standard": 0.4742,
         "precision_repaired": 0.7854,
         "recall_repaired": 0.4032
-      },
-      {
-        "system": "Naive-Lexical",
-        "f1_repaired": 0.1605,
-        "f1_standard": 0.15,
-        "precision_repaired": 0.4241,
-        "recall_repaired": 0.1261
       }
     ]
   },
