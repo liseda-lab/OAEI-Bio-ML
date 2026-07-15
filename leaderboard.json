@@ -44,7 +44,7 @@
     "headline": "mrr",
     "systems": [
       {
-        "system": "Naive-Lexical",
+        "system": "Lexical-Baseline",
         "mrr": 0.7305,
         "hits_at_1": 0.6559,
         "hits_at_5": 0.814,
