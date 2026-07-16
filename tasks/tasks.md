@@ -58,7 +58,7 @@ git clone https://github.com/liseda-lab/OAEI-Bio-ML && cd OAEI-Bio-ML   # the sc
 hf download OAEI-ML/bio-ml --repo-type dataset --revision 2026 --local-dir ./bio-ml   # the data
 ```
 
-Under `bio-ml/`, each pair (`NCIT-DOID`, `SNOMED-FMA`, `SNOMED-NCIT`) ships the public equivalence reference `refs_equiv/train.tsv`, the local-ranking pools `local.train.cands.tsv` / `local.valid.cands.tsv` (gold-bearing) plus `local.test.cands.tsv` (gold-stripped); a `repaired/` tree mirrors the same files against the coherence-repaired reference. The **source ontologies are not re-hosted** — obtain each from its publisher (see the dataset's `ontologies.md`). Run `python scoring_kit/self_check.py --data ./bio-ml` to confirm the data downloaded intact.
+Under `bio-ml/`, each pair (`NCIT-DOID`, `SNOMED-FMA`, `SNOMED-NCIT`) ships the public equivalence reference `refs_equiv/train.tsv`, the local-ranking pools `local.train.cands.tsv` / `local.valid.cands.tsv` (gold-bearing) plus `local.test.cands.tsv` (gold-stripped); a `repaired/` tree mirrors the same files against the coherence-repaired reference. The download also bundles the **NCIT, DOID and FMA** ontology files; only **SNOMED CT** (for the two SNOMED pairs) is obtained separately — under an Affiliate Licence or by [contacting us](mailto:contact@oaei-ml.org) for a research-only copy (see [ontologies](../ontologies/ontologies.md)). Run `python scoring_kit/self_check.py --data ./bio-ml` to confirm the data downloaded intact.
 
 ## Key dates
 

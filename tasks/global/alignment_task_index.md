@@ -10,7 +10,7 @@ For each of the three ontology pairs you submit **one complete equivalence align
 | `SNOMED-FMA`  | SNOMED CT → FMA   | repaired (headline) + standard |
 | `SNOMED-NCIT` | SNOMED CT → NCIt  | repaired (headline) + standard |
 
-The **source ontologies are not re-hosted** in the [`OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml) dataset — obtain each from its original publisher (see the [ontologies](../../ontologies/ontologies.md) page and the dataset's own `ontologies.md`).
+The [`OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml) download bundles the **NCIT, DOID and FMA** ontology files; only **SNOMED CT** (for `SNOMED-FMA` and `SNOMED-NCIT`) is obtained separately — under an Affiliate Licence or by [contacting us](mailto:contact@oaei-ml.org) for a research-only copy (see the [ontologies](../../ontologies/ontologies.md) page).
 
 ## A semi-supervised setting
 

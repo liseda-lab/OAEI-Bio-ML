@@ -122,10 +122,11 @@ const ontologies = [
         The 2026 task data is distributed on the Hugging Face Hub as
         <a href={HF_DATASET} class="mono">OAEI-ML/bio-ml</a> (edition tag
         <span class="mono">2026</span>). It is <strong>publicly available</strong>
-        and downloads without gating (entity IRIs only); the self-contained
-        <code class="mono">scoring_kit/</code> ships separately with the track repository, and the
-        licence-restricted source vocabularies (SNOMED CT, UMLS) are obtained separately under your
-        own licence.
+        and downloads without gating (entity IRIs only); the download now also bundles the
+        <strong>NCIT, DOID and FMA</strong> ontology files. The self-contained
+        <code class="mono">scoring_kit/</code> ships separately with the track repository. The only
+        source not included is <strong>SNOMED CT</strong> (for the two SNOMED pairs), obtained
+        separately under an Affiliate Licence or by contacting us for a research-only copy.
       </p>
       <div class="notice">
         <span aria-hidden="true">⬇</span>
@@ -135,12 +136,12 @@ const ontologies = [
         </span>
       </div>
       <p style="font-size:0.92rem; color:var(--ink-3); margin-top:1rem;">
-        The Hugging Face dataset holds the per-pair task files only; the self-contained
-        <code class="mono">scoring_kit/</code> (validators and self-scorers) comes from the track
-        repository, cloned above. The source ontologies are <strong>not re-hosted</strong> here —
-        see the <a href={withBase('/ontologies/')}>ontologies</a> page for where to obtain each,
-        and the <a href={withBase('/quickstart/')}>quickstart</a> for the full walk-through. Track
-        repository: <a href={GITHUB_REPO}>liseda-lab/OAEI-Bio-ML</a>.
+        The Hugging Face download holds the per-pair task files and the NCIT, DOID and FMA ontology
+        files; the self-contained <code class="mono">scoring_kit/</code> (validators and self-scorers)
+        comes from the track repository, cloned above. <strong>SNOMED CT</strong> is the only source
+        you obtain yourself — see the <a href={withBase('/ontologies/')}>ontologies</a> page for the
+        licence and how, and the <a href={withBase('/quickstart/')}>quickstart</a> for the full
+        walk-through. Track repository: <a href={GITHUB_REPO}>liseda-lab/OAEI-Bio-ML</a>.
       </p>
     </div>
   </section>
@@ -208,8 +209,9 @@ const ontologies = [
       <h2 id="onto-h">Built on established biomedical ontologies</h2>
       <p class="section-lede">
         NCIT, DOID, SNOMED CT and FMA are matched across the three pairs; MONDO and the UMLS
-        Metathesaurus underlie the reference construction. All are obtained from their original
-        publishers — see <a href={withBase('/ontologies/')}>ontologies</a> for sources and licences.
+        Metathesaurus underlie the reference construction. NCIT, DOID and FMA ship with the download;
+        only SNOMED CT is obtained separately — see <a href={withBase('/ontologies/')}>ontologies</a>
+        for licences and how.
       </p>
       <div class="onto-grid">
         {ontologies.map((o) => (

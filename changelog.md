@@ -4,6 +4,10 @@ Notable changes to the OAEI Bio-ML datasets, baselines, and published results ar
 
 ## 2026 edition (first edition)
 
+### 2026-07-16 — Ontology files added to the download
+
+The Hugging Face dataset now bundles the **NCIT, DOID, and FMA** ontology files alongside the task data, so participants no longer obtain those three separately. **SNOMED CT** remains licence-restricted and is not redistributed: obtain it under a SNOMED CT Affiliate Licence, or contact the organisers (<contact@oaei-ml.org>) for a copy strictly for research purposes. See [ontologies](./ontologies/ontologies.md).
+
 ### 2026-07-07 — Finalised datasets published
 
 The 2026 datasets are frozen and distributed on the Hugging Face Hub as [`OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml) (edition tag `2026`): the per-pair equivalence reference (`refs_equiv/train.tsv`), the local-ranking candidate pools (with gold-stripped test splits), and a `repaired/` tree against the coherence-repaired reference. The Hugging Face dataset is data only; the self-contained `scoring_kit/` ships separately with the [track repository](https://github.com/liseda-lab/OAEI-Bio-ML). Two CodaBench competitions (Track 1 Global Alignment, Track 1 Local Ranking) open on 12 July 2026; the evaluation window runs 12 July – 30 September 2026.

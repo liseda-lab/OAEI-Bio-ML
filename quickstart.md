@@ -22,7 +22,7 @@ The 2026 task data is **publicly available** under the OAEI-ML organisation — 
 * `local.train.cands.tsv` / `local.valid.cands.tsv` — the local-ranking pools that **carry the gold** `TgtEntity` (use them to self-score), and `local.test.cands.tsv` — the **gold-stripped** test pool (source entity + candidate list only),
 * `repaired/` — the same set of files scored against the coherence-repaired reference.
 
-The Hugging Face dataset is **data only**; the `scoring_kit/` used below is the one you cloned in step 1a. The **source ontologies are not re-hosted** — obtain each from its original publisher (see [ontologies](./ontologies/ontologies.md), and the dataset's own `ontologies.md`).
+The download also bundles the **NCIT, DOID and FMA** ontology files alongside the task data, so for the `NCIT-DOID` pair there is nothing more to fetch. The one exception is **SNOMED CT** (needed for `SNOMED-FMA` and `SNOMED-NCIT`), which we cannot redistribute: obtain it under a [SNOMED CT Affiliate Licence](https://www.snomed.org/) or [contact us](mailto:contact@oaei-ml.org) for a copy strictly for research purposes (see [ontologies](./ontologies/ontologies.md)). The `scoring_kit/` used below is the one you cloned in step 1a.
 
 ## 2. Sanity-check your copy
 

@@ -22,7 +22,7 @@ By design, **Track 1 uses full OWL IRIs**. Public local-ranking candidate files 
 
 ## Data
 
-The 2026 datasets are **publicly available** on the Hugging Face Hub as [`OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml) (edition tag `2026`) — the task data is entity IRIs and downloads without gating. The Hugging Face dataset is **data only**; the self-contained `scoring_kit/` (validators + self-scorers) ships separately with the [track repository](https://github.com/liseda-lab/OAEI-Bio-ML). The licence-restricted **source ontologies** (SNOMED CT [14], UMLS [9]) are **not re-hosted** — see [ontologies](./ontologies/ontologies.md) for where to obtain each and under which licence. The [quickstart](./quickstart.md) walks through cloning the scoring kit, downloading the data, and validating and self-scoring a submission.
+The 2026 datasets are **publicly available** on the Hugging Face Hub as [`OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml) (edition tag `2026`) — the task data is entity IRIs and downloads without gating, and the download now also bundles the **NCIT [11], DOID [12] and FMA [13]** ontology files. The self-contained `scoring_kit/` (validators + self-scorers) ships separately with the [track repository](https://github.com/liseda-lab/OAEI-Bio-ML). The one licence-restricted source not included is **SNOMED CT [14]**, obtained under a SNOMED CT Affiliate Licence or by emailing us (<contact@oaei-ml.org>) for a copy strictly for research purposes — see [ontologies](./ontologies/ontologies.md) for licences and how. The [quickstart](./quickstart.md) walks through cloning the scoring kit, downloading the data, and validating and self-scoring a submission.
 
 ## Baselines & results
 

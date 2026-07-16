@@ -23,13 +23,13 @@ The standard/repaired references are **not directly comparable**; see [evaluatio
 
 This resource publishes (and points to):
 
-* [the source ontologies and where to obtain each](./ontologies/ontologies.md),
+* [the source ontologies and their licences](./ontologies/ontologies.md) (NCIT, DOID and FMA ship with the download; SNOMED CT is obtained separately),
 * [task descriptions](./tasks/tasks.md) and [dataset packaging details](./quickstart.md),
 * [evaluation metrics](./evaluation-metrics.md),
 * the [baselines page](./BASELINES.md) and the [dataset & results changelog](./changelog.md), and
 * extended supplementary material for each released edition _(available at track launch)_.
 
-The 2026 datasets are **publicly available** on the Hugging Face Hub: [`OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml) (edition tag `2026`) — the task data is built of entity IRIs and downloads freely. The Hugging Face dataset is **data only**; the self-contained `scoring_kit/` (validators + self-scorers) ships separately with the [track repository](https://github.com/liseda-lab/OAEI-Bio-ML). Licence-restricted **source vocabularies** (SNOMED CT, UMLS) are obtained separately under your own licence (see [ontologies](./ontologies/ontologies.md)).
+The 2026 datasets are **publicly available** on the Hugging Face Hub: [`OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml) (edition tag `2026`) — the task data is built of entity IRIs and downloads freely, and the download now also bundles the **NCIT, DOID, and FMA** ontology files. The self-contained `scoring_kit/` (validators + self-scorers) ships separately with the [track repository](https://github.com/liseda-lab/OAEI-Bio-ML). The only source not included is **SNOMED CT** (needed for the two SNOMED pairs), obtained under a SNOMED CT Affiliate Licence or by [contacting us](mailto:contact@oaei-ml.org) for a copy strictly for research purposes (see [ontologies](./ontologies/ontologies.md)).
 
 ```bash
 git clone https://github.com/liseda-lab/OAEI-Bio-ML   # the scoring kit
@@ -37,7 +37,7 @@ pip install -U huggingface_hub
 hf download OAEI-ML/bio-ml --repo-type dataset --revision 2026 --local-dir ./bio-ml   # the data
 ```
 
-The source ontologies are **not re-hosted** here; see [`ontologies/`](./ontologies/ontologies.md) for sources and licences.
+The NCIT, DOID, and FMA ontologies ship with the download; **SNOMED CT** is the only source you obtain yourself — see [`ontologies/`](./ontologies/ontologies.md) for licences and how.
 
 ## Timeline
 
@@ -55,7 +55,7 @@ The source ontologies are **not re-hosted** here; see [`ontologies/`](./ontologi
 
 ## Get Started & Participate
 
-* Read the **[quickstart](./quickstart.md)**: download from Hugging Face, run the scoring kit, obtain the ontologies, and submit on CodaBench.
+* Read the **[quickstart](./quickstart.md)**: download from Hugging Face, run the scoring kit, obtain SNOMED CT for the two SNOMED pairs, and submit on CodaBench.
 * Two CodaBench competitions — [Track 1 Global Alignment](https://www.codabench.org/competitions/17424/) and [Track 1 Local Ranking](https://www.codabench.org/competitions/17423/) — open on 12 July 2026.
 * Organiser-run [baselines](./BASELINES.md) are published before the competition; participant standings appear on the CodaBench leaderboards.
 
