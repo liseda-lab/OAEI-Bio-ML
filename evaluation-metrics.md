@@ -45,5 +45,5 @@ The evaluation window and reporting dates (all 00:00 Anywhere on Earth):
 | Provisional materials released | 6 July 2026 |
 | Finalised datasets published | 7 July 2026 |
 | Competition starts, evaluation + leaderboards open | 12 July 2026 |
-| Evaluation closes | 1 September 2026 |
-| Competition ends, results reported *(grace period until 12 September)* | 6 September 2026 |
+| Evaluation closes | 30 September 2026 |
+| Competition ends, results reported *(grace period until 13 October)* | 6 October 2026 |

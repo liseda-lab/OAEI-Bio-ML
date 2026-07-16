@@ -55,7 +55,7 @@ Local ranking is scored with **MRR** and **Hits@{1,5,10}**, macro-averaged over 
 
 ## 5. Submit
 
-The evaluation window runs from 12 July to 1 September 2026 (00:00 Anywhere on Earth). Each scored subtrack has its own CodaBench competition:
+The evaluation window runs from 12 July to 30 September 2026 (00:00 Anywhere on Earth). Each scored subtrack has its own CodaBench competition:
 
 * Subtrack 1 — Global equivalence alignment — **[open on CodaBench](https://www.codabench.org/competitions/17424/)**,
 * Subtrack 2 — Local equivalence ranking — **[open on CodaBench](https://www.codabench.org/competitions/17423/)**.
