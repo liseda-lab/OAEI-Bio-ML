@@ -23,6 +23,7 @@ const PUB = path.resolve(HERE, '../public');
 const jobs = [
   { from: 'leaderboard.json', to: 'leaderboard.json' },
   { from: 'reference_coherence.json', to: 'reference_coherence.json' },
+  { from: 'baseline_coherence.json', to: 'baseline_coherence.json' },
   { from: 'results', to: 'results' },
   { from: 'LICENSE', to: 'LICENSE' },
 ];

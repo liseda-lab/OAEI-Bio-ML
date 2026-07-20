@@ -12,12 +12,21 @@ import Base from '../../layouts/Base.astro';
 const ROOT = path.resolve(process.cwd(), '..');
 const lb = JSON.parse(fs.readFileSync(path.join(ROOT, 'leaderboard.json'), 'utf8'));
 const refCoh = JSON.parse(fs.readFileSync(path.join(ROOT, 'reference_coherence.json'), 'utf8'));
+const sysCoh = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline_coherence.json'), 'utf8'));
 
 // Coherence-table cell formatters. `null` counts/degrees render as an em dash;
 // ELK lower bounds carry a dagger keyed to the footnote below the table.
 const unsatCell = (n: number | null, lb2: boolean) =>
   n == null ? '—' : n.toLocaleString('en-GB') + (lb2 ? '†' : '');
 const degCell = (d: number | null) => (d == null ? '—' : d === 0 ? '0%' : `${d}%`);
+
+// Baseline-coherence cells: "38,034 (16.4%)". The degree is derived from the two
+// stored integers rather than stored itself, so it can never disagree with them.
+// toPrecision(3) — not a fixed number of decimals — because the degrees span four
+// orders of magnitude: at 2dp, LogMap's 8 unsatisfiable classes would render as
+// "0.00%" and read as coherent, which it is not.
+const cohCell = (n: number | null, den: number) =>
+  n == null ? '—' : `${n.toLocaleString('en-GB')} (${((100 * n) / den).toPrecision(3)}%)`;
 
 type Sys = { system: string } & Record<string, number>;
 type Board = { headline: string; systems: Sys[] };
@@ -57,6 +66,21 @@ const boardOf = (s: Section) => {
   const systems = b.systems.slice().sort((a, b2) => (b2[headline] ?? -Infinity) - (a[headline] ?? -Infinity));
   return { headline, systems };
 };
+
+// Baseline coherence is reported per pair, not macro-averaged: two cells are missing,
+// so an average would silently be taken over two pairs for some systems and three for
+// others. HermiT gets a column only for NCIT-DOID — it is the one pair where the exact
+// reasoner terminates, and empty columns for the other two would imply data we lack.
+const COH_GROUPS: { pair: string; reasoners: ('elk' | 'hermit')[] }[] = [
+  { pair: 'NCIT–DOID', reasoners: ['elk', 'hermit'] },
+  { pair: 'SNOMED–FMA', reasoners: ['elk'] },
+  { pair: 'SNOMED–NCIT', reasoners: ['elk'] },
+];
+const RLABEL = { elk: 'ELK', hermit: 'HermiT' } as const;
+const cohPair = (p: string) => sysCoh.pairs.find((x: any) => x.pair === p);
+// Row order follows the global P/R/F1 table above so the two read across as one block;
+// both derive from leaderboard.json, so they cannot fall out of step.
+const cohRows: string[] = boardOf(sections[0]).systems.map((s) => s.system);
 ---
 
 <Base
@@ -127,7 +151,65 @@ const boardOf = (s: Section) => {
         is headlined by MRR. Full data:
         <a class="mono" href={withBase('/leaderboard.json')}>leaderboard.json</a>.
         Participant results appear on the <a href={withBase('/results/')}>results page</a>, fed by the
-        CodaBench leaderboards.
+        CodaBench leaderboards. Lexical-Baseline is a character tri-gram similarity matcher, not an
+        exact-string baseline.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="syscoh-h" id="baseline-coherence">
+    <div class="container">
+      <p class="kicker">Baseline coherence</p>
+      <h2 id="syscoh-h">Baseline coherence — the alignments the systems produce</h2>
+      <p class="section-lede">
+        Alongside P/R/F1, each global alignment is checked with a reasoner: does the system's
+        <strong>own</strong> alignment leave the merged ontology satisfiable? Each baseline's submitted
+        mappings are merged with both ontologies and classified, giving the number of unsatisfiable named
+        classes and the incoherence degree (that count over the merged named-class signature, in
+        parentheses). <strong>Lower is better; 0 is coherent.</strong> Rows are in the same order as the
+        P/R/F1 table above, so the two can be read across.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th rowspan="2" scope="col">System</th>
+              {COH_GROUPS.map((g) => (
+                <th class="num" colspan={g.reasoners.length} scope="colgroup">{g.pair}</th>
+              ))}
+            </tr>
+            <tr>
+              {COH_GROUPS.flatMap((g) => g.reasoners.map((r) => (
+                <th class="num" scope="col">{RLABEL[r]}</th>
+              )))}
+            </tr>
+          </thead>
+          <tbody>
+            {cohRows.map((name) => (
+              <tr>
+                <td>{name}</td>
+                {COH_GROUPS.flatMap((g) => {
+                  const pd = cohPair(g.pair);
+                  return g.reasoners.map((r) => (
+                    <td class="num">{cohCell(pd?.systems?.[name]?.[r] ?? null, pd.union_class_count)}</td>
+                  ));
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:0.82rem; color:var(--ink-3); max-width:80ch; margin-top:0.6rem;">
+        Counted in the merged ontology (<span class="mono">O<sub>src</sub> ∪ O<sub>tgt</sub> ∪ M</span>),
+        where <span class="mono">M</span> is the system's own alignment. Every <strong>ELK</strong> figure is
+        a sound lower bound; <strong>HermiT</strong> is exact but only terminates on NCIT–DOID at this scale,
+        so the SNOMED pairs carry ELK bounds only. Two cells are unavailable (—): AML and LogMapLt on
+        SNOMED–FMA did not produce a result. Coherence is <strong>not</strong> a quality ranking and does not
+        track F1 — a system that maps very little scores well here, and LogMap and AML repair internally by
+        design. Unlike the reference figures below, these are computed on each system's raw alignment, which
+        has not had correspondences involving <span class="mono">owl:deprecated</span> classes excluded; the
+        two tables are therefore <strong>not directly comparable</strong>. Machine-readable data:
+        <a class="mono" href={withBase('/baseline_coherence.json')}>baseline_coherence.json</a>.
       </p>
     </div>
   </section>
