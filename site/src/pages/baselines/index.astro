@@ -203,12 +203,13 @@ const cohRows: string[] = boardOf(sections[0]).systems.map((s) => s.system);
         Counted in the merged ontology (<span class="mono">O<sub>src</sub> ∪ O<sub>tgt</sub> ∪ M</span>),
         where <span class="mono">M</span> is the system's own alignment. Every <strong>ELK</strong> figure is
         a sound lower bound; <strong>HermiT</strong> is exact but only terminates on NCIT–DOID at this scale,
-        so the SNOMED pairs carry ELK bounds only. Two cells are unavailable (—): AML and LogMapLt on
-        SNOMED–FMA did not produce a result. Coherence is <strong>not</strong> a quality ranking and does not
-        track F1 — a system that maps very little scores well here, and LogMap and AML repair internally by
-        design. Unlike the reference figures below, these are computed on each system's raw alignment, which
-        has not had correspondences involving <span class="mono">owl:deprecated</span> classes excluded; the
-        two tables are therefore <strong>not directly comparable</strong>. Machine-readable data:
+        so the SNOMED pairs carry ELK bounds only (and the two NCIT–DOID HermiT cells that would predate the
+        step below are held back, shown —). As with the reference figures below, correspondences involving
+        <span class="mono">owl:deprecated</span> classes are excluded as out-of-task, so the two tables are on
+        the same basis. Two cells are genuinely unavailable (—): AML and LogMapLt on SNOMED–FMA did not
+        produce a result. Coherence is <strong>not</strong> a quality ranking and does not track F1 — a system
+        that maps very little scores well here, and LogMap and AML repair internally by design.
+        Machine-readable data:
         <a class="mono" href={withBase('/baseline_coherence.json')}>baseline_coherence.json</a>.
       </p>
     </div>

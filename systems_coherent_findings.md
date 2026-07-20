@@ -29,10 +29,41 @@ correspondence — classified, and then:
 Backend: ROBOT (`--backend robot`, `-Xmx31g`). ELK = sound lower bound
 (`unsat_ELK ≤ unsat_HermiT`); HermiT = exact.
 
+> **Basis note (added after the fact).** The tables in this section are the figures
+> **as originally computed**, on each system's *raw* alignment. The repaired reference
+> excludes correspondences touching `owl:deprecated` classes as out-of-task; the raw
+> system runs did not. Applying that same exclusion (the rule in
+> `consensus_reference_tooling/build_deprecated_removed.py`, authority = the
+> `deprecated` column of `work/build-mixed/raw/entities.tsv`, 8,091 IRIs) changes only
+> **BERTMapLt** and **LogMapLt** — LogMap, BERTMap and AML submit no deprecated-touching
+> correspondences on any pair, so their figures are already on the reference basis. The
+> **`baseline_coherence.json`** at the repo root and the website's `/baselines/`
+> coherence table carry the **deprecated-excluded** figures (the two affected systems
+> recomputed under ELK); this document keeps the raw figures with both shown below for
+> traceability. Verified in passing: a fresh ELK run on the current NCIT–DOID reference
+> reproduces the published 17,850 (not the stale 18,053 in the `REFERENCE_ALIGNMENT__*`
+> JSONs, which predate the deprecated exclusion — that is the source of the earlier
+> 18,053 vs 17,850 discrepancy).
+>
+> Deprecated-excluded ELK figures for the two affected systems:
+>
+> | System · pair | Raw ELK | Excluded ELK | Degree (raw → excluded) |
+> |---|---:|---:|---|
+> | BERTMapLt · NCIT–DOID | 10,880 | 10,444 | 4.70% → 4.51% |
+> | LogMapLt · NCIT–DOID | 38,034 | 37,944 | 16.4% → 16.4% |
+> | BERTMapLt · SNOMED–NCIT | 91,671 | 77,844 | 15.3% → 13.0% |
+> | LogMapLt · SNOMED–NCIT | 540,142 | 534,393 | 90.3% → 89.4% |
+>
+> The exclusion's effect is wildly non-uniform: on NCIT–DOID, LogMapLt's 90 dropped
+> correspondences removed exactly 90 unsatisfiable classes (1:1), while on SNOMED–NCIT
+> BERTMapLt's 275 dropped correspondences removed 13,827 (≈50:1) — deprecated mappings
+> vary enormously in how much downstream disjointness they trigger.
+
 ## Results
 
 Ranked best (most coherent) to worst within each pair. Degree shown as a percentage
-of the merged signature; ELK figures are lower bounds.
+of the merged signature; ELK figures are lower bounds. **These are the raw
+(pre-deprecated-exclusion) figures** — see the basis note above.
 
 ### NCIT–DOID — merged signature 231,503
 
