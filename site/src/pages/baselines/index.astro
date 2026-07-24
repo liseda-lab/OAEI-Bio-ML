@@ -343,7 +343,7 @@ const pairLabel = (p: string) => p.replace('-', '–');
       ))}
 
       <h3 class="rt-h">Hardware</h3>
-      <p class="rt-sub">{rt.hardware.host}</p>
+      <p class="rt-sub">Machine specifications.</p>
       <div class="table-wrap">
         <table>
           <tbody>
@@ -359,7 +359,7 @@ const pairLabel = (p: string) => p.replace('-', '–');
         </table>
       </div>
       <p class="rt-note">
-        {rt.note} Measured {rt.measured}. Machine-readable data:
+        Measured {rt.measured}. Machine-readable data:
         <a class="mono" href={withBase('/baseline_runtime.json')}>baseline_runtime.json</a>.
       </p>
     </div>
