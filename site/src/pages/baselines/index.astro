@@ -124,7 +124,7 @@ const cohRows: string[] = boardOf(sections[0]).systems.map((s) => s.system);
               <tbody>
                 {systems.map((row, i) => (
                   <tr>
-                    <td>{row.system}</td>
+                    <td>{row.system}{row.system === 'Lexical-Baseline' && <a class="fn-ref" href="#lexical-baseline-note" aria-label="Footnote: what the Lexical-Baseline system is">*</a>}</td>
                     {s.cols.map((c, ci) => (
                       <td class="num">
                         {ci === 0 && i === 0 && c.k === headline
@@ -151,8 +151,9 @@ const cohRows: string[] = boardOf(sections[0]).systems.map((s) => s.system);
         is headlined by MRR. Full data:
         <a class="mono" href={withBase('/leaderboard.json')}>leaderboard.json</a>.
         Participant results appear on the <a href={withBase('/results/')}>results page</a>, fed by the
-        CodaBench leaderboards. Lexical-Baseline is a character tri-gram similarity matcher, not an
-        exact-string baseline.
+        CodaBench leaderboards.
+        <span id="lexical-baseline-note"><span class="fn-ref" aria-hidden="true">*</span> Lexical-Baseline
+        is a character tri-gram similarity matcher, not an exact-string baseline.</span>
       </p>
     </div>
   </section>

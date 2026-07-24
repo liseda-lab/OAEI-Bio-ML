@@ -1005,6 +1005,11 @@ details .details-body { padding: 0.4rem 1.1rem 1rem; }
 .hist-note { font-size: 0.82rem; color: var(--ink-3); margin-top: 0.5rem; }
 .hist-note sup { color: var(--accent-strong); }
 
+/* footnote markers: the table-cell reference links to the note carrying the same mark */
+.fn-ref { color: var(--accent-strong); font-weight: 600; vertical-align: super; font-size: 0.78em; line-height: 0; }
+a.fn-ref { text-decoration: none; margin-left: 0.1em; }
+a.fn-ref:hover, a.fn-ref:focus-visible { text-decoration: underline; }
+
 /* ---- repair page: before/after diagram ---- */
 .repair-diagram {
   display: grid; gap: 1rem; align-items: stretch; margin: 1.6rem 0;
