@@ -12,6 +12,10 @@ Scored with **repaired, coherence-aware P/R/F1** (headline). Baseline systems in
 
 Scored with **MRR** and **Hits@{1,5,10}**. Baseline systems include a naive lexical baseline, SapBERT, and the BERTMap family (BERTMap, BERTMapLt, BERTMap-ss). Because the references are lexically clean, the naive string baseline is a strong reference point.
 
+## Runtime and hardware
+
+Wall-clock times for every baseline run — per pair and over all three, for both the Subtrack-1 matching phase and the Subtrack-2 ranking runs — are listed under [wall-clock times](https://liseda-lab.github.io/OAEI-Bio-ML/baselines/#runtime) on the baselines page, together with the specification of the single workstation they were run on. The machine-readable source is `baseline_runtime.json` at the repository root.
+
 ---
 
 *The organiser baselines are provided as reference points, not as a target to beat; the contribution of the track is the task and reference design. Full methodology appears in the supplementary material (available at track launch).*

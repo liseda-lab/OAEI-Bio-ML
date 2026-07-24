@@ -13,6 +13,7 @@ const ROOT = path.resolve(process.cwd(), '..');
 const lb = JSON.parse(fs.readFileSync(path.join(ROOT, 'leaderboard.json'), 'utf8'));
 const refCoh = JSON.parse(fs.readFileSync(path.join(ROOT, 'reference_coherence.json'), 'utf8'));
 const sysCoh = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline_coherence.json'), 'utf8'));
+const rt = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline_runtime.json'), 'utf8'));
 
 // Coherence-table cell formatters. `null` counts/degrees render as an em dash;
 // ELK lower bounds carry a dagger keyed to the footnote below the table.
@@ -27,6 +28,18 @@ const degCell = (d: number | null) => (d == null ? '—' : d === 0 ? '0%' : `${d
 // "0.00%" and read as coherent, which it is not.
 const cohCell = (n: number | null, den: number) =>
   n == null ? '—' : `${n.toLocaleString('en-GB')} (${((100 * n) / den).toPrecision(3)}%)`;
+
+// Runtime cells. Seconds are the recorded unit; the display steps up to minutes
+// and hours because the runs span four orders of magnitude (24 s for LogMapLt
+// on SNOMED-FMA, 24 h for LogMap on the same pair) and raw seconds would be
+// unreadable at the top end. The thresholds sit above the round unit (90 s,
+// 90 min) so nothing renders as a bare "1.0 min".
+const durCell = (s: number | null | undefined) => {
+  if (s == null) return '—';
+  if (s < 90) return `${s < 10 ? s.toFixed(1) : Math.round(s)} s`;
+  if (s < 5400) return `${(s / 60).toFixed(1)} min`;
+  return `${(s / 3600).toFixed(1)} h`;
+};
 
 type Sys = { system: string } & Record<string, number>;
 type Board = { headline: string; systems: Sys[] };
@@ -81,6 +94,22 @@ const cohPair = (p: string) => sysCoh.pairs.find((x: any) => x.pair === p);
 // Row order follows the global P/R/F1 table above so the two read across as one block;
 // both derive from leaderboard.json, so they cannot fall out of step.
 const cohRows: string[] = boardOf(sections[0]).systems.map((s) => s.system);
+
+// Runtime tables. Both take their row order from the leaderboard section they
+// belong to, so every table on this page lists systems in the same order and
+// none of them can fall out of step with leaderboard.json. Pair keys are stored
+// with a hyphen (they are directory names upstream) and displayed with an en
+// dash like everywhere else on the page.
+const rtSections = [
+  { key: 'global' as const, section: sections[0] },
+  { key: 'local' as const, section: sections[1] },
+].map((r) => ({
+  ...r,
+  data: rt[r.key],
+  rows: boardOf(r.section).systems.map((s) => s.system),
+}));
+const rtPairs: string[] = rt.pairs;
+const pairLabel = (p: string) => p.replace('-', '–');
 ---
 
 <Base
@@ -151,7 +180,8 @@ const cohRows: string[] = boardOf(sections[0]).systems.map((s) => s.system);
         is headlined by MRR. Full data:
         <a class="mono" href={withBase('/leaderboard.json')}>leaderboard.json</a>.
         Participant results appear on the <a href={withBase('/results/')}>results page</a>, fed by the
-        CodaBench leaderboards.
+        CodaBench leaderboards. How long each baseline took, and the machine it ran on, are in
+        <a href="#runtime">wall-clock times</a> below.
         <span id="lexical-baseline-note"><span class="fn-ref" aria-hidden="true">*</span> Lexical-Baseline
         is a character tri-gram similarity matcher, not an exact-string baseline.</span>
       </p>
@@ -259,6 +289,78 @@ const cohRows: string[] = boardOf(sections[0]).systems.map((s) => s.system);
         SNOMED–FMA merge does not classify under ELK even at a 128 GB heap, so its before-repair figure is
         unavailable (—). Machine-readable data:
         <a class="mono" href={withBase('/reference_coherence.json')}>reference_coherence.json</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="runtime-h" id="runtime">
+    <div class="container">
+      <p class="kicker">Runtime</p>
+      <h2 id="runtime-h">Wall-clock times — and the machine that produced them</h2>
+      <p class="section-lede">
+        How long each baseline actually took, per pair and over all three. The Subtrack-1 figures cover the
+        <strong>matching</strong> phase that produced the system's global alignment; the Subtrack-2 figures cover
+        the <strong>ranking</strong> run behind the MRR / Hits@k above. Every run was on the one workstation
+        specified below.
+      </p>
+
+      {rtSections.map((rs) => (
+        <>
+          <h3 class="rt-h">{rs.data.label}</h3>
+          <p class="rt-sub">{rs.data.phase}</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>System</th>
+                  {rtPairs.map((p) => <th class="num">{pairLabel(p)}</th>)}
+                  <th class="num">All three</th>
+                  <th>Ran on</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rs.rows.map((name) => {
+                  const r = rs.data.systems[name];
+                  return (
+                    <tr>
+                      <td>{name}</td>
+                      {rtPairs.map((p) => <td class="num">{durCell(r?.seconds?.[p])}</td>)}
+                      <td class="num">{durCell(r?.total_seconds)}</td>
+                      <td class="rt-res">{r?.resources ?? '—'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <p class="rt-note">
+            {rs.rows.filter((n) => rs.data.systems[n]?.note).map((n) => (
+              <><strong>{n}:</strong> {rs.data.systems[n].note}{' '}</>
+            ))}
+          </p>
+          <p class="rt-note"><em>Measured as:</em> {rs.data.source}</p>
+        </>
+      ))}
+
+      <h3 class="rt-h">Hardware</h3>
+      <p class="rt-sub">{rt.hardware.host}</p>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr><th scope="row">CPU</th><td>{rt.hardware.cpu}</td></tr>
+            <tr><th scope="row">Memory</th><td>{rt.hardware.memory}</td></tr>
+            <tr><th scope="row">GPU</th><td>{rt.hardware.gpu}</td></tr>
+            <tr><th scope="row">Storage</th><td>{rt.hardware.storage}</td></tr>
+            <tr><th scope="row">OS</th><td>{rt.hardware.os}</td></tr>
+            <tr><th scope="row">JVM</th><td>{rt.software.jvm}</td></tr>
+            <tr><th scope="row">Python</th><td>{rt.software.python}</td></tr>
+            <tr><th scope="row">Reasoner</th><td>{rt.software.reasoner}</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="rt-note">
+        {rt.note} Measured {rt.measured}. Machine-readable data:
+        <a class="mono" href={withBase('/baseline_runtime.json')}>baseline_runtime.json</a>.
       </p>
     </div>
   </section>
