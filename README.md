@@ -5,7 +5,7 @@ OAEI Bio-ML is an [OAEI](https://oaei.ontologymatching.org/) ontology-matching t
 ## Tracks
 
 * **Track 1 — Equivalence**
-  * **Subtrack 1 — Global equivalence alignment.** Submit one full alignment per pair (full OWL IRIs). Semi-supervised: a public `refs_equiv/train.tsv` is provided per pair; the test reference is hidden and scored organiser-side. Headline metric: repaired, coherence-aware P/R/F1, with a reasoner-checked Global Coherence score.
+  * **Subtrack 1 — Global equivalence alignment.** Submit one full alignment per pair (full OWL IRIs). Semi-supervised: public `refs_equiv/{train,valid}.tsv` are provided per pair, on the repaired basis the headline metric uses; the test reference is hidden and scored organiser-side. Headline metric: repaired, coherence-aware P/R/F1, with a reasoner-checked Global Coherence score.
   * **Subtrack 2 — Local equivalence ranking.** Rank a fixed, gold-stripped candidate pool per source entity. Metrics: MRR and Hits@{1,5,10}.
 
 Full definitions are on the [evaluation metrics](./evaluation-metrics.md) page. All headline metrics are macro-averaged over the three pairs.

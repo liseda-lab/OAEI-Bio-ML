@@ -80,4 +80,4 @@ Subtrack 1 is **semi-supervised**: the test reference is hidden, so you cannot s
 python scoring_kit/validate_global.py  my-ncit-doid.rdf
 ```
 
-To sanity-check your matcher before submitting, compare its output against the **public** `refs_equiv/train.tsv` correspondences (a proxy — there is no public global scorer, and the hidden test slice is scored organiser-side). The organisers then compute the headline repaired, coherence-aware P/R/F1, the standard P/R/F1, and Global Coherence, and publish them to the Track 1 — Global Alignment leaderboard.
+To sanity-check your matcher before submitting, compare its output against the **public** `refs_equiv/{train,valid}.tsv` correspondences (a proxy — there is no public global scorer, and the hidden test slice is scored organiser-side). The organisers then compute the headline repaired, coherence-aware P/R/F1, the standard P/R/F1, and Global Coherence, and publish them to the Track 1 — Global Alignment leaderboard.

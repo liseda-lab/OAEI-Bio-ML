@@ -18,9 +18,10 @@ hf download OAEI-ML/bio-ml --repo-type dataset --revision 2026 --local-dir ./bio
 
 The 2026 task data is **publicly available** under the OAEI-ML organisation — [`huggingface.co/datasets/OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml), edition tag `2026` — and downloads freely, without gating (entity IRIs only). Under `bio-ml/`, each pair (`NCIT-DOID`, `SNOMED-FMA`, `SNOMED-NCIT`) contains:
 
-* `refs_equiv/train.tsv` — the public equivalence training reference for global alignment (`SrcEntity`, `TgtEntity`, `Score`; full IRIs; semi-supervised setting),
-* `local.train.cands.tsv` / `local.valid.cands.tsv` — the local-ranking pools that **carry the gold** `TgtEntity` (use them to self-score), and `local.test.cands.tsv` — the **gold-stripped** test pool (source entity + candidate list only),
-* `repaired/` — the same set of files scored against the coherence-repaired reference.
+* `refs_equiv/train.tsv` and `refs_equiv/valid.tsv` — the public equivalence reference for global alignment (`SrcEntity`, `TgtEntity`, `Score`, `Relation`; full IRIs; semi-supervised setting), drawn from the **repaired** reference the headline metric scores against,
+* `local.train.cands.tsv` / `local.valid.cands.tsv` — the local-ranking pools that **carry the gold** `TgtEntity` (use them to self-score), and `local.test.cands.tsv` — the **gold-stripped** test pool (source entity + candidate list only).
+
+Local ranking is scored against the **standard** (unrepaired) reference; coherence repair applies to the global alignment task only.
 
 The download also bundles the **NCIT, DOID and FMA** ontology files alongside the task data, so for the `NCIT-DOID` pair there is nothing more to fetch. The one exception is **SNOMED CT** (needed for `SNOMED-FMA` and `SNOMED-NCIT`), which we cannot redistribute: obtain it under a [SNOMED CT Affiliate Licence](https://www.snomed.org/) or [contact us](mailto:contact@oaei-ml.org) for a copy strictly for research purposes (see [ontologies](./ontologies/ontologies.md)). The `scoring_kit/` used below is the one you cloned in step 1a.
 
@@ -34,7 +35,7 @@ python3 scoring_kit/self_check.py --data ./bio-ml
 
 ## 3. Subtrack 1 — Global equivalence alignment
 
-For each pair, produce one alignment file using **full OWL IRIs**. The setting is **semi-supervised**: `refs_equiv/train.tsv` is public for tuning, but the test reference is hidden and scored organiser-side (there is no public global scorer). Validate the structure locally before submitting:
+For each pair, produce one alignment file using **full OWL IRIs**. The setting is **semi-supervised**: `refs_equiv/train.tsv` and `refs_equiv/valid.tsv` are public for training and tuning, but the test reference is hidden and scored organiser-side (there is no public global scorer). Validate the structure locally before submitting:
 
 ```bash
 python3 scoring_kit/validate_global.py my-ncit-doid.rdf

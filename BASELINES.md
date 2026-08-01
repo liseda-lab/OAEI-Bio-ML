@@ -10,7 +10,7 @@ Scored with **repaired, coherence-aware P/R/F1** (headline). Baseline systems in
 
 ## Subtrack 2 — Local equivalence ranking
 
-Scored with **MRR** and **Hits@{1,5,10}**. Baseline systems include a naive lexical baseline, SapBERT, and the BERTMap family (BERTMap, BERTMapLt, BERTMap-ss). Because the references are lexically clean, the naive string baseline is a strong reference point.
+Scored with **MRR** and **Hits@{1,5,10}** against the **standard** reference alignment (coherence repair does not apply to the ranking task). Baseline systems include a lexical baseline, SapBERT, and the BERTMap family (BERTMap, BERTMapLt, BERTMap-ss).
 
 ## Runtime and hardware
 

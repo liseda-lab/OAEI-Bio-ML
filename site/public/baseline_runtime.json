@@ -1,10 +1,10 @@
 {
-  "note": "Every figure is a single run, not repeated or averaged, and none of them is an isolated benchmark: the BERTMap-family ranking runs were launched in pairs, one per GPU, so a second matcher process was sharing the host's CPU and memory bandwidth throughout. Read them as orders of magnitude, not as a controlled efficiency comparison. They cover the matcher run itself — building the task splits, and the reasoner coherence checks reported above, are separate steps that are not counted here.",
+  "note": "Every figure is a single run, measured values should be considered as follows: the BERTMap-family ranking runs were launched in pairs, one per GPU; a second matcher process was sharing the host's CPU and memory bandwidth throughout. The reasoner coherence checks reported above are separate steps that are not counted here.",
   "measured": "June 2026",
   "unit": "seconds",
   "pairs": ["NCIT-DOID", "SNOMED-FMA", "SNOMED-NCIT"],
   "hardware": {
-    "host": "One workstation; every baseline ran locally on it.",
+    "host": "Every baseline runs locally on a machine with the following specifications.",
     "cpu": "AMD Ryzen Threadripper PRO 9965WX — 24 cores / 48 threads, boost to 5.49 GHz, 128 MB L3",
     "memory": "768 GB DDR5 ECC RDIMM",
     "gpu": "2 × NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition, 96 GB, 300 W",
@@ -35,13 +35,13 @@
         "seconds": { "NCIT-DOID": 429.2, "SNOMED-FMA": 86620.1, "SNOMED-NCIT": 9497.9 },
         "total_seconds": 96547.2,
         "resources": "CPU, 256 GB heap",
-        "note": "The 24-hour SNOMED–FMA cell is the outlier of the whole table; the other two pairs finish in minutes to hours."
+        "note": "The 24-hour SNOMED–FMA cell is the outlier; the other two pairs finish in minutes to hours."
       },
       "BERTMap": {
         "seconds": { "NCIT-DOID": 13812.0, "SNOMED-FMA": 65528.2, "SNOMED-NCIT": 89642.2 },
         "total_seconds": 168982.4,
         "resources": "1 GPU, 64 GB heap",
-        "note": "Includes the in-run BERT fine-tune on each pair's own ontology synonyms (about an hour of the NCIT–DOID cell), which is why it is the most expensive baseline here."
+        "note": "Includes the in-run BERT fine-tune on each pair's own ontology synonyms."
       },
       "BERTMapLt": {
         "seconds": { "NCIT-DOID": 260.6, "SNOMED-FMA": 9840.7, "SNOMED-NCIT": 6183.5 },
@@ -49,7 +49,7 @@
         "resources": "CPU, 128 GB heap"
       }
     },
-    "source": "AML / LogMap / LogMapLt: per-cell wall-clock recorded by the baseline runner, whose cells do nothing but match, write and score. BERTMap / BERTMapLt: the matcher wrapper's own end-of-matching log line, which excludes the ranking and Track-2 export that shared the same runner cell."
+    "source": "AML / LogMap / LogMapLt: per-cell wall-clock recorded, cells match, write and score. BERTMap / BERTMapLt: perform end-of-matching, excludes the ranking."
   },
   "local": {
     "label": "Subtrack 2 — local equivalence ranking",
@@ -74,7 +74,7 @@
         "seconds": { "NCIT-DOID": 3852.4, "SNOMED-FMA": 28576.8, "SNOMED-NCIT": 31974.2 },
         "total_seconds": 64403.4,
         "resources": "1 GPU, 64 GB heap",
-        "note": "Fine-tunes fresh on the public train+valid maps for every split — the fine-tune must not be shared across splits if the test firewall is to hold — which is the whole of its cost gap over BERTMap here."
+        "note": "Fine-tunes fresh on the public train+valid maps for every split — the fine-tune must not be shared across splits."
       },
       "BERTMap": {
         "seconds": { "NCIT-DOID": 285.1, "SNOMED-FMA": 652.0, "SNOMED-NCIT": 1443.7 },

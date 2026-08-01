@@ -63,7 +63,7 @@ const sections: Section[] = [
   {
     key: 'local',
     kicker: 'Track 1 · Subtrack 2 — local equivalence ranking',
-    title: 'MRR and Hits@k',
+    title: 'MRR and Hits@k (standard reference)',
     cols: [
       { k: 'mrr', l: 'MRR' },
       { k: 'hits_at_1', l: 'Hits@1' },
@@ -177,7 +177,7 @@ const pairLabel = (p: string) => p.replace('-', '–');
       <p style="font-size:0.88rem; color:var(--ink-3); max-width:78ch;">
         {lb.note ?? 'Organiser baselines, macro-averaged over the three pairs.'} The global-alignment
         headline is the repaired coherence-aware F1; local ranking
-        is headlined by MRR. Full data:
+        is headlined by MRR against the standard (unrepaired) reference. Full data:
         <a class="mono" href={withBase('/leaderboard.json')}>leaderboard.json</a>.
         Participant results appear on the <a href={withBase('/results/')}>results page</a>, fed by the
         CodaBench leaderboards. How long each baseline took, and the machine it ran on, are in

@@ -18,7 +18,7 @@ Each pair's pools live in `local.test.cands.tsv` inside the [`OAEI-ML/bio-ml`](h
 
 ## A semi-supervised setting
 
-The public equivalence correspondences (`refs_equiv/train.tsv`) and the gold-bearing local pools (`local.train.cands.tsv`, `local.valid.cands.tsv`) may be used as supervision for building or tuning a ranker. The **test pools are gold-stripped and scored organiser-side**: you validate your ranking's format, submit it, and the organisers score it against the hidden gold. Every query has exactly one correct target somewhere in its pool.
+The public equivalence correspondences (`refs_equiv/{train,valid}.tsv`) and the gold-bearing local pools (`local.train.cands.tsv`, `local.valid.cands.tsv`) may be used as supervision for building or tuning a ranker. The **test pools are gold-stripped and scored organiser-side**: you validate your ranking's format, submit it, and the organisers score it against the hidden gold. Every query has exactly one correct target somewhere in its pool.
 
 ## Metrics
 

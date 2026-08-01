@@ -14,7 +14,7 @@ The track targets ontology matching between large, established biomedical ontolo
 
 OAEI Bio-ML 2026 focuses global alignment and equivalence ranking, scored across **two CodaBench competitions**:
 
-* **Global equivalence alignment.** For each pair, submit one full alignment. Semi-supervised: a public `refs_equiv/train.tsv` is provided per pair, and the test reference is hidden and scored organiser-side. Metrics: **repaired, coherence-aware P/R/F1** (headline), with a reasoner-checked **Global Coherence** score.
+* **Global equivalence alignment.** For each pair, submit one full alignment. Semi-supervised: public `refs_equiv/{train,valid}.tsv` are provided per pair on the repaired basis, and the test reference is hidden and scored organiser-side. Metrics: **repaired, coherence-aware P/R/F1** (headline), with a reasoner-checked **Global Coherence** score.
 * **Local equivalence ranking.** For each source entity, rank a fixed candidate pool, placing high-scoring equivalence correspondences early. The public `*.test.cands.tsv` are gold-stripped (i.e., the answers are private). Metrics: **MRR** and **Hits@{1,5,10}**.
 
 The standard/repaired references are **not directly comparable**; see [evaluation metrics](./evaluation-metrics.md). Submissions are scored using the repaired reference alignment.

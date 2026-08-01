@@ -14,7 +14,7 @@ The [`OAEI-ML/bio-ml`](https://huggingface.co/datasets/OAEI-ML/bio-ml) download 
 
 ## A semi-supervised setting
 
-The equivalence reference is split **source-stratified 70 / 30** into train / test. The **public training slice** is released as `refs_equiv/train.tsv` (one `SrcEntity`, `TgtEntity`, `Score` correspondence per line, full IRIs); the **test slice is held back** and scored organiser-side. You may train, tune, and threshold on the public correspondences however you like; you then submit a full alignment over the two ontologies, and the organisers score the portion that falls on the hidden test entities.
+The equivalence reference is split **source-stratified 60 / 10 / 30** into train / valid / test. The **public slices** are released as `refs_equiv/train.tsv` and `refs_equiv/valid.tsv` (one `SrcEntity`, `TgtEntity`, `Score`, `Relation` correspondence per line, full IRIs), drawn from the **repaired** reference that the headline metric scores against; the **test slice is held back** and scored organiser-side. You may train, tune, and threshold on the public correspondences however you like; you then submit a full alignment over the two ontologies, and the organisers score the portion that falls on the hidden test entities.
 
 Because the test reference is hidden, this track is **scored organiser-side**. Participants validate their submission's format locally (see [submission format](./submission-format.md)) and submit; the leaderboard reports the scores.
 

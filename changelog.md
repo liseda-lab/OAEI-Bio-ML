@@ -4,6 +4,14 @@ Notable changes to the OAEI Bio-ML datasets, baselines, and published results ar
 
 ## 2026 edition (first edition)
 
+### 2026-08-01 — Public reference aligned to the basis it is scored on
+
+Two changes to the Hugging Face dataset, both bringing the published files into line with how submissions are actually evaluated. **No submission format, metric, or scoring behaviour changes**, and no previously-private data is disclosed.
+
+**Global alignment — `refs_equiv` matches the repaired reference, and `valid` is published.** The headline metric scores against the coherence-repaired reference. The public validation split is now released as `refs_equiv/valid.tsv` alongside train; its positives were already public inside `local.valid.cands.tsv`, so nothing new is exposed. Per-pair positives, train / valid: NCIT-DOID 3,262 / 530 (was 3,845 train), SNOMED-FMA 3,239 / 541 (was 6,817), SNOMED-NCIT 17,283 / 2,864 (was 21,669). The reference split is 60 / 10 / 30 train / valid / test; the test slice remains private.
+
+**Local ranking — the `repaired/` pools have been removed.** The per-pair `repaired/` trees (`local.{train,valid,test}.cands.tsv` against the repaired reference) are gone. Local ranking is evaluated against the **standard** (unrepaired) reference throughout — in the released pools, on the CodaBench leaderboard, and in the organiser baselines — so the repaired variant was unused, and shipping it invited the reading that ranking was scored on the repaired basis. Coherence repair applies to **global** alignment only. Participants who downloaded a `repaired/` directory can discard it.
+
 ### 2026-07-16 — Ontology files added to the download
 
 The Hugging Face dataset now bundles the **NCIT, DOID, and FMA** ontology files alongside the task data, so participants no longer obtain those three separately. **SNOMED CT** remains licence-restricted and is not redistributed: obtain it under a SNOMED CT Affiliate Licence, or contact the organisers (<contact@oaei-ml.org>) for a copy strictly for research purposes. See [ontologies](./ontologies/ontologies.md).

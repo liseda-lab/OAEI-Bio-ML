@@ -27,7 +27,7 @@ Scores are **macro-averaged** across the three pairs (each pair weighted equally
 |---|---|
 | **Pairs (3)** | NCIT-DOID, SNOMED-FMA, SNOMED-NCIT |
 | **You submit** | one full [OAEI Alignment RDF](./global/submission-format.md) per pair (full OWL IRIs, `=` cells) |
-| **Setting** | **semi-supervised** — the public `refs_equiv/train.tsv` is released per pair; the **test reference is hidden** |
+| **Setting** | **semi-supervised** — the public `refs_equiv/{train,valid}.tsv` are released per pair, on the repaired basis; the **test reference is hidden** |
 | **Scored** | organiser-side, against a **repaired, coherence-aware** reference (**headline**), plus **Global Coherence** (reasoner-based) |
 | **Metric** | repaired, coherence-aware precision / recall / F1, macro-averaged over the 3 pairs |
 | **Details** | [Subtrack 1 — Global Equivalence Alignment](./global/alignment_task_index.md) · [submission format](./global/submission-format.md) |
@@ -58,7 +58,7 @@ git clone https://github.com/liseda-lab/OAEI-Bio-ML && cd OAEI-Bio-ML   # the sc
 hf download OAEI-ML/bio-ml --repo-type dataset --revision 2026 --local-dir ./bio-ml   # the data
 ```
 
-Under `bio-ml/`, each pair (`NCIT-DOID`, `SNOMED-FMA`, `SNOMED-NCIT`) ships the public equivalence reference `refs_equiv/train.tsv`, the local-ranking pools `local.train.cands.tsv` / `local.valid.cands.tsv` (gold-bearing) plus `local.test.cands.tsv` (gold-stripped); a `repaired/` tree mirrors the same files against the coherence-repaired reference. The download also bundles the **NCIT, DOID and FMA** ontology files; only **SNOMED CT** (for the two SNOMED pairs) is obtained separately — under an Affiliate Licence or by [contacting us](mailto:contact@oaei-ml.org) for a research-only copy (see [ontologies](../ontologies/ontologies.md)). Run `python scoring_kit/self_check.py --data ./bio-ml` to confirm the data downloaded intact.
+Under `bio-ml/`, each pair (`NCIT-DOID`, `SNOMED-FMA`, `SNOMED-NCIT`) ships the public equivalence reference `refs_equiv/train.tsv` and `refs_equiv/valid.tsv` (repaired basis), the local-ranking pools `local.train.cands.tsv` / `local.valid.cands.tsv` (gold-bearing) plus `local.test.cands.tsv` (gold-stripped). Local ranking is scored against the **standard** (unrepaired) reference — coherence repair applies to the global alignment task only. The download also bundles the **NCIT, DOID and FMA** ontology files; only **SNOMED CT** (for the two SNOMED pairs) is obtained separately — under an Affiliate Licence or by [contacting us](mailto:contact@oaei-ml.org) for a research-only copy (see [ontologies](../ontologies/ontologies.md)). Run `python scoring_kit/self_check.py --data ./bio-ml` to confirm the data downloaded intact.
 
 ## Key dates
 
