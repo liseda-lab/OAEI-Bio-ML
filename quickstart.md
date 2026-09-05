@@ -61,4 +61,6 @@ The evaluation window runs from 12 July to 30 September 2026 (00:00 Anywhere on 
 * Subtrack 1 — Global equivalence alignment — **[open on CodaBench](https://www.codabench.org/competitions/17424/)**,
 * Subtrack 2 — Local equivalence ranking — **[open on CodaBench](https://www.codabench.org/competitions/17423/)**.
 
+**Before you submit:** as with every OAEI track, your system must be registered with the [OAEI 2026 campaign](https://oaei.ontologymatching.org/2026/) via its [registration form](https://docs.google.com/forms/d/e/1FAIpQLSdGMuD_-kWhCYQIK5amsCvMDmYICViUJEci-M1CySoMaJ0wqA/viewform); a CodaBench account alone is not OAEI registration.
+
 Register on the relevant competition, then upload your submission as described on its Overview page. Results are published as *provisional* to the leaderboard; organisers verify, reproduce where possible, and mark accepted results alongside the organiser-run [baselines](./BASELINES.md).
