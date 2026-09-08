@@ -35,7 +35,8 @@ http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C101044	http://purl.obolibrar
 ## Scoring
 
 - Scored against **two** references: the *standard* (complete) reference with traditional set **P/R/F1**, and the *repaired* (coherence-aware) reference — **relation-agnostic** (a reference `<`/`>` is credited by a predicted correspondence of any relation) and **`?`-ignored** (incoherence-flagged mappings are removed from both denominators). The headline is the **repaired** F1; standard is shown alongside. These P/R/F1 columns are **auto-scored on submission**. **Global Coherence** (degree of incoherence, reasoner-based) is computed off-platform and added to that column afterwards (blank until then).
-- Naming your file: include the pair slug (`ncit-doid`, `snomed-fma`, `snomed-ncit`) in the filename, e.g. `ncit-doid.rdf`.
+- Naming your file: include the pair slug (`ncit-doid`, `snomed-fma`, `snomed-ncit`) in the filename, e.g. `ncit-doid.rdf`. Keep the hyphens (`ncit_doid.rdf` is never matched) and submit exactly one file per pair.
+- Packaging: zip the three files from the command line — `zip -X -j submission.zip ncit-doid.rdf snomed-fma.rdf snomed-ncit.rdf` — rather than with macOS Finder, which adds hidden `__MACOSX` sidecar files the scorer can read instead of your alignment. A submission that scores `0.000` on every pair is almost always one of these two problems; see [submission support](../../support.md).
 - The evaluation follows the semi-supervised protocol: public `refs_equiv/{train,valid}.tsv` positive mappings are provided per pair for supervised systems, drawn from the repaired reference the headline metric scores against; the test reference is held out and scored on the hidden test slice (train/valid mappings are masked).
 
 ## Validate

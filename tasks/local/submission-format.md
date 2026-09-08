@@ -49,6 +49,8 @@ The official gold is private, so you validate the format and submit; the organis
 python scoring_kit/validate_ranking.py  bio-ml/NCIT-DOID/local.test.cands.tsv  my_ncit-doid.tsv
 ```
 
+**Packaging.** Upload one zip with one ranking file per pair, each filename containing the **hyphenated** pair slug (`my_ncit-doid.tsv` is fine; `ncit_doid.tsv` is never matched), built from the command line (`zip -X -j submission.zip ncit-doid.tsv snomed-fma.tsv snomed-ncit.tsv`). _Note: Avoid macOS Finder's *Compress*, which adds hidden `__MACOSX` files the scorer can read instead of your ranking. A submission that scores `0.000` on every pair is usually a packaging problem — see [submission support](../../support.md)._
+
 To estimate MRR / Hits@k before submitting, self-score against the gold-bearing validation pool (`local.valid.cands.tsv` doubles as the gold TSV — its `SrcEntity` / `TgtEntity` columns are the answer):
 
 ```bash

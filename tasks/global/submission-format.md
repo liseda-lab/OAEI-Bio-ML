@@ -19,6 +19,20 @@ Root is `rdf:RDF`. The default namespace (`xmlns=`) is the OAEI Alignment namesp
 
 Submit one file per pair. Entity IRIs MUST be absolute. The order of `<map>` elements is irrelevant. Submit a full alignment over the two ontologies; the organisers score the portion that lands on the hidden test entities.
 
+## Packaging the archive
+
+Upload one zip containing the three files. Name each file after its pair slug **with hyphens** — `ncit-doid`, `snomed-fma`, `snomed-ncit` (e.g. `ncit-doid.rdf`, or `ncit-doid.tsv` for the TSV alternative).
+
+Note that building the zip from the command line is advisable (if running macOS, using the Finder's *Compress* option adds hidden `__MACOSX` files that may confuse the scorer).
+
+For instance, you should compile your zip using the following command:
+
+```bash
+zip -X -j submission.zip ncit-doid.rdf snomed-fma.rdf snomed-ncit.rdf
+```
+
+A submission that scores `0.000` on every pair typically one of these two packaging problems; see [submission support](../../support.md) for more details.
+
 ## Worked example (illustrative)
 
 The cell below is illustrative — it shows the exact shape, using full OWL IRIs of the kind found in `NCIT-DOID`:

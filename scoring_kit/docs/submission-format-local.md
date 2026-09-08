@@ -42,3 +42,7 @@ python3 validate_ranking.py local.test.cands.tsv  my_ranking.tsv      # structur
 python3 score_local.py      my_ranking.tsv  local.valid.cands.tsv     # MRR/Hits on the valid split
 ```
 `local.valid.cands.tsv` works directly as the gold file (its `SrcEntity`/`TgtEntity` columns are the gold; other columns are ignored).
+
+## Packaging
+
+Upload one zip with one ranking file per pair, each filename containing the **hyphenated** pair slug (`ncit-doid`, `snomed-fma`, `snomed-ncit`; underscores are never matched), built from the command line — `zip -X -j submission.zip ncit-doid.tsv snomed-fma.tsv snomed-ncit.tsv`. macOS Finder's *Compress* adds hidden `__MACOSX` sidecar files the scorer can read instead of your ranking. A submission that scores `0.000` on every pair is almost always a packaging problem; see [submission support](../../support.md).

@@ -25,6 +25,7 @@ const ROUTES = new Map([
   ['evaluation-metrics.md', '/evaluation/'],
   ['baselines.md', '/baselines/'],
   ['changelog.md', '/changelog/'],
+  ['support.md', '/support/'],
   ['license', '/LICENSE'],
   ['tasks/tasks.md', '/tasks/'],
   ['tasks/global/alignment_task_index.md', '/tasks/global/'],

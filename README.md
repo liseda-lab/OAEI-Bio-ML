@@ -30,7 +30,9 @@ Organiser-run baseline systems (a naive lexical baseline, SapBERT [3], and the B
 
 ## Participate
 
-Two CodaBench competitions — [Track 1 Global Alignment](https://www.codabench.org/competitions/17424/) and [Track 1 Local Ranking](https://www.codabench.org/competitions/17423/) — open on **12 July 2026**. See the [quickstart](./quickstart.md).
+Two CodaBench competitions — [Track 1 Global Alignment](https://www.codabench.org/competitions/17424/) and [Track 1 Local Ranking](https://www.codabench.org/competitions/17423/) — open on **12 July 2026**. See the [quickstart](./quickstart.md). 
+
+Note: A submission that scores `0.000` on every pair is typically a packaging problem. If you're running macOS, problems can result from the hidden `__MACOSX` files bundled inside the zip, or from filenames without the hyphenated ontology-pair slug — please see [submission support](./support.md).
 
 ## Organisers & contact
 

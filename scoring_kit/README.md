@@ -29,6 +29,8 @@ python3 score_local.py  my_ranking.tsv NCIT-DOID/local.valid.cands.tsv
 
 The official test scores are computed organiser-side (the test gold, the UMLS-derived evidence, and the reasoner-based coherence are never released). Full per-task submission formats are in `docs/submission-format-*.md`.
 
+Zip your validated files from the command line (`zip -X -j submission.zip ncit-doid.rdf snomed-fma.rdf snomed-ncit.rdf`), keeping the **hyphenated** pair slug in each filename. macOS Finder's *Compress* adds hidden `__MACOSX` sidecar files the scorer can read instead of your file; a submission that scores `0.000` on every pair is almost always this — see [submission support](../support.md).
+
 ## Files
 - `validate_global.py` / `validate_ranking.py` / `validate_typed.py` — format checkers (stdlib).
 - `score_local.py` / `score_typed.py` — self-scorers over the vendored official scorer.

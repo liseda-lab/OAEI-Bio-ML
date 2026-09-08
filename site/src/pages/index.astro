@@ -178,6 +178,15 @@ const ontologies = [
         Organiser-run baselines are published on the <a href={withBase('/baselines/')}>baselines</a> page;
         participant standings appear on <a href={withBase('/results/')}>results</a> now that the window is open.
       </p>
+      <div class="notice">
+        <span aria-hidden="true">⚠</span>
+        <span>
+          <strong>Scored 0.000 on every pair?</strong> Archives compressed in macOS Finder carry hidden
+          <code class="mono">__MACOSX</code> files the scorer can read instead of your file, and filenames
+          without the hyphenated pair slug are never matched. See
+          <a href={withBase('/support/')}>submission support</a> for the fix.
+        </span>
+      </div>
     </div>
   </section>
 
