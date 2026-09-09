@@ -4,7 +4,7 @@ A **self-contained, zero-install** kit to validate and self-score your BioML 202
 
 `oaei_bioml_eval/` here is a vendored snapshot of the organiser's scorer, so your local numbers match the leaderboard. (Coherence is reasoner-based and scored organiser-side; it is not part of this kit.)
 
-## Tasks (canonical names — see `docs/nomenclature.md`)
+## Tasks
 
 | Task | Submission | Entities | Self-score? | Metrics |
 |---|---|---|---|---|
@@ -32,9 +32,9 @@ The official test scores are computed organiser-side (the test gold, the UMLS-de
 Zip your validated files from the command line (`zip -X -j submission.zip ncit-doid.rdf snomed-fma.rdf snomed-ncit.rdf`), keeping the **hyphenated** pair slug in each filename. macOS Finder's *Compress* adds hidden `__MACOSX` sidecar files the scorer can read instead of your file; a submission that scores `0.000` on every pair is almost always this — see [submission support](../support.md).
 
 ## Files
-- `validate_global.py` / `validate_ranking.py` / `validate_typed.py` — format checkers (stdlib).
-- `score_local.py` / `score_typed.py` — self-scorers over the vendored official scorer.
-- `self_check.py` — gate: builds oracle submissions from your valid data and confirms perfect scores.
+- `validate_global.py` / `validate_ranking.py` — format checkers (stdlib).
+- `score_local.py` — self-scorer over the vendored official scorer.
+- `self_check.py` — gate: builds an oracle ranking from your valid data and confirms perfect scores.
 - `alignment.rng` — optional RelaxNG schema for the global Alignment RDF.
-- `oaei_bioml_eval/` — vendored official metric core (pure stdlib; local + typed).
-- `docs/` — per-task submission formats and terminology.
+- `oaei_bioml_eval/` — vendored official metric core (pure stdlib; local ranking).
+- `docs/` — per-task submission formats.

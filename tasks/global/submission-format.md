@@ -87,7 +87,7 @@ The cell below is illustrative — it shows the exact shape, using full OWL IRIs
 
 ## Validate — scoring is organiser-side
 
-Subtrack 1 is **semi-supervised**: the test reference is hidden, so you cannot self-score against it. Validate the structure of each alignment file with the kit's `validate_global.py` (Python 3.12+, standard library; it also checks against the bundled RelaxNG schema `alignment.rng`), then submit:
+Subtrack 1 is **semi-supervised**: the test reference is hidden, so you cannot self-score against it. Validate the structure of each alignment file with the kit's `validate_global.py` (Python 3.10+, standard library; it also checks against the bundled RelaxNG schema `alignment.rng`), then submit:
 
 ```bash
 # structural + schema validation of one alignment file

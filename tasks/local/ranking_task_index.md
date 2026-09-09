@@ -40,7 +40,7 @@ Results are published to the Track 1 — Local Ranking CodaBench leaderboard, wi
 
 ## Validating & scoring
 
-* Validation needs only Python 3.12+ (standard library): `scoring_kit/validate_ranking.py`.
+* Validation needs only Python 3.10+ (standard library): `scoring_kit/validate_ranking.py`.
 * The official test gold is private — participants do not score their own official submission; the organisers do.
 * You may self-score on the gold-bearing validation pool (`local.valid.cands.tsv`, whose `TgtEntity` column is the gold) with `scoring_kit/score_local.py` to estimate MRR / Hits@k before submitting.
 

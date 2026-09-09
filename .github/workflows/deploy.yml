@@ -9,8 +9,7 @@ on:
     branches: [main]
   workflow_dispatch:
   # Live-leaderboard refresh (requires the CODABENCH_GLOBAL_COMPETITION /
-  # CODABENCH_LOCAL_COMPETITION / CODABENCH_TYPED_COMPETITION repository
-  # variables; see the CodaBench setup guide).
+  # CODABENCH_LOCAL_COMPETITION repository variables; see the CodaBench setup guide).
   # NB: `schedule` must sit at this indent level, directly under `on:`.
   schedule:
     - cron: '0 */6 * * *' # every six hours
@@ -44,7 +43,6 @@ jobs:
         env:
           CODABENCH_GLOBAL_COMPETITION: ${{ vars.CODABENCH_GLOBAL_COMPETITION }}
           CODABENCH_LOCAL_COMPETITION: ${{ vars.CODABENCH_LOCAL_COMPETITION }}
-          CODABENCH_TYPED_COMPETITION: ${{ vars.CODABENCH_TYPED_COMPETITION }}
         run: python3 .github/scripts/fetch_codabench.py
       - name: Build
         run: npm run build

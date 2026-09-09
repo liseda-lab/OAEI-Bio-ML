@@ -1,6 +1,6 @@
 # Quickstart
 
-This guide takes you from an empty directory to a validated (and, where possible, self-scored) submission. Everything the scoring kit runs is Python 3.12+ standard library only.
+This guide takes you from an empty directory to a validated (and, where possible, self-scored) submission. Everything the scoring kit runs is Python 3.10+ standard library only.
 
 ## 1. Get the scoring kit and the data
 
@@ -27,7 +27,7 @@ The download also bundles the **NCIT, DOID and FMA** ontology files alongside th
 
 ## 2. Sanity-check your copy
 
-Run the self-check against your downloaded data before you do anything else — it builds oracle submissions from the public splits and confirms they score perfectly:
+Run the self-check against your downloaded data before you do anything else — it builds an oracle ranking from each pair's `local.valid.cands.tsv` and confirms it scores perfectly:
 
 ```bash
 python3 scoring_kit/self_check.py --data ./bio-ml
