@@ -34,6 +34,17 @@ Two CodaBench competitions — [Track 1 Global Alignment](https://www.codabench.
 
 Note: A submission that scores `0.000` on every pair is typically a packaging problem. If you're running macOS, problems can result from the hidden `__MACOSX` files bundled inside the zip, or from filenames without the hyphenated ontology-pair slug — please see [submission support](./support.md).
 
+### Submissions (System Review)
+
+**All submitted systems are under review.** This applies to both competitions. Results are published to the leaderboards as *provisional*, and a result is marked accepted only once the organisers have reviewed the system that produced it. The review checks that the submission is **reproducible**: that the system's description, code or executable, configuration, and external resources are sufficient to regenerate the submitted alignments and rankings, and, where possible, the organisers re-run the system to confirm this. A short system description stating the external resources used (ontologies, lexica, pretrained or language models, APIs) with each submission makes the review quicker.
+
+Systems must not:
+
+* **use UMLS or Mondo**, in any form (the Metathesaurus or its APIs, Mondo's mappings and cross-references, or resources derived from either). The reference alignments are grounded in these sources, so using them can amount to observing the hidden test reference, even unintentionally.
+* **use the local-ranking candidate pools to inform the global alignment.** The pools (`local.*.cands.tsv`) reveal which source entities carry a reference correspondence and narrow each one's target to a 100-candidate list, so a global alignment must be produced without them. (Using the gold-bearing `train`/`valid` pools to train or tune a *ranker* for Subtrack 2 is, of course, fine.)
+
+A submission that cannot be reproduced, or whose system violates either constraint, will not be accepted. If you are unsure whether a resource is permitted, ask us at <contact@oaei-ml.org> before you submit.
+
 ## Organisers & contact
 
 OAEI Bio-ML 2026 is organised by [Jon Dilworth](https://dilworth.io/), [Pedro Cotovio](https://pedrocotovio.github.io/), [Ernesto Jiménez-Ruiz](https://ernestojimenezruiz.github.io/), and [Catia Pesquita](https://www.di.fc.ul.pt/~catiapesquita/). The benchmark design follows the original machine-learning-friendly Bio-ML datasets (He et al. [1]).
