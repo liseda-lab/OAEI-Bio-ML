@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import Base from '../layouts/Base.astro';
 import HistTable from '../components/HistTable.astro';
-import { CODABENCH_GLOBAL_URL, CODABENCH_LOCAL_URL, LIVE_RESULTS_REL, withBase } from '../config';
+import { CODABENCH_GLOBAL_URL, CODABENCH_LOCAL_URL, GITHUB_REPO, LIVE_RESULTS_REL, withBase } from '../config';
 import y2022 from '../data/results/2022.json';
 import y2023 from '../data/results/2023.json';
 import y2024 from '../data/results/2024.json';
@@ -122,6 +122,16 @@ const tabYears = [...histYears.map((y) => y.year), 2026];
 
       {/* -------- 2026 (current edition) -------- */}
       <div class="year-panel" id="year-2026" role="tabpanel" aria-labelledby="ytab-2026" tabindex="0">
+        <div class="notice" style="margin-top:0;">
+          <span aria-hidden="true">ℹ</span>
+          <span>
+            <strong>All submitted systems are under review.</strong> Leaderboard results are <em>provisional</em>
+            until the organisers confirm the system is reproducible and uses neither <strong>UMLS</strong>/<strong>Mondo</strong>
+            nor the local-ranking candidate pools for the global alignment. Full terms:
+            <a href={`${GITHUB_REPO}#submissions-system-review`}>Submissions (System Review)</a>.
+          </span>
+        </div>
+
         {!live && (
           <>
             <h2 style="margin-top:0.4rem;">No participant submissions yet</h2>
