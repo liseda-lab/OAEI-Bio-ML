@@ -4,6 +4,10 @@ Notable changes to the OAEI Bio-ML datasets, baselines, and published results ar
 
 ## 2026 edition (first edition)
 
+### 2026-09-30 — Added support for automatic result fetching from CodaBench
+
+Environment variables added to the site deployment should now allow for results to be automatically pulled from CodaBench.
+
 ### 2026-09-09 — Scoring kit: self-check no longer expects Track 2 files
 
 **Kit only — no dataset, metric, or submission-format change.** Running `scoring_kit/self_check.py` on a downloaded copy of the data failed with `FileNotFoundError: … track2.valid.answers.tsv`. That file belongs to the typed (subsumption) Track 2 withdrawn before launch: it was never part of the 2026 release, but the self-check still ran a Track 2 oracle after the local-ranking one, and crashed before printing the local result (which passes). The self-check now covers the local-ranking pools only, and the remaining Track 2 code has been removed from the kit (`score_typed.py`, `validate_typed.py`, `oaei_bioml_eval/typed/`). Participants who cloned the kit before this date should pull the track repository again; downloaded data is unaffected and needs no re-download. The kit's Python requirement is now stated consistently as **3.10+** (some pages said 3.12+); nothing in the kit needs a newer interpreter.
