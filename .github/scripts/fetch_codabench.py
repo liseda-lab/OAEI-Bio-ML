@@ -76,7 +76,10 @@ def leaderboard_rows(competition_pk):
             facts = sub.get("fact_sheet_answers") or {}
             org = sub.get("organization")
             rows.append({
-                "system": facts.get("system_name") or sub.get("owner") or "anonymous",
+                # The competitions' fact-sheet key is hyphenated ("system-name");
+                # the underscore form is kept as a fallback.
+                "system": (facts.get("system-name") or facts.get("system_name") or "").strip()
+                          or sub.get("owner") or "anonymous",
                 "team": (org.get("name") if isinstance(org, dict) else org) or sub.get("owner"),
                 "date": sub.get("created_when"),
                 "scores": scores,
