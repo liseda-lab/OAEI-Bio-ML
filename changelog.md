@@ -6,7 +6,7 @@ Notable changes to the OAEI Bio-ML datasets, baselines, and published results ar
 
 ### 2026-09-30 — Added support for automatic result fetching from CodaBench
 
-Environment variables added to the site deployment should now allow for results to be automatically pulled from CodaBench.
+Environment variables added to the site deployment should now allow for results to be automatically pulled from CodaBench. 
 
 ### 2026-09-09 — Scoring kit: self-check no longer expects Track 2 files
 
