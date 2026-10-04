@@ -24,7 +24,7 @@ type Row = { system: string; team?: string; date?: string; scores: Record<string
 // baseline_coherence.json), and the local-ranking leaderboard at the close.
 type Prf = Record<'f1_repaired' | 'precision_repaired' | 'recall_repaired' | 'f1_standard' | 'precision_standard' | 'recall_standard', number>;
 type PairResult = Prf & { coherence: { elk: number | null; hermit?: number | null } };
-type GSys = { system: string; team: string; submitted: string; self_supervised: boolean | null; macro: Prf; pairs: Record<string, PairResult> };
+type GSys = { system: string; team: string; submitted: string; semi_supervised: boolean | null; macro: Prf; pairs: Record<string, PairResult> };
 type Final = {
   frozen: string;
   global: { pairs: string[]; coherence: { union_class_count: Record<string, number> }; systems: GSys[] };
@@ -40,7 +40,7 @@ type Live = { fetched_at?: string; global?: Row[]; local?: Row[] };
 const live: Live | null = !final && fs.existsSync(LIVE) ? JSON.parse(fs.readFileSync(LIVE, 'utf8')) : null;
 
 const f3 = (x: number | undefined) => (typeof x === 'number' ? x.toFixed(3) : '—');
-// Self-supervised flag: ✔ / ✘ as in the prior editions' tables; '-' while not yet determined.
+// Semi-supervised flag: ✔ / ✘ as in the prior editions' tables; '-' while not yet determined.
 const flag = (b: boolean | null | undefined) => (b == null ? '-' : b ? '✔' : '✘');
 const day = (d?: string) => (d ? d.slice(0, 10) : '—');
 const longDay = (d: string) =>
@@ -230,7 +230,7 @@ const tabYears = [...histYears.map((y) => y.year), 2026];
               <table class="sortable">
                 <thead>
                   <tr>
-                    <th>#</th><th>System</th><th>Team</th><th>Self-supervised</th>
+                    <th>#</th><th>System</th><th>Team</th><th>Semi-supervised</th>
                     {PRF_COLS.map((c) => <th class="num">{c.label}</th>)}
                     <th>Submitted</th>
                   </tr>
@@ -241,7 +241,7 @@ const tabYears = [...histYears.map((y) => y.year), 2026];
                       <td class="num">{i + 1}</td>
                       <td>{r.system}</td>
                       <td>{r.team}</td>
-                      <td style="text-align:center;">{flag(r.self_supervised)}</td>
+                      <td style="text-align:center;">{flag(r.semi_supervised)}</td>
                       {PRF_COLS.map((c, ci) => (
                         <td class="num">{ci === 0 && i === 0 ? <span class="best">{f3(r.macro[c.key])}</span> : f3(r.macro[c.key])}</td>
                       ))}
