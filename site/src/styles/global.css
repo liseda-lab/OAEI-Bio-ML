@@ -1004,6 +1004,8 @@ details .details-body { padding: 0.4rem 1.1rem 1rem; }
 .hist-table td:not(:first-child) { font-family: var(--font-mono); font-size: 0.85em; font-variant-numeric: tabular-nums; color: var(--ink-2); }
 .hist-note { font-size: 0.82rem; color: var(--ink-3); margin-top: 0.5rem; }
 .hist-note sup { color: var(--accent-strong); }
+/* 2026 results: a rule between the Repaired / Ranking / Standard column groups */
+.hist-table .grp { border-left: 1px solid var(--line); }
 
 /* baselines page: runtime + hardware tables */
 .rt-h { font-size: 1.02rem; margin: 1.9rem 0 0.15rem; }

@@ -27,7 +27,7 @@
         "SNOMED-NCIT": 592352
       },
       "footnotes": {
-        "null": "ELK exhausted a 384 GB heap (heap full for more than 10 minutes; watchdog kill record). The value is unknown, not infinite.",
+        "null": "ELK exhausted a 384 GB heap (heap full for more than 10 minutes; watchdog kill record). The value is unknown.",
         "per_pair": "Coherence is reported per pair, not macro-averaged: five systems have a null cell."
       },
       "same_basis_as": "baseline_coherence.json"
@@ -38,7 +38,7 @@
         "team": "pedrocotovio",
         "submission_id": 943641,
         "submitted": "2026-09-24",
-        "semi_supervised": true,
+        "use_train_maps": true,
         "macro": {
           "f1_repaired": 0.636311,
           "precision_repaired": 0.698857,
@@ -89,7 +89,7 @@
         "team": "inestaktak",
         "submission_id": 911101,
         "submitted": "2026-09-01",
-        "semi_supervised": true,
+        "use_train_maps": true,
         "macro": {
           "f1_repaired": 0.634457,
           "precision_repaired": 0.606579,
@@ -140,7 +140,7 @@
         "team": "oaei-ml",
         "submission_id": 944575,
         "submitted": "2026-09-25",
-        "semi_supervised": false,
+        "use_train_maps": false,
         "macro": {
           "f1_repaired": 0.623099,
           "precision_repaired": 0.507032,
@@ -191,7 +191,7 @@
         "team": "ernestojimenezruiz",
         "submission_id": 951726,
         "submitted": "2026-09-29",
-        "semi_supervised": false,
+        "use_train_maps": false,
         "macro": {
           "f1_repaired": 0.620541,
           "precision_repaired": 0.49699,
@@ -242,7 +242,7 @@
         "team": "martasilva",
         "submission_id": 951323,
         "submitted": "2026-09-29",
-        "semi_supervised": false,
+        "use_train_maps": false,
         "macro": {
           "f1_repaired": 0.611612,
           "precision_repaired": 0.543635,
@@ -293,7 +293,7 @@
         "team": "yipingsong",
         "submission_id": 953833,
         "submitted": "2026-09-30",
-        "semi_supervised": false,
+        "use_train_maps": false,
         "macro": {
           "f1_repaired": 0.553814,
           "precision_repaired": 0.507272,
@@ -344,7 +344,7 @@
         "team": "diso-oaei",
         "submission_id": 949960,
         "submitted": "2026-09-28",
-        "semi_supervised": false,
+        "use_train_maps": false,
         "macro": {
           "f1_repaired": 0.534202,
           "precision_repaired": 0.401579,
@@ -395,7 +395,7 @@
         "team": "faizmirza",
         "submission_id": 865608,
         "submitted": "2026-07-27",
-        "semi_supervised": false,
+        "use_train_maps": false,
         "macro": {
           "f1_repaired": 0.48652,
           "precision_repaired": 0.449745,
@@ -446,7 +446,7 @@
         "team": "daviddiazlopez",
         "submission_id": 955662,
         "submitted": "2026-10-01",
-        "semi_supervised": null,
+        "use_train_maps": null,
         "macro": {
           "f1_repaired": 0.215833,
           "precision_repaired": 0.123653,
@@ -497,79 +497,129 @@
   "local": {
     "competition": "Track 1 · Subtrack 2 — Local equivalence ranking",
     "competition_url": "https://www.codabench.org/competitions/17423/",
-    "headline": "macro_mrr",
-    "source": "The public CodaBench leaderboard at the close of the evaluation phase (fetched 2026-10-03; identical to the site's last live snapshot). Scores as CodaBench reports them (3 dp). Where a submission had no fact sheet, the system name was supplied by the organisers.",
+    "headline": "mrr",
+    "scoring": "MRR and Hits@{1,5,10} on the hidden test queries of each pair (100 candidates per query), against the standard reference. Macro = the unweighted mean of the three per-pair values; a pair with no submitted file scores zero. Computed by the organisers with the unmodified CodaBench scoring program, which reproduces the public CodaBench leaderboard exactly. Where a submission had no fact sheet, the system name was supplied by the organisers.",
     "systems": [
       {
         "system": "CEDAR",
         "team": "yadusnair",
         "submission_id": 954569,
-        "date": "2026-10-01T06:15:07.632861Z",
-        "scores": {
-          "macro_mrr": 0.962,
-          "macro_hits_at_1": 0.949,
-          "macro_hits_at_5": 0.978,
-          "macro_hits_at_10": 0.983,
-          "mrr_ncit_doid": 0.97,
-          "hits_at_1_ncit_doid": 0.958,
-          "mrr_snomed_fma": 0.959,
-          "hits_at_1_snomed_fma": 0.946,
-          "mrr_snomed_ncit": 0.959,
-          "hits_at_1_snomed_ncit": 0.942
+        "submitted": "2026-10-01",
+        "use_train_maps": true,
+        "macro": {
+          "mrr": 0.962278,
+          "hits_at_1": 0.948836,
+          "hits_at_5": 0.977553,
+          "hits_at_10": 0.983067
+        },
+        "pairs": {
+          "NCIT-DOID": {
+            "mrr": 0.969666,
+            "hits_at_1": 0.958219,
+            "hits_at_5": 0.982958,
+            "hits_at_10": 0.986806
+          },
+          "SNOMED-FMA": {
+            "mrr": 0.958507,
+            "hits_at_1": 0.946397,
+            "hits_at_5": 0.97188,
+            "hits_at_10": 0.978617
+          },
+          "SNOMED-NCIT": {
+            "mrr": 0.958662,
+            "hits_at_1": 0.941894,
+            "hits_at_5": 0.977821,
+            "hits_at_10": 0.983778
+          }
         }
       },
       {
         "system": "Matcha-ML",
         "team": "pedrocotovio",
         "submission_id": 943507,
-        "date": "2026-09-24T17:57:08.457826Z",
-        "scores": {
-          "macro_mrr": 0.93,
-          "macro_hits_at_1": 0.906,
-          "macro_hits_at_5": 0.958,
-          "macro_hits_at_10": 0.97,
-          "mrr_ncit_doid": 0.923,
-          "hits_at_1_ncit_doid": 0.895,
-          "mrr_snomed_fma": 0.953,
-          "hits_at_1_snomed_fma": 0.936,
-          "mrr_snomed_ncit": 0.914,
-          "hits_at_1_snomed_ncit": 0.887
+        "submitted": "2026-09-24",
+        "use_train_maps": true,
+        "macro": {
+          "mrr": 0.930255,
+          "hits_at_1": 0.906296,
+          "hits_at_5": 0.958296,
+          "hits_at_10": 0.969767
+        },
+        "pairs": {
+          "NCIT-DOID": {
+            "mrr": 0.923387,
+            "hits_at_1": 0.894997,
+            "hits_at_5": 0.959318,
+            "hits_at_10": 0.971963
+          },
+          "SNOMED-FMA": {
+            "mrr": 0.952903,
+            "hits_at_1": 0.936438,
+            "hits_at_5": 0.971295,
+            "hits_at_10": 0.979496
+          },
+          "SNOMED-NCIT": {
+            "mrr": 0.914474,
+            "hits_at_1": 0.887453,
+            "hits_at_5": 0.944276,
+            "hits_at_10": 0.957841
+          }
         }
       },
       {
         "system": "MetaMatch",
         "team": "inestaktak",
         "submission_id": 953398,
-        "date": "2026-09-30T12:19:12.172655Z",
-        "scores": {
-          "macro_mrr": 0.327,
-          "macro_hits_at_1": 0.324,
-          "macro_hits_at_5": 0.33,
-          "macro_hits_at_10": 0.332,
-          "mrr_ncit_doid": 0.981,
-          "hits_at_1_ncit_doid": 0.972,
-          "mrr_snomed_fma": 0.0,
-          "hits_at_1_snomed_fma": 0.0,
-          "mrr_snomed_ncit": 0.0,
-          "hits_at_1_snomed_ncit": 0.0
+        "submitted": "2026-09-30",
+        "use_train_maps": true,
+        "macro": {
+          "mrr": 0.3269,
+          "hits_at_1": 0.323988,
+          "hits_at_5": 0.330401,
+          "hits_at_10": 0.331867
+        },
+        "pairs": {
+          "NCIT-DOID": {
+            "mrr": 0.9807,
+            "hits_at_1": 0.971963,
+            "hits_at_5": 0.991204,
+            "hits_at_10": 0.995602
+          },
+          "SNOMED-FMA": null,
+          "SNOMED-NCIT": null
         }
       },
       {
         "system": "NeSyMatch",
         "team": "abhiseks",
         "submission_id": 939902,
-        "date": "2026-09-22T17:55:38.462884Z",
-        "scores": {
-          "macro_mrr": 0.132,
-          "macro_hits_at_1": 0.085,
-          "macro_hits_at_5": 0.14,
-          "macro_hits_at_10": 0.188,
-          "mrr_ncit_doid": 0.056,
-          "hits_at_1_ncit_doid": 0.014,
-          "mrr_snomed_fma": 0.287,
-          "hits_at_1_snomed_fma": 0.231,
-          "mrr_snomed_ncit": 0.052,
-          "hits_at_1_snomed_ncit": 0.01
+        "submitted": "2026-09-22",
+        "use_train_maps": true,
+        "macro": {
+          "mrr": 0.131592,
+          "hits_at_1": 0.08488,
+          "hits_at_5": 0.140306,
+          "hits_at_10": 0.188338
+        },
+        "pairs": {
+          "NCIT-DOID": {
+            "mrr": 0.055614,
+            "hits_at_1": 0.013744,
+            "hits_at_5": 0.051127,
+            "hits_at_10": 0.100605
+          },
+          "SNOMED-FMA": {
+            "mrr": 0.287159,
+            "hits_at_1": 0.230814,
+            "hits_at_5": 0.319566,
+            "hits_at_10": 0.364968
+          },
+          "SNOMED-NCIT": {
+            "mrr": 0.052004,
+            "hits_at_1": 0.010082,
+            "hits_at_5": 0.050225,
+            "hits_at_10": 0.099441
+          }
         }
       }
     ]

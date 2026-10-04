@@ -6,7 +6,7 @@
     "hermit_scale": "HermiT is run on NCIT-DOID only; it does not terminate at SNOMED scale, so the SNOMED pairs carry ELK lower bounds only."
   },
   "caveats": {
-    "missing_cells": "AML and LogMapLt on SNOMED-FMA (null): ELK exhausted a 384 GB heap (heap full for more than 10 minutes; watchdog kill record). The value is unknown, not infinite. The standard (unrepaired) SNOMED-FMA reference fails the same way, as do five participant SNOMED-FMA alignments; the cause is not established.",
+    "missing_cells": "AML and LogMapLt on SNOMED-FMA (null): ELK exhausted a 384 GB heap (heap full for more than 10 minutes; watchdog kill record). The value is unknown. The standard (unrepaired) SNOMED-FMA reference fails the same way, as do five participant SNOMED-FMA alignments; the cause is not established.",
     "excluded_systems": "Lexical-Baseline has coherence results for all three pairs but is omitted here to keep this table row-matched to the global P/R/F1 table above, from which it was deliberately dropped."
   },
   "reasoner_backend": "ROBOT",

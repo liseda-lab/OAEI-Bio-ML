@@ -1,0 +1,187 @@
+{
+  "edition": 2026,
+  "status": "Incomplete: awaiting participant correspondence. Not yet published on the website.",
+  "note": "Resource use and wall-clock time per participant system, as reported by the participants: the CodaBench fact sheet of the submission used in the results (participant_results.json), or later correspondence. The fact sheet asked for the wall-clock time of the whole submission (all three pairs) without a unit; bare numbers are taken as seconds and the reported text is kept in wall_clock_reported. total_wall_clock_seconds = global + local where every subtrack the system entered has a time, else null.",
+  "systems": [
+    {
+      "system": "Matcha-ML",
+      "team": "pedrocotovio",
+      "global": {
+        "submission_id": 943641,
+        "source": "CodaBench fact sheet",
+        "wall_clock_seconds": 21123,
+        "wall_clock_reported": "21123",
+        "cpu_cores": 12,
+        "ram_gb": 125,
+        "gpu": true
+      },
+      "local": {
+        "submission_id": 943507,
+        "source": "CodaBench fact sheet",
+        "wall_clock_seconds": 15358,
+        "wall_clock_reported": "15358",
+        "cpu_cores": 12,
+        "ram_gb": 125,
+        "gpu": true
+      },
+      "total_wall_clock_seconds": 36481
+    },
+    {
+      "system": "MetaMatch",
+      "team": "inestaktak",
+      "global": {
+        "submission_id": 911101,
+        "source": "CodaBench fact sheet",
+        "wall_clock_seconds": null,
+        "wall_clock_reported": null,
+        "cpu_cores": null,
+        "ram_gb": null,
+        "gpu": false
+      },
+      "local": {
+        "submission_id": 953398,
+        "source": "no fact sheet",
+        "wall_clock_seconds": null,
+        "wall_clock_reported": null,
+        "cpu_cores": null,
+        "ram_gb": null,
+        "gpu": null
+      },
+      "total_wall_clock_seconds": null
+    },
+    {
+      "system": "LogMapLLM",
+      "team": "oaei-ml",
+      "global": {
+        "submission_id": 944575,
+        "source": "CodaBench fact sheet",
+        "wall_clock_seconds": null,
+        "wall_clock_reported": "Unknown",
+        "cpu_cores": 24,
+        "ram_gb": 768,
+        "gpu": true
+      },
+      "total_wall_clock_seconds": null
+    },
+    {
+      "system": "LogMapBio-LLM",
+      "team": "ernestojimenezruiz",
+      "global": {
+        "submission_id": 951726,
+        "source": "CodaBench fact sheet",
+        "wall_clock_seconds": null,
+        "wall_clock_reported": null,
+        "cpu_cores": null,
+        "ram_gb": null,
+        "gpu": true
+      },
+      "total_wall_clock_seconds": null
+    },
+    {
+      "system": "Matcha",
+      "team": "martasilva",
+      "global": {
+        "submission_id": 951323,
+        "source": "CodaBench fact sheet",
+        "wall_clock_seconds": null,
+        "wall_clock_reported": null,
+        "cpu_cores": null,
+        "ram_gb": null,
+        "gpu": false
+      },
+      "total_wall_clock_seconds": null
+    },
+    {
+      "system": "GenOM",
+      "team": "yipingsong",
+      "global": {
+        "submission_id": 953833,
+        "source": "CodaBench fact sheet",
+        "wall_clock_seconds": 360000,
+        "wall_clock_reported": "360000s",
+        "cpu_cores": 6,
+        "ram_gb": null,
+        "gpu": true
+      },
+      "total_wall_clock_seconds": 360000
+    },
+    {
+      "system": "LogMap",
+      "team": "diso-oaei",
+      "global": {
+        "submission_id": 949960,
+        "source": "CodaBench fact sheet",
+        "wall_clock_seconds": 84547,
+        "wall_clock_reported": "84547",
+        "cpu_cores": 24,
+        "ram_gb": 768,
+        "gpu": false
+      },
+      "total_wall_clock_seconds": 84547
+    },
+    {
+      "system": "mosaic",
+      "team": "faizmirza",
+      "global": {
+        "submission_id": 865608,
+        "source": "CodaBench fact sheet",
+        "wall_clock_seconds": 1130.82,
+        "wall_clock_reported": "1130.82",
+        "cpu_cores": 6,
+        "ram_gb": 14,
+        "gpu": true
+      },
+      "total_wall_clock_seconds": 1130.82
+    },
+    {
+      "system": "davidlopez",
+      "team": "daviddiazlopez",
+      "global": {
+        "submission_id": 955662,
+        "source": "no fact sheet",
+        "wall_clock_seconds": null,
+        "wall_clock_reported": null,
+        "cpu_cores": null,
+        "ram_gb": null,
+        "gpu": null
+      },
+      "total_wall_clock_seconds": null
+    },
+    {
+      "system": "CEDAR",
+      "team": "yadusnair",
+      "local": {
+        "submission_id": 954569,
+        "source": "participant correspondence (October 2026)",
+        "wall_clock_seconds": 3658,
+        "wall_clock_reported": "3,658 s",
+        "wall_clock_seconds_per_pair": {
+          "NCIT-DOID": 524,
+          "SNOMED-FMA": 667,
+          "SNOMED-NCIT": 2467
+        },
+        "wall_clock_scope": "Includes model loading, lexical scoring, semantic model scoring, score ensembling, ranking generation and ranking validation; excludes model training and one-time ontology preprocessing.",
+        "cpu_cores": 8,
+        "ram_gb": 64,
+        "ram_note": "64 GB allocated per test job (48 GB for NCIT-DOID); measured peak about 4.7 GiB.",
+        "gpu": true,
+        "gpu_note": "1 × NVIDIA L40S (48 GB) per ontology-pair job; peak GPU memory about 2.6 GiB."
+      },
+      "total_wall_clock_seconds": 3658
+    },
+    {
+      "system": "NeSyMatch",
+      "team": "abhiseks",
+      "local": {
+        "submission_id": 939902,
+        "source": "CodaBench fact sheet",
+        "wall_clock_seconds": null,
+        "wall_clock_reported": null,
+        "cpu_cores": null,
+        "ram_gb": null,
+        "gpu": false
+      },
+      "total_wall_clock_seconds": null
+    }
+  ]
+}
