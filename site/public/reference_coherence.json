@@ -1,26 +1,29 @@
 {
-  "note": "Logical coherence of each pair's Task-1 reference alignment before and after the repair procedure (the union-of-removed of ALCOMO, LogMap and AML). 'Unsat' is the number of unsatisfiable named classes in the merged ontology O_src ∪ O_tgt ∪ R; 'incoherence degree' is that count divided by the merged named-class signature. Measured under the ELK reasoner.",
+  "note": "Logical coherence of each pair's Task-1 reference alignment before and after the repair procedure (the union-of-removed of ALCOMO, LogMap and AML). 'Unsat' is the number of unsatisfiable named classes in the merged ontology O_src ∪ O_tgt ∪ R; 'incoherence degree' is that count divided by the counted named classes. Measured under the ELK reasoner (plus HermiT on NCIT-DOID), with the same conventions and counted classes as baseline_coherence.json.",
   "footnotes": {
-    "elk_lower_bound": "ELK lower bound (a sound under-approximation; exact HermiT figure pending).",
-    "snomed_fma_before": "The all-equivalence standard SNOMED–FMA merge does not classify under ELK even at a 128 GB heap, so its before-repair figure is unavailable."
+    "elk_lower_bound": "ELK lower bound (a sound under-approximation). On NCIT-DOID the exact HermiT figures are given in unsat_before_hermit / unsat_after_hermit.",
+    "snomed_fma_before": "The all-equivalence standard SNOMED–FMA merge does not classify under ELK even with a 384 GB heap, so its before-repair figure is unavailable."
   },
   "pairs": [
     {
       "pair": "NCIT–DOID",
-      "unsat_before": 17850,
+      "unsat_before": 17819,
       "unsat_before_lower_bound": true,
-      "degree_before_pct": 7.7,
+      "unsat_before_hermit": 17911,
+      "degree_before_pct": 8.1,
       "unsat_after": 0,
+      "unsat_after_hermit": 0,
       "degree_after_pct": 0.0,
-      "merged_signature_before": 231503,
-      "merged_signature_after": 228337
+      "merged_signature_before": 220246,
+      "merged_signature_after": 220246
     },
     {
       "pair": "SNOMED–FMA",
       "unsat_before": null,
-      "unsat_before_note": "unavailable (does not classify under ELK)",
+      "unsat_before_note": "unavailable (ELK exhausted a 384 GB heap)",
       "degree_before_pct": null,
       "unsat_after": 0,
+      "unsat_after_lower_bound": true,
       "degree_after_pct": 0.0,
       "merged_signature_before": null,
       "merged_signature_after": 490694
@@ -29,11 +32,12 @@
       "pair": "SNOMED–NCIT",
       "unsat_before": 466306,
       "unsat_before_lower_bound": true,
-      "degree_before_pct": 78.0,
+      "degree_before_pct": 78.7,
       "unsat_after": 0,
+      "unsat_after_lower_bound": true,
       "degree_after_pct": 0.0,
-      "merged_signature_before": 597949,
-      "merged_signature_after": 597931
+      "merged_signature_before": 592370,
+      "merged_signature_after": 592352
     }
   ]
 }

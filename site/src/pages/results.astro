@@ -10,18 +10,79 @@ import y2024 from '../data/results/2024.json';
 import y2025 from '../data/results/2025.json';
 
 // Prior editions (2022–2025), rendered faithfully from committed JSON — each
-// keeps its own structure. 2026 is the current edition (live CodaBench snapshot).
+// keeps its own structure. 2026 is the current edition: its final results are
+// committed (participant_results.json); the live CodaBench snapshot is only
+// used while that file is absent.
 const histYears = [y2022, y2023, y2024, y2025] as any[];
 
-// --- 2026: participant results, from the CI-written CodaBench snapshot ---
 const ROOT = path.resolve(process.cwd(), '..');
-const LIVE = path.join(ROOT, LIVE_RESULTS_REL);
 type Row = { system: string; team?: string; date?: string; scores: Record<string, number> };
+
+// --- 2026: final participant results (repo-root participant_results.json) ---
+// Frozen after evaluation closed: global P/R/F1 re-run by the organisers with the
+// CodaBench scorer, organiser-side Global Coherence (the same basis as
+// baseline_coherence.json), and the local-ranking leaderboard at the close.
+type Prf = Record<'f1_repaired' | 'precision_repaired' | 'recall_repaired' | 'f1_standard' | 'precision_standard' | 'recall_standard', number>;
+type PairResult = Prf & { coherence: { elk: number | null; hermit?: number | null } };
+type GSys = { system: string; team: string; submitted: string; macro: Prf; pairs: Record<string, PairResult> };
+type Final = {
+  frozen: string;
+  global: { pairs: string[]; coherence: { union_class_count: Record<string, number> }; systems: GSys[] };
+  local: { systems: Row[] };
+};
+const FINAL = path.join(ROOT, 'participant_results.json');
+const final: Final | null = fs.existsSync(FINAL) ? JSON.parse(fs.readFileSync(FINAL, 'utf8')) : null;
+
+// --- 2026: live participant results, from the CI-written CodaBench snapshot ---
+// Only while the CodaBench sync in .github/workflows/deploy.yml runs and no final file exists.
+const LIVE = path.join(ROOT, LIVE_RESULTS_REL);
 type Live = { fetched_at?: string; global?: Row[]; local?: Row[] };
-const live: Live | null = fs.existsSync(LIVE) ? JSON.parse(fs.readFileSync(LIVE, 'utf8')) : null;
+const live: Live | null = !final && fs.existsSync(LIVE) ? JSON.parse(fs.readFileSync(LIVE, 'utf8')) : null;
 
 const f3 = (x: number | undefined) => (typeof x === 'number' ? x.toFixed(3) : '—');
 const day = (d?: string) => (d ? d.slice(0, 10) : '—');
+const longDay = (d: string) =>
+  new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+// Final global tables. Every table lists the macro P/R/F1 against both references;
+// the macro table sorts by the headline (repaired F1), each per-pair table by that
+// pair's repaired F1, and the coherence table follows the macro table's row order.
+const PRF_COLS: { key: keyof Prf; label: string }[] = [
+  { key: 'f1_repaired', label: 'F1 (repaired)' },
+  { key: 'precision_repaired', label: 'P (repaired)' },
+  { key: 'recall_repaired', label: 'R (repaired)' },
+  { key: 'f1_standard', label: 'F1 (standard)' },
+  { key: 'precision_standard', label: 'P (standard)' },
+  { key: 'recall_standard', label: 'R (standard)' },
+];
+const finalRows: GSys[] = (final?.global.systems ?? []).slice().sort((a, b) => b.macro.f1_repaired - a.macro.f1_repaired);
+const finalPairs = (final?.global.pairs ?? []).map((p) => ({
+  key: p,
+  label: p.replace('-', '–'),
+  rows: finalRows.slice().sort((a, b) => b.pairs[p].f1_repaired - a.pairs[p].f1_repaired),
+}));
+
+// Global Coherence, per pair as on the baselines page: HermiT only for NCIT–DOID (the
+// one pair where the exact reasoner terminates). Not macro-averaged, because some
+// systems have a cell ELK could not compute — an average would mix two and three pairs.
+const COH_GROUPS: { pair: string; reasoners: ('elk' | 'hermit')[] }[] = [
+  { pair: 'NCIT-DOID', reasoners: ['elk', 'hermit'] },
+  { pair: 'SNOMED-FMA', reasoners: ['elk'] },
+  { pair: 'SNOMED-NCIT', reasoners: ['elk'] },
+];
+const RLABEL = { elk: 'ELK', hermit: 'HermiT' } as const;
+const cohOf = (r: GSys, pair: string, reasoner: 'elk' | 'hermit') => r.pairs[pair]?.coherence?.[reasoner] ?? null;
+const cohIncomplete = finalRows.filter((r) => COH_GROUPS.some((g) => g.reasoners.some((rs) => cohOf(r, g.pair, rs) == null))).length;
+// "9,474 (4.30%)": the degree is derived from the stored count and denominator, at
+// toPrecision(3) so that LogMapLLM's 11 classes do not render as "0.00%" and read as
+// coherent (same rule as the baselines page).
+const cohCell = (n: number | null, pair: string) => {
+  if (n == null) return '—';
+  if (n === 0) return '0 (0%)';
+  const den = final?.global.coherence.union_class_count[pair] ?? NaN;
+  return `${n.toLocaleString('en-GB')} (${((100 * n) / den).toPrecision(3)}%)`;
+};
+const cohDen = (pair: string) => (final?.global.coherence.union_class_count[pair] ?? 0).toLocaleString('en-GB');
 
 const GLOBAL_COLS = [
   { key: 'macro_f1_repaired', label: 'F1 (repaired)' },
@@ -39,10 +100,11 @@ type Col = { key: string; label: string };
 type Section = { id: string; kicker: string; cols: Col[]; headline: string; rows: Row[]; portal: string | null };
 const sortByHeadline = (rows: Row[], h: string): Row[] =>
   rows.slice().sort((a, b) => (b.scores[h] ?? -Infinity) - (a.scores[h] ?? -Infinity));
-const sections: Section[] = [
-  { id: 'global', kicker: 'Track 1 · Subtrack 1 — global equivalence alignment', cols: GLOBAL_COLS, headline: 'macro_f1_repaired', rows: sortByHeadline(live?.global ?? [], 'macro_f1_repaired'), portal: CODABENCH_GLOBAL_URL },
-  { id: 'local', kicker: 'Track 1 · Subtrack 2 — local equivalence ranking', cols: LOCAL_COLS, headline: 'macro_mrr', rows: sortByHeadline(live?.local ?? [], 'macro_mrr'), portal: CODABENCH_LOCAL_URL },
-];
+const liveGlobal: Section = { id: 'global', kicker: 'Track 1 · Subtrack 1 — global equivalence alignment', cols: GLOBAL_COLS, headline: 'macro_f1_repaired', rows: sortByHeadline(live?.global ?? [], 'macro_f1_repaired'), portal: CODABENCH_GLOBAL_URL };
+const localSection: Section = { id: 'local', kicker: 'Track 1 · Subtrack 2 — local equivalence ranking', cols: LOCAL_COLS, headline: 'macro_mrr', rows: sortByHeadline(final?.local.systems ?? live?.local ?? [], 'macro_mrr'), portal: CODABENCH_LOCAL_URL };
+// With final results, the global section is rendered from participant_results.json
+// (below); only the local leaderboard goes through the generic CodaBench table.
+const sections: Section[] = final ? [localSection] : [liveGlobal, localSection];
 const comps = [
   { name: 'Track 1 · Subtrack 1 — Global equivalence alignment', url: CODABENCH_GLOBAL_URL },
   { name: 'Track 1 · Subtrack 2 — Local equivalence ranking', url: CODABENCH_LOCAL_URL },
@@ -53,7 +115,7 @@ const tabYears = [...histYears.map((y) => y.year), 2026];
 
 <Base
   title="Results"
-  description="OAEI Bio-ML results by edition: the current 2026 competitions (live CodaBench leaderboards) and the prior editions 2022–2025, each shown in its original structure."
+  description="OAEI Bio-ML results by edition: the final 2026 results (global alignment with Global Coherence, and local ranking) and the prior editions 2022–2025, each shown in its original structure."
 >
   <div class="page-head">
     <div class="container">
@@ -125,14 +187,13 @@ const tabYears = [...histYears.map((y) => y.year), 2026];
         <div class="notice" style="margin-top:0;">
           <span aria-hidden="true">ℹ</span>
           <span>
-            <strong>All submitted systems are under review.</strong> Leaderboard results are <em>provisional</em>
-            until the organisers confirm the system is reproducible and uses neither <strong>UMLS</strong>/<strong>Mondo</strong>
-            nor the local-ranking candidate pools for the global alignment. Full terms:
+            <strong>The system review has been completed.</strong> The results below will be considered
+            <em>final</em> after 6 October 2026. Review terms:
             <a href={`${GITHUB_REPO}#submissions-system-review`}>Submissions (System Review)</a>.
           </span>
         </div>
 
-        {!live && (
+        {!final && !live && (
           <>
             <h2 style="margin-top:0.4rem;">No participant submissions yet</h2>
             <p class="section-lede">
@@ -154,7 +215,123 @@ const tabYears = [...histYears.map((y) => y.year), 2026];
           </>
         )}
 
-        {live && sections.map((s) => (
+        {final && (
+          <section aria-labelledby="global-h" style="margin-top:1.6rem;">
+            <p class="kicker">Track 1 · Subtrack 1 — global equivalence alignment</p>
+            <h2 id="global-h">Submitted systems</h2>
+            <p class="section-lede">
+              Final results. Precision, recall and F1 are macro-averaged over the three pairs, against the
+              repaired reference (the headline) and the standard reference, and sorted by repaired F1. The two
+              references are not directly comparable; see <a href={withBase('/evaluation/')}>evaluation metrics</a>.
+            </p>
+            <div class="table-wrap">
+              <table class="sortable">
+                <thead>
+                  <tr>
+                    <th>#</th><th>System</th><th>Team</th>
+                    {PRF_COLS.map((c) => <th class="num">{c.label}</th>)}
+                    <th>Submitted</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {finalRows.map((r, i) => (
+                    <tr>
+                      <td class="num">{i + 1}</td>
+                      <td>{r.system}</td>
+                      <td>{r.team}</td>
+                      {PRF_COLS.map((c, ci) => (
+                        <td class="num">{ci === 0 && i === 0 ? <span class="best">{f3(r.macro[c.key])}</span> : f3(r.macro[c.key])}</td>
+                      ))}
+                      <td>{day(r.submitted)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="rt-h" id="global-coherence">Global Coherence — the alignments the systems submitted</h3>
+            <p class="rt-sub">
+              Each submitted alignment is also checked with a reasoner: does the system's <strong>own</strong>
+              alignment leave the merged ontology satisfiable? Each cell gives the number of unsatisfiable named
+              classes and, in parentheses, the incoherence degree (that count over the counted named classes).
+              <strong>Lower is better; 0 is coherent.</strong> Reported per pair rather than macro-averaged,
+              because {cohIncomplete} systems have a cell that could not be computed. Rows follow the table above.
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th rowspan="2" scope="col">System</th>
+                    {COH_GROUPS.map((g) => (
+                      <th class="num" colspan={g.reasoners.length} scope="colgroup">{g.pair.replace('-', '–')}</th>
+                    ))}
+                  </tr>
+                  <tr>
+                    {COH_GROUPS.flatMap((g) => g.reasoners.map((rs) => (
+                      <th class="num" scope="col">{RLABEL[rs]}</th>
+                    )))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {finalRows.map((r) => (
+                    <tr>
+                      <td>{r.system}</td>
+                      {COH_GROUPS.flatMap((g) => g.reasoners.map((rs) => (
+                        <td class="num">{cohCell(cohOf(r, g.pair, rs), g.pair)}</td>
+                      )))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p class="rt-note">
+              Computed organiser-side on each system's whole submitted alignment <span class="mono">M</span>, not
+              only the test slice, merged with both ontologies
+              (<span class="mono">O<sub>src</sub> ∪ O<sub>tgt</sub> ∪ M</span>, each correspondence asserted as an
+              equivalence). Every <strong>ELK</strong> figure is a sound lower bound; <strong>HermiT</strong> is
+              exact but is run on NCIT–DOID only. — means ELK exhausted a 384 GB heap, so the value is unknown,
+              not infinite. The conventions are those of the
+              <a href={withBase('/baselines/#baseline-coherence')}>baseline coherence table</a>.
+              Coherence is <strong>not</strong> a quality ranking and does not track F1.
+            </p>
+
+            <h3 class="rt-h">Per-pair results</h3>
+            <div class="pair-tabs" role="tablist" aria-label="2026 global alignment pairs">
+              {finalPairs.map((p, pi) => (
+                <button class="pair-tab" role="tab" id={`ptab-2026-${p.key}`}
+                        data-panel={`pp-2026-${p.key}`} aria-controls={`pp-2026-${p.key}`}
+                        aria-selected={pi === 0 ? 'true' : 'false'} tabindex={pi === 0 ? '0' : '-1'}>{p.label}</button>
+              ))}
+            </div>
+            {finalPairs.map((p, pi) => (
+              <div class="pair-panel" id={`pp-2026-${p.key}`} role="tabpanel" aria-labelledby={`ptab-2026-${p.key}`} hidden={pi !== 0}>
+                <div class="table-wrap">
+                  <table class="sortable">
+                    <thead>
+                      <tr>
+                        <th>#</th><th>System</th>
+                        {PRF_COLS.map((c) => <th class="num">{c.label}</th>)}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {p.rows.map((r, i) => (
+                        <tr>
+                          <td class="num">{i + 1}</td>
+                          <td>{r.system}</td>
+                          {PRF_COLS.map((c, ci) => (
+                            <td class="num">{ci === 0 && i === 0 ? <span class="best">{f3(r.pairs[p.key][c.key])}</span> : f3(r.pairs[p.key][c.key])}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {(final || live) && sections.map((s) => (
           <section aria-labelledby={`${s.id}-h`} style="margin-top:1.6rem;">
             <p class="kicker">{s.kicker}</p>
             <h2 id={`${s.id}-h`}>Submitted systems</h2>
@@ -185,6 +362,18 @@ const tabYears = [...histYears.map((y) => y.year), 2026];
             {s.rows.length === 0 && <p>No submissions to this competition yet.</p>}
           </section>
         ))}
+
+        {final && (
+          <p style="font-size:0.85rem; color:var(--ink-3); max-width:76ch; margin-top:1.4rem;">
+            Final results for the 2026 edition, frozen on {longDay(final.frozen)} after evaluation closed;
+            this page no longer updates from CodaBench. Global alignment is scored by the
+            organisers with the unmodified CodaBench scoring program, which reproduces the CodaBench leaderboard
+            exactly for every system on it; Global Coherence is computed organiser-side. Local ranking is the
+            CodaBench leaderboard at the close, macro-averaged over the three pairs and sorted by MRR. See
+            <a href={withBase('/evaluation/')}> evaluation metrics</a>. Columns sort on click. Machine-readable
+            data: <a class="mono" href={withBase('/participant_results.json')}>participant_results.json</a>.
+          </p>
+        )}
 
         {live && (
           <p style="font-size:0.85rem; color:var(--ink-3); max-width:76ch; margin-top:1.4rem;">

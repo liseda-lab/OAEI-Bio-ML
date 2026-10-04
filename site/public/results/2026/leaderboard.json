@@ -1,5 +1,5 @@
 {
-  "note": "Organiser baselines (macro over the three pairs). Global = semi-supervised test-slice (option a): repaired coherence-aware F1 headline. Participant results appear on the CodaBench leaderboards.",
+  "note": "Organiser baselines (macro over the three pairs). Global = semi-supervised test-slice (option a): repaired coherence-aware F1 headline. Local ranking is scored against the standard reference — coherence repair applies to the global task only. Participant results appear on the CodaBench leaderboards.",
   "global": {
     "headline": "f1_repaired",
     "systems": [
@@ -37,13 +37,6 @@
         "f1_standard": 0.4742,
         "precision_repaired": 0.7854,
         "recall_repaired": 0.4032
-      },
-      {
-        "system": "Naive-Lexical",
-        "f1_repaired": 0.1605,
-        "f1_standard": 0.15,
-        "precision_repaired": 0.4241,
-        "recall_repaired": 0.1261
       }
     ]
   },
@@ -51,7 +44,7 @@
     "headline": "mrr",
     "systems": [
       {
-        "system": "Naive-Lexical",
+        "system": "Lexical-Baseline",
         "mrr": 0.7305,
         "hits_at_1": 0.6559,
         "hits_at_5": 0.814,
@@ -84,41 +77,6 @@
         "hits_at_1": 0.4208,
         "hits_at_5": 0.4467,
         "hits_at_10": 0.47
-      }
-    ]
-  },
-  "typed": {
-    "headline": "preferred_typed_mrr",
-    "systems": [
-      {
-        "system": "Naive-Lexical",
-        "preferred_typed_mrr": 0.4008,
-        "hierarchy_aware_typed_ndcg_at_10": 0.363,
-        "preferred_typed_hits_at_1": 0.3403
-      },
-      {
-        "system": "SapBERT",
-        "preferred_typed_mrr": 0.3833,
-        "hierarchy_aware_typed_ndcg_at_10": 0.346,
-        "preferred_typed_hits_at_1": 0.3335
-      },
-      {
-        "system": "BERTMapLt",
-        "preferred_typed_mrr": 0.3076,
-        "hierarchy_aware_typed_ndcg_at_10": 0.2671,
-        "preferred_typed_hits_at_1": 0.2722
-      },
-      {
-        "system": "BERTMap-ss",
-        "preferred_typed_mrr": 0.2736,
-        "hierarchy_aware_typed_ndcg_at_10": 0.2351,
-        "preferred_typed_hits_at_1": 0.2412
-      },
-      {
-        "system": "BERTMap",
-        "preferred_typed_mrr": 0.2411,
-        "hierarchy_aware_typed_ndcg_at_10": 0.2092,
-        "preferred_typed_hits_at_1": 0.2205
       }
     ]
   }

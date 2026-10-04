@@ -6,10 +6,11 @@
  * OAEI Bio-ML re-hosts NO task data or ontologies: the biomedical ontologies
  * are already published elsewhere, and the task splits live on the (gated)
  * Hugging Face dataset. So this step only publishes the small, redistributable
- * pieces that exist at the repo root — the organiser-baseline leaderboard, any
- * CI-written live results, the licence, (if present) the participant validator
- * scripts, and the archived docs/<year>/ campaign pages at their original
- * URLs. Every source is guarded: a missing one is skipped, never fatal.
+ * pieces that exist at the repo root — the organiser-baseline leaderboard, the
+ * final participant results, any CI-written live results, the licence, (if
+ * present) the participant validator scripts, and the archived docs/<year>/
+ * campaign pages at their original URLs. Every source is guarded: a missing
+ * one is skipped, never fatal.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -25,6 +26,7 @@ const jobs = [
   { from: 'reference_coherence.json', to: 'reference_coherence.json' },
   { from: 'baseline_coherence.json', to: 'baseline_coherence.json' },
   { from: 'baseline_runtime.json', to: 'baseline_runtime.json' },
+  { from: 'participant_results.json', to: 'participant_results.json' },
   { from: 'results', to: 'results' },
   { from: 'LICENSE', to: 'LICENSE' },
 ];

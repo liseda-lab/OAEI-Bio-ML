@@ -40,10 +40,10 @@ Repair follows the LargeBio "remove-if-any" convention, computed as the **union 
 
 ## Global Coherence
 
-Alongside P/R/F1, each submitted alignment is checked for the **logical incoherence it induces** when merged with the two ontologies. A reasoner computes `global_coherence` — the degree of incoherence in $[0, 1]$ (lower is better) — together with the number of unsatisfiable classes and the size of the merged class set. Because it requires a reasoner, Global Coherence is computed **organiser-side only**; it is never part of the participant-side kit.
+Alongside P/R/F1, each submitted alignment is checked for the **logical incoherence it induces** when merged with the two ontologies. A reasoner computes `global_coherence` — the degree of incoherence in $[0, 1]$ (lower is better) — together with the number of unsatisfiable classes and the size of the merged class set. Because it requires a reasoner, Global Coherence is computed **organiser-side only**; it is never part of the participant-side kit. It is reported per pair (ELK on every pair, plus HermiT on NCIT–DOID) with the final results; see [evaluation metrics](../../evaluation-metrics.md) for the conventions.
 
 ## Scoring and leaderboard columns
 
-This subtrack is scored organiser-side and published to the Track 1 — Global Alignment CodaBench leaderboard. Its columns are `macro_f1_repaired` (headline), `macro_precision_repaired`, `macro_recall_repaired`, `macro_f1_standard`, `global_coherence`, and the per-pair `f1_repaired_<pair>`. Organiser baseline numbers are on the [baselines page](../../BASELINES.md).
+This subtrack is scored organiser-side and published to the Track 1 — Global Alignment CodaBench leaderboard. Its columns are `macro_f1_repaired` (headline), `macro_precision_repaired`, `macro_recall_repaired`, `macro_f1_standard`, and the per-pair `f1_repaired_<pair>`. Global Coherence is not a CodaBench column; it is published with the final results on the [results page](https://liseda-lab.github.io/OAEI-Bio-ML/results/). Organiser baseline numbers are on the [baselines page](../../BASELINES.md).
 
 For the exact file shape, a worked example, a copy-paste template, and local validation, see the [submission format](./submission-format.md). If a submission scores `0.000` on every pair — hidden macOS `__MACOSX` files inside the zip, or filenames without the hyphenated pair slug — see [submission support](../../support.md).

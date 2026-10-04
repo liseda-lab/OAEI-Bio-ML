@@ -41,7 +41,7 @@ The NCIT, DOID, and FMA ontologies ship with the download; **SNOMED CT** is the 
 
 ## Timeline
 
-> **Status:** 2026 edition — the datasets are final; evaluation and the leaderboards open on 12 July 2026 via the two CodaBench competitions.
+> **Status:** 2026 edition — the competition has concluded, and the [final results](https://liseda-lab.github.io/OAEI-Bio-ML/results/) are published.
 
 | Milestone | Date |
 |---|---|
@@ -56,8 +56,8 @@ The NCIT, DOID, and FMA ontologies ship with the download; **SNOMED CT** is the 
 ## Get Started & Participate
 
 * Read the **[quickstart](./quickstart.md)**: download from Hugging Face, run the scoring kit, obtain SNOMED CT for the two SNOMED pairs, and submit on CodaBench.
-* Two CodaBench competitions — [Track 1 Global Alignment](https://www.codabench.org/competitions/17424/) and [Track 1 Local Ranking](https://www.codabench.org/competitions/17423/) — open on 12 July 2026.
-* Organiser-run [baselines](./BASELINES.md) are published before the competition; participant standings appear on the CodaBench leaderboards.
+* Two CodaBench competitions — [Track 1 Global Alignment](https://www.codabench.org/competitions/17424/) and [Track 1 Local Ranking](https://www.codabench.org/competitions/17423/) — opened on 12 July 2026 and are now closed.
+* Organiser-run [baselines](./BASELINES.md) are published before the competition; the final participant results are on the [results](https://liseda-lab.github.io/OAEI-Bio-ML/results/) page.
 
 ## Related Material
 

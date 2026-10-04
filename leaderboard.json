@@ -1,5 +1,5 @@
 {
-  "note": "Organiser baselines (macro over the three pairs). Global = semi-supervised test-slice (option a): repaired coherence-aware F1 headline. Local ranking is scored against the standard reference — coherence repair applies to the global task only. Participant results appear on the CodaBench leaderboards.",
+  "note": "Organiser baselines (macro over the three pairs). Global = semi-supervised test-slice: repaired coherence-aware F1 headline. Local ranking is scored against the standard reference — coherence repair applies to the global task only. Participant results appear on the CodaBench leaderboards.",
   "global": {
     "headline": "f1_repaired",
     "systems": [

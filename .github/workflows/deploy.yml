@@ -10,9 +10,12 @@ on:
   workflow_dispatch:
   # Live-leaderboard refresh (requires the CODABENCH_GLOBAL_COMPETITION /
   # CODABENCH_LOCAL_COMPETITION repository variables; see the CodaBench setup guide).
+  # DISABLED after the 2026 evaluation closed: the final results are committed in
+  # participant_results.json. To re-enable for the next edition, uncomment the
+  # schedule below AND remove the `if:` on the "Fetch live CodaBench leaderboards" step.
   # NB: `schedule` must sit at this indent level, directly under `on:`.
-  schedule:
-    - cron: '0 */6 * * *' # every six hours
+  # schedule:
+  #   - cron: '0 */6 * * *' # every six hours
 
 permissions:
   contents: read
@@ -39,6 +42,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Fetch live CodaBench leaderboards (no-op until repo variables are set)
+        # Disabled after the 2026 evaluation closed (see the schedule note above);
+        # delete this line to re-enable.
+        if: ${{ false }}
         working-directory: .
         env:
           CODABENCH_GLOBAL_COMPETITION: ${{ vars.CODABENCH_GLOBAL_COMPETITION }}

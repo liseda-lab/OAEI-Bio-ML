@@ -1,27 +1,25 @@
 {
-  "note": "Logical coherence of each organiser baseline's own Task-1 global alignment. 'unsat' is the number of unsatisfiable named classes in the merged ontology O_src ∪ O_tgt ∪ M, where M is the system's submitted alignment asserted as EquivalentClasses; the incoherence degree is that count over the merged named-class signature. Computed organiser-side with ROBOT. ELK is a sound lower bound (unsat_ELK ≤ unsat_HermiT); HermiT is exact but only terminates on NCIT-DOID at this scale.",
-  "basis": "All figures are on the same owl:deprecated-excluded basis as the repaired reference: correspondences whose source or target is an owl:deprecated class are dropped as out-of-task, per the rule in consensus_reference_tooling/build_deprecated_removed.py, using the `deprecated` column of work/build-mixed/raw/entities.tsv (8091 IRIs) as the authority. LogMap, BERTMap and AML submit no such correspondences on any pair, so their original figures already satisfied this; BERTMapLt and LogMapLt did, and both their ELK and their NCIT-DOID HermiT figures were recomputed on filtered input.",
+  "note": "Logical coherence of each organiser baseline's own Task-1 global alignment. 'unsat' is the number of unsatisfiable named classes in the merged ontology O_src ∪ O_tgt ∪ M, where M is the system's submitted alignment asserted as EquivalentClasses; the incoherence degree is that count over the counted named classes (union_class_count). Computed organiser-side with ROBOT 1.9.10. ELK is a sound lower bound (unsat_ELK ≤ unsat_HermiT); HermiT is exact and is run on NCIT-DOID only.",
+  "basis": "The same conventions as the 2026 participant results (participant_results.json) and the reference figures (reference_coherence.json): only '=' correspondences are asserted; deprecated classes and imports are excluded during the calculation.",
   "footnotes": {
     "elk_lower_bound": "Every ELK figure is a sound under-approximation of the exact count.",
-    "hermit_scale": "HermiT was attempted on all three pairs but only completed on NCIT-DOID; the SNOMED pairs carry ELK lower bounds only."
+    "hermit_scale": "HermiT is run on NCIT-DOID only; it does not terminate at SNOMED scale, so the SNOMED pairs carry ELK lower bounds only."
   },
   "caveats": {
-    "missing_cells": "AML and LogMapLt on SNOMED-FMA were scripted but produced no output; no timeout marker was written because the per-system drivers wrapped nothing in `timeout`, so the cause is not recorded. Note that the standard (incoherent) SNOMED-FMA reference merge also failed to classify under ELK within its gate while the repaired (coherent) one completed, so reasoning cost on this pair appears to track induced incoherence rather than alignment size.",
-    "excluded_bad_hermit": "Two HermiT files on disk are not used here: bertmap__coherence_global_SNOMED_FMA_scores__HermiT.json is a verbatim copy of the ELK result (its body records reasoner_used=elk, lower_bound=true), and LOGMAP_LT__coherence_global_SNOMED_NCIT_scores__HermiT.json is flagged exact but reports figures identical to ELK, which is not consistent with the documented expectation that SNOMED-scale pairs do not terminate under HermiT.",
-    "excluded_systems": "Lexical-Baseline has coherence results for all three pairs but is omitted here to keep this table row-matched to the global P/R/F1 table above, from which it was deliberately dropped.",
-    "denominator_note": "The NCIT-DOID recomputations reported a merged signature of 231504, one class more than the 231503 recorded for every earlier run of that pair (SNOMED-NCIT reproduced 597931 exactly). The published 231503 is retained here so this table shares a denominator with the reference table; the discrepancy is unexplained but invisible at display precision."
+    "missing_cells": "AML and LogMapLt on SNOMED-FMA (null): ELK exhausted a 384 GB heap (heap full for more than 10 minutes; watchdog kill record). The value is unknown, not infinite. The standard (unrepaired) SNOMED-FMA reference fails the same way, as do five participant SNOMED-FMA alignments; the cause is not established.",
+    "excluded_systems": "Lexical-Baseline has coherence results for all three pairs but is omitted here to keep this table row-matched to the global P/R/F1 table above, from which it was deliberately dropped."
   },
   "reasoner_backend": "ROBOT",
   "pairs": [
     {
       "pair": "NCIT–DOID",
-      "union_class_count": 231503,
+      "union_class_count": 220246,
       "systems": {
-        "LogMapLt": { "elk": 37944, "hermit": 37946 },
-        "AML": { "elk": 64366, "hermit": 64371 },
-        "LogMap": { "elk": 8, "hermit": 8 },
+        "LogMapLt": { "elk": 37683, "hermit": 37685 },
+        "AML": { "elk": 9474, "hermit": 9565 },
+        "LogMap": { "elk": 7, "hermit": 7 },
         "BERTMap": { "elk": 14, "hermit": 14 },
-        "BERTMapLt": { "elk": 10444, "hermit": 10535 }
+        "BERTMapLt": { "elk": 10441, "hermit": 10532 }
       }
     },
     {
@@ -37,7 +35,7 @@
     },
     {
       "pair": "SNOMED–NCIT",
-      "union_class_count": 597931,
+      "union_class_count": 592352,
       "systems": {
         "LogMapLt": { "elk": 534393, "hermit": null },
         "AML": { "elk": 13494, "hermit": null },

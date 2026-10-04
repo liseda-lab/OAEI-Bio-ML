@@ -15,6 +15,10 @@ const refCoh = JSON.parse(fs.readFileSync(path.join(ROOT, 'reference_coherence.j
 const sysCoh = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline_coherence.json'), 'utf8'));
 const rt = JSON.parse(fs.readFileSync(path.join(ROOT, 'baseline_runtime.json'), 'utf8'));
 
+// Exact (HermiT) NCIT–DOID reference figure quoted under the reference-coherence table.
+const refNd = refCoh.pairs.find((p: any) => p.pair === 'NCIT–DOID');
+const refNdHermit = `${refNd.unsat_before_hermit.toLocaleString('en-GB')} (${((100 * refNd.unsat_before_hermit) / refNd.merged_signature_before).toPrecision(3)}%)`;
+
 // Coherence-table cell formatters. `null` counts/degrees render as an em dash;
 // ELK lower bounds carry a dagger keyed to the footnote below the table.
 const unsatCell = (n: number | null, lb2: boolean) =>
@@ -125,8 +129,8 @@ const pairLabel = (p: string) => p.replace('-', '–');
       <p class="lead">
         Organiser-run baseline systems for both competitions, published before the evaluation
         window. These are <strong>organiser baselines</strong> — participant submissions are not added
-        to these tables. Participant results live on the CodaBench leaderboards and appear on the
-        <a href={withBase('/results/')}>results page</a> now that the window is open (since 12 July 2026).
+        to these tables. The final participant results, scored and coherence-checked in the same way, are on
+        the <a href={withBase('/results/')}>results page</a>.
       </p>
     </div>
   </div>
@@ -179,8 +183,8 @@ const pairLabel = (p: string) => p.replace('-', '–');
         headline is the repaired coherence-aware F1; local ranking
         is headlined by MRR against the standard (unrepaired) reference. Full data:
         <a class="mono" href={withBase('/leaderboard.json')}>leaderboard.json</a>.
-        Participant results appear on the <a href={withBase('/results/')}>results page</a>, fed by the
-        CodaBench leaderboards. How long each baseline took, and the machine it ran on, are in
+        The final participant results are on the <a href={withBase('/results/')}>results page</a>.
+        How long each baseline took, and the machine it ran on, are in
         <a href="#runtime">wall-clock times</a> below.
         <span id="lexical-baseline-note"><span class="fn-ref" aria-hidden="true">*</span> Lexical-Baseline
         is a character tri-gram similarity matcher, not an exact-string baseline.</span>
@@ -196,7 +200,7 @@ const pairLabel = (p: string) => p.replace('-', '–');
         Alongside P/R/F1, each global alignment is checked with a reasoner: does the system's
         <strong>own</strong> alignment leave the merged ontology satisfiable? Each baseline's submitted
         mappings are merged with both ontologies and classified, giving the number of unsatisfiable named
-        classes and the incoherence degree (that count over the merged named-class signature, in
+        classes and the incoherence degree (that count over the merged ontology's counted named classes, in
         parentheses). <strong>Lower is better; 0 is coherent.</strong> Rows are in the same order as the
         P/R/F1 table above, so the two can be read across.
       </p>
@@ -234,10 +238,15 @@ const pairLabel = (p: string) => p.replace('-', '–');
         Counted in the merged ontology (<span class="mono">O<sub>src</sub> ∪ O<sub>tgt</sub> ∪ M</span>),
         where <span class="mono">M</span> is the system's own alignment. Every <strong>ELK</strong> figure is
         a sound lower bound; <strong>HermiT</strong> is exact but only terminates on NCIT–DOID at this scale,
-        so the SNOMED pairs carry ELK bounds only. As with the reference figures below, correspondences involving
-        <span class="mono">owl:deprecated</span> classes are excluded as out-of-task, so the two tables are on
-        the same basis. Two cells are genuinely unavailable (—): AML and LogMapLt on SNOMED–FMA did not
-        produce a result. Coherence is <strong>not</strong> a quality ranking and does not track F1 — a system
+        so the SNOMED pairs carry ELK bounds only. The conventions are the same as for the
+        <a href={withBase('/results/#global-coherence')}>participant results</a> and the reference figures
+        below, so all three tables are on the same basis: only <code>=</code>
+        correspondences are asserted; classes outside the task ontologies are dropped as out-of-task, 
+        i.e., DOID is loaded without the
+        classes and axioms of its <span class="mono">ext.owl</span> imports. 
+        Two cells are unavailable (—): for
+        AML and LogMapLt on SNOMED–FMA, ELK exhausted a 384 GB heap, so the value is unknown.
+        Coherence is <strong>not</strong> a quality ranking and does not track F1 — a system
         that maps very little scores well here, and LogMap and AML repair internally by design.
         Machine-readable data:
         <a class="mono" href={withBase('/baseline_coherence.json')}>baseline_coherence.json</a>.
@@ -254,8 +263,9 @@ const pairLabel = (p: string) => p.replace('-', '–');
         <strong>incoherent</strong>; the <a href={withBase('/repair/')}>repair procedure</a> removes or
         weakens the incoherence-inducing correspondences. This table reports the coherence of each pair's
         reference <strong>before</strong> and <strong>after</strong> repair — the number of unsatisfiable
-        named classes in the merged ontology and the corresponding incoherence degree. All three repaired
-        references are <strong>coherent (0 unsatisfiable classes)</strong>.
+        named classes in the merged ontology and the corresponding incoherence degree. ELK finds
+        <strong>no unsatisfiable class in any of the three repaired references</strong>, and on NCIT–DOID
+        the exact HermiT reasoner confirms 0.
       </p>
       <div class="table-wrap">
         <table>
@@ -274,7 +284,7 @@ const pairLabel = (p: string) => p.replace('-', '–');
                 <td>{p.pair}</td>
                 <td class="num">{unsatCell(p.unsat_before, p.unsat_before_lower_bound)}</td>
                 <td class="num">{degCell(p.degree_before_pct)}</td>
-                <td class="num">{unsatCell(p.unsat_after, false)}</td>
+                <td class="num">{unsatCell(p.unsat_after, p.unsat_after_lower_bound ?? false)}</td>
                 <td class="num">{degCell(p.degree_after_pct)}</td>
               </tr>
             ))}
@@ -283,11 +293,13 @@ const pairLabel = (p: string) => p.replace('-', '–');
       </div>
       <p style="font-size:0.82rem; color:var(--ink-3); max-width:80ch; margin-top:0.6rem;">
         Unsatisfiable classes are counted in the merged ontology
-        (<span class="mono">O<sub>src</sub> ∪ O<sub>tgt</sub> ∪ R</span>) under the ELK reasoner; the
-        incoherence degree is that count over the merged named-class signature. † denotes an ELK lower
-        bound (a sound under-approximation; the exact figure is pending). The all-equivalence standard
-        SNOMED–FMA merge does not classify under ELK even at a 128 GB heap, so its before-repair figure is
-        unavailable (—). Machine-readable data:
+        (<span class="mono">O<sub>src</sub> ∪ O<sub>tgt</sub> ∪ R</span>) under the ELK reasoner, on the
+        same basis and with the same counted classes as the baseline table above; the repaired reference drops <code>&lt;=</code> / <code>&gt;=</code> and <code>?</code>. 
+        The incoherence degree is that count over the counted named
+        classes. † denotes an ELK lower bound (a sound under-approximation). On NCIT–DOID the exact HermiT
+        figures are {refNdHermit} before repair and 0 after. The all-equivalence standard SNOMED–FMA merge
+        does not classify under ELK even with a 384 GB heap, so its before-repair figure is unavailable (—).
+        Machine-readable data:
         <a class="mono" href={withBase('/reference_coherence.json')}>reference_coherence.json</a>.
       </p>
     </div>
@@ -382,7 +394,7 @@ const pairLabel = (p: string) => p.replace('-', '–');
           <tbody>
             <tr>
               <td>2026</td>
-              <td>current — evaluation &amp; leaderboard open since 12 July 2026</td>
+              <td>concluded — <a href={withBase('/results/')}>final results</a> published</td>
               <td>this page</td>
               <td><a class="mono" href={withBase('/leaderboard.json')}>leaderboard.json</a></td>
             </tr>

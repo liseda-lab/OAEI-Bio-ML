@@ -4,6 +4,12 @@ Notable changes to the OAEI Bio-ML datasets, baselines, and published results ar
 
 ## 2026 edition (first edition)
 
+### 2026-10-03 — Final results published; CodaBench sync disabled
+
+**Final results.** Evaluation has closed. The [results page](https://liseda-lab.github.io/OAEI-Bio-ML/results/) now shows the final participant results, frozen in [`participant_results.json`](./participant_results.json). For global alignment it gives the macro-averaged and per-pair P/R/F1 against both references, plus organiser-side Global Coherence per pair (ELK on all three pairs, HermiT on NCIT–DOID). For local ranking it gives the CodaBench leaderboard at the close. The global P/R/F1 were computed with the unmodified CodaBench scoring program, which reproduces the public leaderboard exactly. The [system review](./README.md#submissions-system-review) has been completed; the results will be considered final after 6 October 2026.
+
+**CodaBench sync disabled.** The site no longer pulls the leaderboards from CodaBench every six hours. The sync is switched off in `.github/workflows/deploy.yml` (schedule commented out, fetch step disabled) rather than removed, so it can be re-enabled for the next edition.
+
 ### 2026-09-30 — Added support for automatic result fetching from CodaBench
 
 Environment variables added to the site deployment should now allow for results to be automatically pulled from CodaBench. 

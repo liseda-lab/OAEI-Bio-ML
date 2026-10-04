@@ -67,7 +67,7 @@ Under `bio-ml/`, each pair (`NCIT-DOID`, `SNOMED-FMA`, `SNOMED-NCIT`) ships the 
 | 2026-07-06 | provisional materials |
 | 2026-07-07 | datasets finalised |
 | **2026-07-12** | **competition starts — leaderboards open** |
-| 2026-09-01 | evaluation closes |
-| 2026-09-06 | competition ends — results published (grace period to 2026-09-12) |
+| 2026-09-30 | evaluation closes |
+| 2026-10-06 | competition ends — results reported (grace period to 2026-10-13) |
 
-Participant results are collected and ranked on **two CodaBench competitions** — one per subtrack (Track 1 global alignment, Track 1 local ranking). Competition URLs are announced at launch.
+Participant results are collected and ranked on **two CodaBench competitions** — one per subtrack (Track 1 global alignment, Track 1 local ranking). The competitions are [Track 1 Global Alignment](https://www.codabench.org/competitions/17424/) and [Track 1 Local Ranking](https://www.codabench.org/competitions/17423/); the final results are on the [results page](https://liseda-lab.github.io/OAEI-Bio-ML/results/).

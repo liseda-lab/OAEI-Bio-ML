@@ -26,17 +26,17 @@ The 2026 datasets are **publicly available** on the Hugging Face Hub as [`OAEI-M
 
 ## Baselines & results
 
-Organiser-run baseline systems (a naive lexical baseline, SapBERT [3], and the BERTMap [2] family) are published before the competition on the [baselines](./BASELINES.md) page, rendered directly from the machine-readable `leaderboard.json`. Participant standings appear on the CodaBench leaderboards, surfaced on the [results](https://liseda-lab.github.io/OAEI-Bio-ML/results/) page once the evaluation window opens.
+Organiser-run baseline systems (a naive lexical baseline, SapBERT [3], and the BERTMap [2] family) are published before the competition on the [baselines](./BASELINES.md) page, rendered directly from the machine-readable `leaderboard.json`. The final participant results (P/R/F1 and Global Coherence for global alignment, MRR and Hits@k for local ranking) are on the [results](https://liseda-lab.github.io/OAEI-Bio-ML/results/) page; the machine-readable copy is `participant_results.json`.
 
 ## Participate
 
-Two CodaBench competitions — [Track 1 Global Alignment](https://www.codabench.org/competitions/17424/) and [Track 1 Local Ranking](https://www.codabench.org/competitions/17423/) — open on **12 July 2026**. See the [quickstart](./quickstart.md). 
+Two CodaBench competitions — [Track 1 Global Alignment](https://www.codabench.org/competitions/17424/) and [Track 1 Local Ranking](https://www.codabench.org/competitions/17423/) — opened on **12 July 2026** and are now closed. See the [quickstart](./quickstart.md). 
 
 Note: A submission that scores `0.000` on every pair is typically a packaging problem. If you're running macOS, problems can result from the hidden `__MACOSX` files bundled inside the zip, or from filenames without the hyphenated ontology-pair slug — please see [submission support](./support.md).
 
 ### Submissions (System Review)
 
-**All submitted systems are under review.** This applies to both competitions. Results are published to the leaderboards as *provisional*, and a result is marked accepted only once the organisers have reviewed the system that produced it. The review checks that the submission is **reproducible**: that the system's description, code or executable, configuration, and external resources are sufficient to regenerate the submitted alignments and rankings, and, where possible, the organisers re-run the system to confirm this. A short system description stating the external resources used (ontologies, lexica, pretrained or language models, APIs) with each submission makes the review quicker.
+**All submitted systems are reviewed. For 2026 the review has been completed, and the results will be considered final after 6 October 2026.** This applies to both competitions. Results are published to the leaderboards as *provisional*, and a result is marked accepted only once the organisers have reviewed the system that produced it. The review checks that the submission is **reproducible**: that the system's description, code or executable, configuration, and external resources are sufficient to regenerate the submitted alignments and rankings, and, where possible, the organisers re-run the system to confirm this. A short system description stating the external resources used (ontologies, lexica, pretrained or language models, APIs) with each submission makes the review quicker.
 
 Systems must not:
 

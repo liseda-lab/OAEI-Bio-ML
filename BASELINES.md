@@ -1,6 +1,6 @@
 # OAEI Bio-ML — Baselines
 
-These are the organiser-run baseline systems, published before the competition; participant submissions are not added to these tables. The exact scores are rendered directly from the machine-readable `leaderboard.json` on the **[baselines page](https://liseda-lab.github.io/OAEI-Bio-ML/baselines/)** of the website, so the numbers here never drift from the data. Participant results are published via the live CodaBench leaderboards once the evaluation window opens (12 July 2026; see the [track page](./index.md)). Changes between editions are recorded in the [changelog](./changelog.md); OAEI Bio-ML 2026 is the first edition, so there are no previous years yet.
+These are the organiser-run baseline systems, published before the competition; participant submissions are not added to these tables. The exact scores are rendered directly from the machine-readable `leaderboard.json` on the **[baselines page](https://liseda-lab.github.io/OAEI-Bio-ML/baselines/)** of the website, so the numbers here never drift from the data. The final participant results are on the [results page](https://liseda-lab.github.io/OAEI-Bio-ML/results/). Changes between editions are recorded in the [changelog](./changelog.md); OAEI Bio-ML 2026 is the first edition, so there are no previous years yet.
 
 All baseline scores are **macro-averaged over the three pairs** (NCIT–DOID, SNOMED–FMA, SNOMED–NCIT).
 
@@ -11,6 +11,10 @@ Scored with **repaired, coherence-aware P/R/F1** (headline). Baseline systems in
 ## Subtrack 2 — Local equivalence ranking
 
 Scored with **MRR** and **Hits@{1,5,10}** against the **standard** reference alignment (coherence repair does not apply to the ranking task). Baseline systems include a lexical baseline, SapBERT, and the BERTMap family (BERTMap, BERTMapLt, BERTMap-ss).
+
+## Coherence
+
+Each baseline's own global alignment is also checked with a reasoner. The [baseline coherence](https://liseda-lab.github.io/OAEI-Bio-ML/baselines/#baseline-coherence) table gives the unsatisfiable classes and the incoherence degree per pair (ELK on all three pairs, HermiT on NCIT–DOID), next to the coherence of the reference alignments before and after repair. They are computed under the same conventions as the participant results (see [evaluation metrics](./evaluation-metrics.md)). The machine-readable sources are `baseline_coherence.json` and `reference_coherence.json` at the repository root.
 
 ## Runtime and hardware
 

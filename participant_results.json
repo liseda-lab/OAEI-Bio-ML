@@ -1,0 +1,568 @@
+{
+  "edition": 2026,
+  "status": "final",
+  "frozen": "2026-10-03",
+  "note": "Final OAEI Bio-ML 2026 participant results for both CodaBench competitions, frozen after evaluation closed. The website no longer syncs from CodaBench. The system review has been completed; the results will be considered final after 6 October 2026.",
+  "global": {
+    "competition": "Track 1 · Subtrack 1 — Global equivalence alignment",
+    "competition_url": "https://www.codabench.org/competitions/17424/",
+    "headline": "f1_repaired",
+    "scoring": "P/R/F1 on the hidden test slice of each pair, with train/valid reference pairs removed from the predictions and every submitted correspondence counted whatever its relation. Standard: plain set P/R/F1 against the standard reference. Repaired (headline): coherence-aware, so a prediction that matches a '?' pair of the repaired reference is neither a true nor a false positive. Macro = the unweighted mean of the three per-pair values. Computed by the organisers with the unmodified CodaBench scoring program, which reproduces the public CodaBench leaderboard exactly for every system on it.",
+    "pairs": [
+      "NCIT-DOID",
+      "SNOMED-FMA",
+      "SNOMED-NCIT"
+    ],
+    "coherence": {
+      "note": "Logical coherence of each system's own submitted alignment M (the whole alignment, not only the test slice): 'elk'/'hermit' is the number of unsatisfiable named classes in O_src ∪ O_tgt ∪ M with each correspondence asserted as EquivalentClasses; the incoherence degree is that count over union_class_count. Computed organiser-side with ROBOT 1.9.10. ELK is a sound lower bound; HermiT is exact and is run on NCIT-DOID only.",
+      "conventions": [
+        "Only '=' correspondences are asserted, with the same rule for RDF and TSV submissions.",
+        "A correspondence is dropped if either endpoint is owl:deprecated or is not a class of its task ontology.",
+        "DOID is loaded without the classes and axioms of its ext.owl imports; only the imports' object- and annotation-property declarations are kept, so that DOID's own axioms parse unchanged.",
+        "Deprecated classes and OWL API placeholder classes are excluded from both numerator and denominator."
+      ],
+      "union_class_count": {
+        "NCIT-DOID": 220246,
+        "SNOMED-FMA": 490694,
+        "SNOMED-NCIT": 592352
+      },
+      "footnotes": {
+        "null": "ELK exhausted a 384 GB heap (heap full for more than 10 minutes; watchdog kill record). The value is unknown, not infinite.",
+        "per_pair": "Coherence is reported per pair, not macro-averaged: five systems have a null cell."
+      },
+      "same_basis_as": "baseline_coherence.json"
+    },
+    "systems": [
+      {
+        "system": "Matcha",
+        "team": "pedrocotovio",
+        "submission_id": 943641,
+        "submitted": "2026-09-24",
+        "macro": {
+          "f1_repaired": 0.636311,
+          "precision_repaired": 0.698857,
+          "recall_repaired": 0.632327,
+          "f1_standard": 0.569735,
+          "precision_standard": 0.722202,
+          "recall_standard": 0.529215
+        },
+        "pairs": {
+          "NCIT-DOID": {
+            "f1_repaired": 0.620888,
+            "precision_repaired": 0.52172,
+            "recall_repaired": 0.766602,
+            "f1_standard": 0.602786,
+            "precision_standard": 0.535181,
+            "recall_standard": 0.68994,
+            "coherence": {
+              "elk": 0,
+              "hermit": 0
+            }
+          },
+          "SNOMED-FMA": {
+            "f1_repaired": 0.601479,
+            "precision_repaired": 0.872467,
+            "recall_repaired": 0.458934,
+            "f1_standard": 0.450946,
+            "precision_standard": 0.905477,
+            "recall_standard": 0.300234,
+            "coherence": {
+              "elk": 90104
+            }
+          },
+          "SNOMED-NCIT": {
+            "f1_repaired": 0.686565,
+            "precision_repaired": 0.702382,
+            "recall_repaired": 0.671445,
+            "f1_standard": 0.655472,
+            "precision_standard": 0.725947,
+            "recall_standard": 0.59747,
+            "coherence": {
+              "elk": 14250
+            }
+          }
+        }
+      },
+      {
+        "system": "MetaMatch",
+        "team": "inestaktak",
+        "submission_id": 911101,
+        "submitted": "2026-09-01",
+        "macro": {
+          "f1_repaired": 0.634457,
+          "precision_repaired": 0.606579,
+          "recall_repaired": 0.666689,
+          "f1_standard": 0.615276,
+          "precision_standard": 0.661172,
+          "recall_standard": 0.580398
+        },
+        "pairs": {
+          "NCIT-DOID": {
+            "f1_repaired": 0.652148,
+            "precision_repaired": 0.599892,
+            "recall_repaired": 0.714378,
+            "f1_standard": 0.630987,
+            "precision_standard": 0.614703,
+            "recall_standard": 0.648158,
+            "coherence": {
+              "elk": 11735,
+              "hermit": 11825
+            }
+          },
+          "SNOMED-FMA": {
+            "f1_repaired": 0.626937,
+            "precision_repaired": 0.597388,
+            "recall_repaired": 0.659561,
+            "f1_standard": 0.630687,
+            "precision_standard": 0.728144,
+            "recall_standard": 0.556239,
+            "coherence": {
+              "elk": null
+            }
+          },
+          "SNOMED-NCIT": {
+            "f1_repaired": 0.624287,
+            "precision_repaired": 0.622457,
+            "recall_repaired": 0.626127,
+            "f1_standard": 0.584152,
+            "precision_standard": 0.640669,
+            "recall_standard": 0.536798,
+            "coherence": {
+              "elk": 288574
+            }
+          }
+        }
+      },
+      {
+        "system": "LogMapLLM",
+        "team": "oaei-ml",
+        "submission_id": 944575,
+        "submitted": "2026-09-25",
+        "macro": {
+          "f1_repaired": 0.623099,
+          "precision_repaired": 0.507032,
+          "recall_repaired": 0.811518,
+          "f1_standard": 0.611279,
+          "precision_standard": 0.556676,
+          "recall_standard": 0.682796
+        },
+        "pairs": {
+          "NCIT-DOID": {
+            "f1_repaired": 0.686498,
+            "precision_repaired": 0.573218,
+            "recall_repaired": 0.855577,
+            "f1_standard": 0.673754,
+            "precision_standard": 0.590721,
+            "recall_standard": 0.783947,
+            "coherence": {
+              "elk": 0,
+              "hermit": 0
+            }
+          },
+          "SNOMED-FMA": {
+            "f1_repaired": 0.55615,
+            "precision_repaired": 0.431386,
+            "recall_repaired": 0.782445,
+            "f1_standard": 0.535321,
+            "precision_standard": 0.529193,
+            "recall_standard": 0.541593,
+            "coherence": {
+              "elk": 11
+            }
+          },
+          "SNOMED-NCIT": {
+            "f1_repaired": 0.626648,
+            "precision_repaired": 0.516492,
+            "recall_repaired": 0.796532,
+            "f1_standard": 0.624762,
+            "precision_standard": 0.550115,
+            "recall_standard": 0.722849,
+            "coherence": {
+              "elk": 426
+            }
+          }
+        }
+      },
+      {
+        "system": "LogMapBio-LLM",
+        "team": "ernestojimenezruiz",
+        "submission_id": 951726,
+        "submitted": "2026-09-29",
+        "macro": {
+          "f1_repaired": 0.620541,
+          "precision_repaired": 0.49699,
+          "recall_repaired": 0.826393,
+          "f1_standard": 0.616704,
+          "precision_standard": 0.550993,
+          "recall_standard": 0.710731
+        },
+        "pairs": {
+          "NCIT-DOID": {
+            "f1_repaired": 0.693718,
+            "precision_repaired": 0.558661,
+            "recall_repaired": 0.914894,
+            "f1_standard": 0.690131,
+            "precision_standard": 0.58015,
+            "recall_standard": 0.851567,
+            "coherence": {
+              "elk": 14,
+              "hermit": 14
+            }
+          },
+          "SNOMED-FMA": {
+            "f1_repaired": 0.540146,
+            "precision_repaired": 0.424525,
+            "recall_repaired": 0.74232,
+            "f1_standard": 0.529231,
+            "precision_standard": 0.529464,
+            "recall_standard": 0.528998,
+            "coherence": {
+              "elk": 11
+            }
+          },
+          "SNOMED-NCIT": {
+            "f1_repaired": 0.627759,
+            "precision_repaired": 0.507785,
+            "recall_repaired": 0.821965,
+            "f1_standard": 0.630749,
+            "precision_standard": 0.543364,
+            "recall_standard": 0.751627,
+            "coherence": {
+              "elk": 926
+            }
+          }
+        }
+      },
+      {
+        "system": "Matcha_legacy",
+        "team": "martasilva",
+        "submission_id": 951323,
+        "submitted": "2026-09-29",
+        "macro": {
+          "f1_repaired": 0.611612,
+          "precision_repaired": 0.543635,
+          "recall_repaired": 0.736211,
+          "f1_standard": 0.642224,
+          "precision_standard": 0.622517,
+          "recall_standard": 0.700485
+        },
+        "pairs": {
+          "NCIT-DOID": {
+            "f1_repaired": 0.621471,
+            "precision_repaired": 0.47422,
+            "recall_repaired": 0.901354,
+            "f1_standard": 0.64997,
+            "precision_standard": 0.511349,
+            "recall_standard": 0.891699,
+            "coherence": {
+              "elk": 16782,
+              "hermit": 16874
+            }
+          },
+          "SNOMED-FMA": {
+            "f1_repaired": 0.536284,
+            "precision_repaired": 0.454823,
+            "recall_repaired": 0.653292,
+            "f1_standard": 0.613853,
+            "precision_standard": 0.623114,
+            "recall_standard": 0.604862,
+            "coherence": {
+              "elk": null
+            }
+          },
+          "SNOMED-NCIT": {
+            "f1_repaired": 0.67708,
+            "precision_repaired": 0.701861,
+            "recall_repaired": 0.653988,
+            "f1_standard": 0.66285,
+            "precision_standard": 0.733089,
+            "recall_standard": 0.604894,
+            "coherence": {
+              "elk": 406291
+            }
+          }
+        }
+      },
+      {
+        "system": "GenOM",
+        "team": "yipingsong",
+        "submission_id": 953833,
+        "submitted": "2026-09-30",
+        "macro": {
+          "f1_repaired": 0.553814,
+          "precision_repaired": 0.507272,
+          "recall_repaired": 0.653887,
+          "f1_standard": 0.566335,
+          "precision_standard": 0.566088,
+          "recall_standard": 0.616037
+        },
+        "pairs": {
+          "NCIT-DOID": {
+            "f1_repaired": 0.517912,
+            "precision_repaired": 0.379424,
+            "recall_repaired": 0.815603,
+            "f1_standard": 0.541909,
+            "precision_standard": 0.411212,
+            "recall_standard": 0.794393,
+            "coherence": {
+              "elk": 23915,
+              "hermit": 23933
+            }
+          },
+          "SNOMED-FMA": {
+            "f1_repaired": 0.731272,
+            "precision_repaired": 0.743839,
+            "recall_repaired": 0.719122,
+            "f1_standard": 0.741866,
+            "precision_standard": 0.850435,
+            "recall_standard": 0.657879,
+            "coherence": {
+              "elk": null
+            }
+          },
+          "SNOMED-NCIT": {
+            "f1_repaired": 0.412257,
+            "precision_repaired": 0.398554,
+            "recall_repaired": 0.426936,
+            "f1_standard": 0.415229,
+            "precision_standard": 0.436615,
+            "recall_standard": 0.395839,
+            "coherence": {
+              "elk": 358925
+            }
+          }
+        }
+      },
+      {
+        "system": "LogMap",
+        "team": "diso-oaei",
+        "submission_id": 949960,
+        "submitted": "2026-09-28",
+        "macro": {
+          "f1_repaired": 0.534202,
+          "precision_repaired": 0.401579,
+          "recall_repaired": 0.811942,
+          "f1_standard": 0.544039,
+          "precision_standard": 0.449824,
+          "recall_standard": 0.689835
+        },
+        "pairs": {
+          "NCIT-DOID": {
+            "f1_repaired": 0.608774,
+            "precision_repaired": 0.467519,
+            "recall_repaired": 0.87234,
+            "f1_standard": 0.606965,
+            "precision_standard": 0.487188,
+            "recall_standard": 0.804838,
+            "coherence": {
+              "elk": 9,
+              "hermit": 9
+            }
+          },
+          "SNOMED-FMA": {
+            "f1_repaired": 0.421016,
+            "precision_repaired": 0.290261,
+            "recall_repaired": 0.766144,
+            "f1_standard": 0.445739,
+            "precision_standard": 0.380597,
+            "recall_standard": 0.537786,
+            "coherence": {
+              "elk": 98593
+            }
+          },
+          "SNOMED-NCIT": {
+            "f1_repaired": 0.572817,
+            "precision_repaired": 0.446957,
+            "recall_repaired": 0.797341,
+            "f1_standard": 0.579413,
+            "precision_standard": 0.481688,
+            "recall_standard": 0.726881,
+            "coherence": {
+              "elk": 173
+            }
+          }
+        }
+      },
+      {
+        "system": "mosaic",
+        "team": "faizmirza",
+        "submission_id": 865608,
+        "submitted": "2026-07-27",
+        "macro": {
+          "f1_repaired": 0.48652,
+          "precision_repaired": 0.449745,
+          "recall_repaired": 0.563656,
+          "f1_standard": 0.5043,
+          "precision_standard": 0.507715,
+          "recall_standard": 0.508022
+        },
+        "pairs": {
+          "NCIT-DOID": {
+            "f1_repaired": 0.620321,
+            "precision_repaired": 0.643997,
+            "recall_repaired": 0.598324,
+            "f1_standard": 0.598558,
+            "precision_standard": 0.66004,
+            "recall_standard": 0.547554,
+            "coherence": {
+              "elk": 10766,
+              "hermit": 10857
+            }
+          },
+          "SNOMED-FMA": {
+            "f1_repaired": 0.298798,
+            "precision_repaired": 0.214756,
+            "recall_repaired": 0.490909,
+            "f1_standard": 0.375938,
+            "precision_standard": 0.336654,
+            "recall_standard": 0.4256,
+            "coherence": {
+              "elk": null
+            }
+          },
+          "SNOMED-NCIT": {
+            "f1_repaired": 0.540442,
+            "precision_repaired": 0.490482,
+            "recall_repaired": 0.601734,
+            "f1_standard": 0.538403,
+            "precision_standard": 0.526449,
+            "recall_standard": 0.550912,
+            "coherence": {
+              "elk": 233199
+            }
+          }
+        }
+      },
+      {
+        "system": "davidlopez",
+        "team": "daviddiazlopez",
+        "submission_id": 955662,
+        "submitted": "2026-10-01",
+        "macro": {
+          "f1_repaired": 0.215833,
+          "precision_repaired": 0.123653,
+          "recall_repaired": 0.953331,
+          "f1_standard": 0.270891,
+          "precision_standard": 0.159835,
+          "recall_standard": 0.923551
+        },
+        "pairs": {
+          "NCIT-DOID": {
+            "f1_repaired": 0.230094,
+            "precision_repaired": 0.130652,
+            "recall_repaired": 0.96325,
+            "f1_standard": 0.25584,
+            "precision_standard": 0.147866,
+            "recall_standard": 0.948323,
+            "coherence": {
+              "elk": 83915,
+              "hermit": 83917
+            }
+          },
+          "SNOMED-FMA": {
+            "f1_repaired": 0.125324,
+            "precision_repaired": 0.066996,
+            "recall_repaired": 0.968652,
+            "f1_standard": 0.224738,
+            "precision_standard": 0.127918,
+            "recall_standard": 0.924429,
+            "coherence": {
+              "elk": null
+            }
+          },
+          "SNOMED-NCIT": {
+            "f1_repaired": 0.292081,
+            "precision_repaired": 0.173312,
+            "recall_repaired": 0.928092,
+            "f1_standard": 0.332096,
+            "precision_standard": 0.203722,
+            "recall_standard": 0.897901,
+            "coherence": {
+              "elk": null
+            }
+          }
+        }
+      }
+    ]
+  },
+  "local": {
+    "competition": "Track 1 · Subtrack 2 — Local equivalence ranking",
+    "competition_url": "https://www.codabench.org/competitions/17423/",
+    "headline": "macro_mrr",
+    "source": "The public CodaBench leaderboard at the close of the evaluation phase (fetched 2026-10-03; identical to the site's last live snapshot). Scores as CodaBench reports them (3 dp). Where a submission had no fact sheet, the system name was supplied by the organisers.",
+    "systems": [
+      {
+        "system": "CEDAR",
+        "team": "yadusnair",
+        "submission_id": 954569,
+        "date": "2026-10-01T06:15:07.632861Z",
+        "scores": {
+          "macro_mrr": 0.962,
+          "macro_hits_at_1": 0.949,
+          "macro_hits_at_5": 0.978,
+          "macro_hits_at_10": 0.983,
+          "mrr_ncit_doid": 0.97,
+          "hits_at_1_ncit_doid": 0.958,
+          "mrr_snomed_fma": 0.959,
+          "hits_at_1_snomed_fma": 0.946,
+          "mrr_snomed_ncit": 0.959,
+          "hits_at_1_snomed_ncit": 0.942
+        }
+      },
+      {
+        "system": "Matcha",
+        "team": "pedrocotovio",
+        "submission_id": 943507,
+        "date": "2026-09-24T17:57:08.457826Z",
+        "scores": {
+          "macro_mrr": 0.93,
+          "macro_hits_at_1": 0.906,
+          "macro_hits_at_5": 0.958,
+          "macro_hits_at_10": 0.97,
+          "mrr_ncit_doid": 0.923,
+          "hits_at_1_ncit_doid": 0.895,
+          "mrr_snomed_fma": 0.953,
+          "hits_at_1_snomed_fma": 0.936,
+          "mrr_snomed_ncit": 0.914,
+          "hits_at_1_snomed_ncit": 0.887
+        }
+      },
+      {
+        "system": "MetaMatch",
+        "team": "inestaktak",
+        "submission_id": 953398,
+        "date": "2026-09-30T12:19:12.172655Z",
+        "scores": {
+          "macro_mrr": 0.327,
+          "macro_hits_at_1": 0.324,
+          "macro_hits_at_5": 0.33,
+          "macro_hits_at_10": 0.332,
+          "mrr_ncit_doid": 0.981,
+          "hits_at_1_ncit_doid": 0.972,
+          "mrr_snomed_fma": 0.0,
+          "hits_at_1_snomed_fma": 0.0,
+          "mrr_snomed_ncit": 0.0,
+          "hits_at_1_snomed_ncit": 0.0
+        }
+      },
+      {
+        "system": "NeSyMatch",
+        "team": "abhiseks",
+        "submission_id": 939902,
+        "date": "2026-09-22T17:55:38.462884Z",
+        "scores": {
+          "macro_mrr": 0.132,
+          "macro_hits_at_1": 0.085,
+          "macro_hits_at_5": 0.14,
+          "macro_hits_at_10": 0.188,
+          "mrr_ncit_doid": 0.056,
+          "hits_at_1_ncit_doid": 0.014,
+          "mrr_snomed_fma": 0.287,
+          "hits_at_1_snomed_fma": 0.231,
+          "mrr_snomed_ncit": 0.052,
+          "hits_at_1_snomed_ncit": 0.01
+        }
+      }
+    ]
+  }
+}
