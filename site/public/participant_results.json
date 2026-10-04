@@ -34,10 +34,11 @@
     },
     "systems": [
       {
-        "system": "Matcha",
+        "system": "Matcha-ML",
         "team": "pedrocotovio",
         "submission_id": 943641,
         "submitted": "2026-09-24",
+        "self_supervised": true,
         "macro": {
           "f1_repaired": 0.636311,
           "precision_repaired": 0.698857,
@@ -88,6 +89,7 @@
         "team": "inestaktak",
         "submission_id": 911101,
         "submitted": "2026-09-01",
+        "self_supervised": null,
         "macro": {
           "f1_repaired": 0.634457,
           "precision_repaired": 0.606579,
@@ -138,6 +140,7 @@
         "team": "oaei-ml",
         "submission_id": 944575,
         "submitted": "2026-09-25",
+        "self_supervised": true,
         "macro": {
           "f1_repaired": 0.623099,
           "precision_repaired": 0.507032,
@@ -188,6 +191,7 @@
         "team": "ernestojimenezruiz",
         "submission_id": 951726,
         "submitted": "2026-09-29",
+        "self_supervised": true,
         "macro": {
           "f1_repaired": 0.620541,
           "precision_repaired": 0.49699,
@@ -234,10 +238,11 @@
         }
       },
       {
-        "system": "Matcha_legacy",
+        "system": "Matcha",
         "team": "martasilva",
         "submission_id": 951323,
         "submitted": "2026-09-29",
+        "self_supervised": false,
         "macro": {
           "f1_repaired": 0.611612,
           "precision_repaired": 0.543635,
@@ -288,6 +293,7 @@
         "team": "yipingsong",
         "submission_id": 953833,
         "submitted": "2026-09-30",
+        "self_supervised": null,
         "macro": {
           "f1_repaired": 0.553814,
           "precision_repaired": 0.507272,
@@ -338,6 +344,7 @@
         "team": "diso-oaei",
         "submission_id": 949960,
         "submitted": "2026-09-28",
+        "self_supervised": false,
         "macro": {
           "f1_repaired": 0.534202,
           "precision_repaired": 0.401579,
@@ -388,6 +395,7 @@
         "team": "faizmirza",
         "submission_id": 865608,
         "submitted": "2026-07-27",
+        "self_supervised": null,
         "macro": {
           "f1_repaired": 0.48652,
           "precision_repaired": 0.449745,
@@ -438,6 +446,7 @@
         "team": "daviddiazlopez",
         "submission_id": 955662,
         "submitted": "2026-10-01",
+        "self_supervised": null,
         "macro": {
           "f1_repaired": 0.215833,
           "precision_repaired": 0.123653,
@@ -510,7 +519,7 @@
         }
       },
       {
-        "system": "Matcha",
+        "system": "Matcha-ML",
         "team": "pedrocotovio",
         "submission_id": 943507,
         "date": "2026-09-24T17:57:08.457826Z",
